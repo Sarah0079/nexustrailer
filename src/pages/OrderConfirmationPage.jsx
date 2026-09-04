@@ -1,0 +1,188 @@
+import { Link, useLocation, Navigate } from 'react-router-dom';
+
+export default function OrderConfirmationPage() {
+  const location = useLocation();
+  const state = location.state;
+
+  if (!state?.orderRef) {
+    return <Navigate to="/" replace />;
+  }
+
+  const { orderRef, bank, paymentType, total, amountDueNow: serverAmount } = state;
+  const fmt = (n) => n.toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' €';
+
+  const bankRows = [
+    ['Empfänger',        bank?.beneficiaire || '—', false],
+    ['IBAN',             bank?.iban         || '—', true],
+    ['BIC / SWIFT',      bank?.bic          || '—', true],
+    ['Bank',             bank?.banque       || '—', false],
+    ['Verwendungszweck', orderRef,                  false],
+  ];
+
+  // Montant calculé côté serveur (priorité) — fallback client si state incomplet
+  const amountDue = serverAmount ?? (paymentType === 'deposit' ? total * 0.5 : total);
+
+  const steps = [
+    <>Melden Sie sich bei Ihrer Bank an und initiieren Sie eine Überweisung mit den untenstehenden Bankdaten.</>,
+    <>Tragen Sie im Feld <strong>„Verwendungszweck"</strong> genau folgende Referenz ein: <span style={{ fontFamily: 'monospace', fontWeight: 800, color: 'var(--accent)' }}>{orderRef}</span></>,
+    <>
+      Überweisen Sie den Betrag von{' '}
+      <strong style={{ color: 'var(--accent)' }}>{fmt(amountDue)}</strong>
+      {paymentType === 'deposit' && <> (50 % Anzahlung – Restbetrag vor dem Versand)</>}.
+      Ihre Bestellung wird nach Zahlungseingang bearbeitet <strong>(1–3 Werktage)</strong>.
+    </>,
+  ];
+
+  return (
+    <main>
+      <div style={{ background: 'var(--dark)', padding: '40px 0 36px' }}>
+        <div className="container">
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 6 }}>
+            <Link to="/" style={{ fontSize: 12, color: 'rgba(255,255,255,0.4)', textDecoration: 'none' }}>Startseite</Link>
+            <i className="bi bi-chevron-right" style={{ fontSize: 10, color: 'rgba(255,255,255,0.3)' }} />
+            <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.7)' }}>Auftragsbestätigung</span>
+          </div>
+          <h1 style={{ fontSize: 'clamp(22px, 3vw, 36px)', fontWeight: 900, color: 'white', letterSpacing: '-0.02em' }}>Auftragsbestätigung</h1>
+        </div>
+      </div>
+
+      <div className="container" style={{ padding: '48px 24px 80px', maxWidth: 720 }}>
+
+        {/* Erfolgsmeldung */}
+        <div style={{
+          background: 'linear-gradient(135deg, #ECFDF5 0%, #D1FAE5 100%)',
+          border: '1.5px solid #6EE7B7',
+          borderRadius: 'var(--r-lg)',
+          padding: '28px 32px',
+          display: 'flex', gap: 20, alignItems: 'flex-start',
+          marginBottom: 28,
+        }}>
+          <div style={{ width: 52, height: 52, borderRadius: '50%', flexShrink: 0, background: 'var(--green)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <i className="bi bi-check-lg" style={{ fontSize: 26, color: 'white' }} />
+          </div>
+          <div>
+            <h2 style={{ fontSize: 20, fontWeight: 800, color: '#065F46', marginBottom: 6 }}>
+              Bestellung erfolgreich aufgegeben!
+            </h2>
+            <p style={{ fontSize: 14, color: '#047857', lineHeight: 1.6 }}>
+              Vielen Dank für Ihre Bestellung. Schließen Sie Ihren Kauf ab, indem Sie die Banküberweisung mit der untenstehenden Referenz durchführen.
+            </p>
+          </div>
+        </div>
+
+        {/* Bestellnummer */}
+        <div style={{
+          background: 'var(--accent-light)', border: '2px solid var(--accent)',
+          borderRadius: 'var(--r-lg)', padding: '18px 24px',
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16,
+          marginBottom: 28,
+        }}>
+          <div>
+            <p style={{ fontSize: 11, fontWeight: 700, color: 'var(--accent)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 4 }}>
+              Ihre Bestellnummer / Verwendungszweck
+            </p>
+            <p style={{ fontSize: 26, fontWeight: 900, color: 'var(--dark)', letterSpacing: '0.04em', fontFamily: 'monospace' }}>
+              {orderRef}
+            </p>
+          </div>
+          <i className="bi bi-tag-fill" style={{ fontSize: 28, color: 'var(--accent)', flexShrink: 0, opacity: 0.6 }} />
+        </div>
+
+        {/* Bankverbindung */}
+        <div style={{ background: 'white', border: '1px solid var(--border)', borderRadius: 'var(--r-lg)', overflow: 'hidden', marginBottom: 28 }}>
+          <div style={{ padding: '16px 24px', background: 'var(--dark)', display: 'flex', alignItems: 'center', gap: 10 }}>
+            <i className="bi bi-building" style={{ color: 'white', fontSize: 16 }} />
+            <span style={{ fontSize: 13, fontWeight: 700, color: 'white', textTransform: 'uppercase', letterSpacing: '0.07em' }}>
+              Bankverbindung
+            </span>
+          </div>
+          {bankRows.map(([label, value, mono], i, arr) => (
+            <div key={label} style={{
+              display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+              padding: '14px 24px',
+              borderBottom: i < arr.length - 1 ? '1px solid var(--border)' : undefined,
+              background: label === 'Verwendungszweck' ? 'var(--accent-light)' : undefined,
+            }}>
+              <span style={{ fontSize: 13, color: label === 'Verwendungszweck' ? 'var(--accent)' : 'var(--text-muted)', fontWeight: label === 'Verwendungszweck' ? 700 : 500 }}>
+                {label}
+              </span>
+              <span style={{
+                fontSize: label === 'Verwendungszweck' ? 15 : 14,
+                fontWeight: 800,
+                color: label === 'Verwendungszweck' ? 'var(--accent)' : 'var(--dark)',
+                letterSpacing: mono || label === 'Verwendungszweck' ? '0.05em' : undefined,
+                fontFamily: mono || label === 'Verwendungszweck' ? 'monospace' : undefined,
+              }}>{value}</span>
+            </div>
+          ))}
+        </div>
+
+        {/* Betrag */}
+        {typeof amountDue === 'number' && (
+          <div style={{ background: 'var(--dark)', borderRadius: 'var(--r-lg)', padding: '18px 24px', marginBottom: 28, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div>
+              <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.55)', marginBottom: 4 }}>
+                {paymentType === 'deposit' ? 'Jetzt zu überweisender Betrag (50 %)' : 'Zu überweisender Betrag'}
+              </p>
+              <p style={{ fontSize: 28, fontWeight: 900, color: 'var(--accent)', letterSpacing: '-0.02em', fontFamily: 'monospace' }}>
+                {fmt(amountDue)}
+              </p>
+              {paymentType === 'deposit' && typeof total === 'number' && (
+                <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.45)', marginTop: 4 }}>
+                  Restbetrag {fmt(total - amountDue)} vor dem Versand fällig
+                </p>
+              )}
+            </div>
+            <i className="bi bi-bank2" style={{ fontSize: 36, color: 'rgba(255,255,255,0.15)' }} />
+          </div>
+        )}
+
+        {/* Zahlungsanweisungen */}
+        <div style={{ background: 'white', border: '1px solid var(--border)', borderRadius: 'var(--r-lg)', padding: '24px 28px', marginBottom: 28 }}>
+          <h3 style={{ fontSize: 15, fontWeight: 800, color: 'var(--dark)', marginBottom: 20, display: 'flex', alignItems: 'center', gap: 8 }}>
+            <i className="bi bi-list-ol" style={{ color: 'var(--accent)' }} /> Zahlungsanweisungen
+          </h3>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+            {steps.map((text, i) => (
+              <div key={i} style={{ display: 'flex', gap: 16, alignItems: 'flex-start' }}>
+                <div style={{
+                  width: 36, height: 36, borderRadius: '50%', flexShrink: 0,
+                  background: 'var(--accent-light)', border: '1.5px solid var(--accent)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  fontSize: 13, fontWeight: 900, color: 'var(--accent)',
+                }}>
+                  {i + 1}
+                </div>
+                <p style={{ fontSize: 13, color: 'var(--dark)', lineHeight: 1.65, paddingTop: 7 }}>{text}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Hinweis */}
+        <div style={{
+          padding: '14px 18px', background: '#FFFBEB', border: '1px solid #FDE68A',
+          borderRadius: 'var(--r-md)', marginBottom: 36,
+          display: 'flex', gap: 10, alignItems: 'flex-start',
+        }}>
+          <i className="bi bi-exclamation-triangle" style={{ color: '#D97706', fontSize: 15, flexShrink: 0, marginTop: 1 }} />
+          <p style={{ fontSize: 12, color: '#92400E', lineHeight: 1.65 }}>
+            Der Verwendungszweck <strong>{orderRef}</strong> ist bei der Überweisung zwingend anzugeben. Ohne diese Angabe kann sich die Bearbeitung Ihrer Bestellung verzögern.
+            Bei Fragen: <Link to="/kontakt" style={{ color: '#92400E', fontWeight: 700 }}>Kontaktieren Sie uns</Link>.
+          </p>
+        </div>
+
+        {/* Aktionen */}
+        <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
+          <Link to="/" className="btn btn-primary btn-lg">
+            <i className="bi bi-house" /> Zur Startseite
+          </Link>
+          <Link to="/auftragsverfolgung" state={{ orderRef }} className="btn btn-lg" style={{ background: 'white', border: '1.5px solid var(--border)', color: 'var(--dark)' }}>
+            <i className="bi bi-search" /> Bestellung verfolgen
+          </Link>
+        </div>
+
+      </div>
+    </main>
+  );
+}
