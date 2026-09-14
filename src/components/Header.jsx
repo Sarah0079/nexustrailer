@@ -8,10 +8,15 @@ import { PRODUCTS } from '../data/products';
 const NAV = [
   { to: '/', label: 'Startseite' },
   { to: '/shop', label: 'Shop' },
-  { to: '/uber-uns', label: 'Über uns' },
+  { to: '/#uber-uns', label: 'Über uns' },
   { to: '/auftragsverfolgung', label: 'Sendungsverfolgung' },
-  { to: '/kontakt', label: 'Kontakt' },
+  { to: '/#kontakt', label: 'Kontakt' },
 ];
+
+const isActive = (to, pn) => {
+  if (to.startsWith('/#')) return false;
+  return pn === to;
+};
 
 export default function Header() {
   const { count, setOpen } = useCart();
@@ -68,7 +73,7 @@ export default function Header() {
               </span>
             ))}
           </div>
-          <Link to="/kontakt" style={{ fontSize: 11, color: 'rgba(255,255,255,0.5)', display: 'flex', alignItems: 'center', gap: 5, whiteSpace: 'nowrap' }}>
+          <Link to="/#kontakt" style={{ fontSize: 11, color: 'rgba(255,255,255,0.5)', display: 'flex', alignItems: 'center', gap: 5, whiteSpace: 'nowrap' }}>
             <i className="bi bi-telephone" style={{ fontSize: 11 }} />
             +33 7 56 83 64 79
           </Link>
@@ -86,7 +91,7 @@ export default function Header() {
 
           {/* Logo */}
           <Link to="/" style={{ display: 'flex', alignItems: 'center', flexShrink: 0, textDecoration: 'none' }}>
-            <img src="/image/logo.png" alt="TrailPro" style={{ height: 62, width: 'auto', objectFit: 'contain' }} />
+            <img src="/image/logo.png" alt="NexusTrailer" style={{ height: 62, width: 'auto', objectFit: 'contain' }} />
           </Link>
 
           {/* Search */}
@@ -116,7 +121,7 @@ export default function Header() {
                       onMouseEnter={e => e.currentTarget.style.background = 'var(--bg)'}
                       onMouseLeave={e => e.currentTarget.style.background = 'white'}
                     >
-                      <img src={p.image} alt={p.name} style={{ width: 44, height: 36, objectFit: 'cover', borderRadius: 5, flexShrink: 0, background: 'var(--bg-2)' }} />
+                      <img src={p.image} alt={p.name} style={{ width: 44, height: 36, objectFit: 'cover', borderRadius: 0, flexShrink: 0, background: 'var(--bg-2)' }} />
                       <div style={{ flex: 1, minWidth: 0 }}>
                         <p style={{ fontSize: 13, fontWeight: 600, color: 'var(--text)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{p.name}</p>
                         <p style={{ fontSize: 12, color: 'var(--accent)', fontWeight: 700 }}>{fmt(p.price)}</p>
@@ -134,9 +139,9 @@ export default function Header() {
               {NAV.map(({ to, label }) => (
                 <Link key={to} to={to} style={{
                   padding: '6px 11px', borderRadius: 'var(--r-sm)',
-                  fontSize: 13, fontWeight: pathname === to ? 700 : 500,
-                  color: pathname === to ? 'var(--dark)' : 'var(--text-muted)',
-                  background: pathname === to ? 'var(--bg)' : 'transparent',
+                  fontSize: 13, fontWeight: isActive(to, pathname) ? 700 : 500,
+                  color: isActive(to, pathname) ? 'var(--dark)' : 'var(--text-muted)',
+                  background: isActive(to, pathname) ? 'var(--bg)' : 'transparent',
                   transition: 'color 0.15s, background 0.15s',
                 }}
                   onMouseEnter={e => { if (pathname !== to) { e.currentTarget.style.color = 'var(--text)'; e.currentTarget.style.background = 'var(--bg)'; } }}
@@ -198,8 +203,8 @@ export default function Header() {
             {NAV.map(({ to, label }) => (
               <Link key={to} to={to} onClick={() => setMenuOpen(false)} style={{
                 display: 'block', padding: '13px 20px',
-                fontSize: 14, fontWeight: pathname === to ? 700 : 400,
-                color: pathname === to ? 'var(--dark)' : 'var(--text-muted)',
+                fontSize: 14, fontWeight: isActive(to, pathname) ? 700 : 400,
+                color: isActive(to, pathname) ? 'var(--dark)' : 'var(--text-muted)',
                 borderBottom: '1px solid var(--border)',
               }}>{label}</Link>
             ))}

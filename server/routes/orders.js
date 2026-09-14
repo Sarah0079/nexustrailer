@@ -2,13 +2,14 @@ import { Router } from 'express';
 import { createOrder } from '../services/orderService.js';
 import { validateCreateOrder } from '../middleware/validate.js';
 import { orderLimiter } from '../middleware/rateLimiter.js';
+import { verifyCsrf } from '../middleware/csrf.js';
 import { ORDER_REF_REGEX } from '../utils/orderRef.js';
 import pool from '../config/db.js';
 
 const router = Router();
 
 // ─── POST /api/orders — création de commande ─────────────────────────────────
-router.post('/', orderLimiter, validateCreateOrder, async (req, res) => {
+router.post('/', orderLimiter, verifyCsrf, validateCreateOrder, async (req, res) => {
   try {
     const { form, items, paymentOption } = req.body;
     const result = await createOrder({ form, items, paymentOption });
@@ -38,7 +39,7 @@ router.get('/:ref', async (req, res) => {
   const { ref } = req.params;
 
   if (!ORDER_REF_REGEX.test(ref)) {
-    return res.status(404).json({ error: 'Commande introuvable' });
+    return res.status(404).json({ error: 'Bestellung nicht gefunden' });
   }
 
   try {
@@ -47,7 +48,7 @@ router.get('/:ref', async (req, res) => {
       [ref]
     );
 
-    if (!order) return res.status(404).json({ error: 'Commande introuvable' });
+    if (!order) return res.status(404).json({ error: 'Bestellung nicht gefunden' });
 
     const [notifications] = await pool.execute(
       `SELECT type, message, created_at
@@ -73,7 +74,7 @@ router.get('/:ref', async (req, res) => {
     });
   } catch (err) {
     console.error('Tracking error:', err);
-    res.status(500).json({ error: 'Erreur serveur' });
+    res.status(500).json({ error: 'Interner Serverfehler' });
   }
 });
 

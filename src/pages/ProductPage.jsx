@@ -94,16 +94,16 @@ export default function ProductPage() {
                 style={{ width: '100%', height: '100%', objectFit: 'contain', background: 'var(--bg)' }}
               />
               {product.discount && (
-                <span style={{ position: 'absolute', top: 14, left: 14, background: 'var(--sale)', color: 'white', fontWeight: 800, fontSize: 13, padding: '4px 10px', borderRadius: 6 }}>
+                <span style={{ position: 'absolute', top: 14, left: 14, background: 'var(--sale)', color: 'white', fontWeight: 800, fontSize: 13, padding: '4px 10px', borderRadius: 0 }}>
                   -{product.discount}%
                 </span>
               )}
               {images.length > 1 && (
                 <>
-                  <button onClick={prevImg} aria-label="Vorheriges Bild" style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', width: 32, height: 32, borderRadius: '50%', border: 'none', background: 'rgba(255,255,255,0.92)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 2px 8px rgba(0,0,0,0.18)' }}>
+                  <button onClick={prevImg} aria-label="Vorheriges Bild" style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', width: 32, height: 32, borderRadius: 0, border: 'none', background: 'rgba(255,255,255,0.92)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 2px 8px rgba(0,0,0,0.18)' }}>
                     <i className="bi bi-chevron-left" style={{ fontSize: 13 }} />
                   </button>
-                  <button onClick={nextImg} aria-label="Nächstes Bild" style={{ position: 'absolute', right: 10, top: '50%', transform: 'translateY(-50%)', width: 32, height: 32, borderRadius: '50%', border: 'none', background: 'rgba(255,255,255,0.92)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 2px 8px rgba(0,0,0,0.18)' }}>
+                  <button onClick={nextImg} aria-label="Nächstes Bild" style={{ position: 'absolute', right: 10, top: '50%', transform: 'translateY(-50%)', width: 32, height: 32, borderRadius: 0, border: 'none', background: 'rgba(255,255,255,0.92)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 2px 8px rgba(0,0,0,0.18)' }}>
                     <i className="bi bi-chevron-right" style={{ fontSize: 13 }} />
                   </button>
                 </>
@@ -113,7 +113,7 @@ export default function ProductPage() {
               <div style={{ display: 'flex', gap: 8, marginTop: 10, overflowX: 'auto', paddingBottom: 4 }}>
                 {images.map((img, i) => (
                   <button key={i} onClick={() => setActiveImg(i)} style={{
-                    width: 68, height: 54, borderRadius: 8, overflow: 'hidden', flexShrink: 0, padding: 0, cursor: 'pointer',
+                    width: 68, height: 54, borderRadius: 0, overflow: 'hidden', flexShrink: 0, padding: 0, cursor: 'pointer',
                     border: `2px solid ${i === activeImg ? 'var(--accent)' : 'var(--border)'}`,
                     transition: 'border-color 0.15s',
                   }}>
@@ -139,7 +139,7 @@ export default function ProductPage() {
             </div>
 
             {/* Stock */}
-            <span style={{ background: '#ECFDF5', color: '#065F46', border: '1px solid #6EE7B7', borderRadius: 20, padding: '4px 12px', fontSize: 12, fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: 5, marginBottom: 16 }}>
+            <span style={{ background: '#ECFDF5', color: '#065F46', border: '1px solid #6EE7B7', borderRadius: 0, padding: '4px 12px', fontSize: 12, fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: 5, marginBottom: 16 }}>
               <i className="bi bi-check-circle-fill" style={{ fontSize: 10 }} /> AUF LAGER
             </span>
 
@@ -153,7 +153,7 @@ export default function ProductPage() {
 
             {/* Qty + Cart */}
             <div style={{ display: 'flex', gap: 10, marginBottom: 12, alignItems: 'center' }}>
-              <div style={{ display: 'flex', alignItems: 'center', border: '1.5px solid var(--border-strong)', borderRadius: 8, overflow: 'hidden', userSelect: 'none', flexShrink: 0 }}>
+              <div style={{ display: 'flex', alignItems: 'center', border: '1.5px solid var(--border-strong)', borderRadius: 0, overflow: 'hidden', userSelect: 'none', flexShrink: 0 }}>
                 <button type="button" onClick={() => setQty(q => Math.max(1, q - 1))} disabled={qty <= 1}
                   style={{ width: 40, height: 44, border: 'none', background: 'transparent', cursor: qty <= 1 ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: qty <= 1 ? 'var(--text-light)' : 'var(--dark)', fontSize: 18 }}>
                   <i className="bi bi-dash" />
@@ -165,7 +165,7 @@ export default function ProductPage() {
                 </button>
               </div>
               <button onClick={handleAdd} style={{
-                flex: 1, height: 44, borderRadius: 8, border: 'none',
+                flex: 1, height: 44, borderRadius: 0, border: 'none',
                 background: added ? 'var(--green)' : 'var(--dark)',
                 color: 'white', fontWeight: 800, fontSize: 14, cursor: 'pointer',
                 display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
@@ -178,7 +178,7 @@ export default function ProductPage() {
 
             {/* Wishlist */}
             <button onClick={() => toggle(product)} style={{
-              width: '100%', padding: '10px', borderRadius: 8, marginBottom: 24,
+              width: '100%', padding: '10px', borderRadius: 0, marginBottom: 24,
               border: `1.5px solid ${isWished ? 'var(--accent)' : 'var(--border)'}`,
               background: isWished ? 'var(--accent-light)' : 'white',
               color: isWished ? 'var(--accent)' : 'var(--text-muted)',
@@ -195,7 +195,7 @@ export default function ProductPage() {
                 <p style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 10 }}>Technische Daten</p>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px 10px' }}>
                   {Object.entries(product.specs).map(([k, v]) => (
-                    <div key={k} style={{ padding: '8px 12px', background: 'var(--bg)', borderRadius: 8 }}>
+                    <div key={k} style={{ padding: '8px 12px', background: 'var(--bg)', borderRadius: 0 }}>
                       <p style={{ fontSize: 10, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: 2 }}>{k}</p>
                       <p style={{ fontSize: 13, fontWeight: 700, color: 'var(--dark)' }}>{v}</p>
                     </div>
@@ -210,13 +210,13 @@ export default function ProductPage() {
             <div style={{ minWidth: 0 }}>
               <div style={{ background: 'var(--accent-light)', border: '1px solid var(--accent)', borderRadius: 'var(--r-md)', padding: '16px 18px', marginBottom: 20, textAlign: 'center' }}>
                 <p style={{ fontSize: 13, fontWeight: 600, color: 'var(--accent)', lineHeight: 1.6 }}>
-                  Kraft, Stabilität und Leistung —<br />entscheiden Sie sich für TrailPro
+                  Kraft, Stabilität und Leistung —<br />entscheiden Sie sich für NexusTrailer
                 </p>
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
                 {TRUST_ITEMS.map((item, i) => (
                   <div key={i} style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
-                    <div style={{ width: 38, height: 38, borderRadius: 8, background: 'var(--bg)', border: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                    <div style={{ width: 38, height: 38, borderRadius: 0, background: 'var(--bg)', border: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                       <i className={`bi ${item.icon}`} style={{ fontSize: 17, color: 'var(--text-muted)' }} />
                     </div>
                     <p style={{ fontSize: 12, color: 'var(--text-muted)', lineHeight: 1.55, paddingTop: 3 }}>{item.text}</p>

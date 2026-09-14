@@ -1,4 +1,4 @@
-function Section({ title, children }) {
+﻿function Section({ title, children }) {
   return (
     <div style={{ marginBottom: 40 }}>
       <h2 style={{ fontSize: 18, fontWeight: 800, color: 'var(--dark)', marginBottom: 14, paddingBottom: 10, borderBottom: '2px solid var(--accent)' }}>{title}</h2>
@@ -36,7 +36,7 @@ export default function GarantiePage() {
 
         <Section title="Herstellergarantie (2 Jahre)">
           <p>
-            TrailPro gewährt eine <strong>Herstellergarantie von 2 Jahren</strong> auf alle Produkte ab dem Lieferdatum. Diese Garantie deckt ab:
+            NexusTrailer gewährt eine <strong>Herstellergarantie von 2 Jahren</strong> auf alle Produkte ab dem Lieferdatum. Diese Garantie deckt ab:
           </p>
           <ul style={{ marginTop: 10, paddingLeft: 20, display: 'flex', flexDirection: 'column', gap: 6 }}>
             <li>Herstellungs- und Materialfehler.</li>
@@ -63,18 +63,18 @@ export default function GarantiePage() {
         <Section title="Garantieabwicklung">
           <p>So nehmen Sie Ihre Garantie in Anspruch:</p>
           <ol style={{ marginTop: 10, paddingLeft: 20, display: 'flex', flexDirection: 'column', gap: 8 }}>
-            <li>Kontaktieren Sie unseren Kundendienst unter <strong>info@trailpro.com</strong> mit Ihrer Bestellnummer und einer Beschreibung des Problems.</li>
+            <li>Kontaktieren Sie unseren Kundendienst unter <strong>info@nexustrailer.com</strong> mit Ihrer Bestellnummer und einer Beschreibung des Problems.</li>
             <li>Fügen Sie Fotos oder Videos bei, die den festgestellten Mangel zeigen.</li>
             <li>Unser Team antwortet innerhalb von 48 Stunden und teilt Ihnen das weitere Vorgehen mit (Reparatur, Austausch, Rücksendung).</li>
           </ol>
           <p style={{ marginTop: 12 }}>
-            Im Garantiefall übernimmt TrailPro die Rücksendekosten.
+            Im Garantiefall übernimmt NexusTrailer die Rücksendekosten.
           </p>
         </Section>
 
         <Section title="Übereinstimmungszertifikat (COC)">
           <p>
-            Jedes bei TrailPro verkaufte Produkt wird mit seinem <strong>europäischen Übereinstimmungszertifikat (COC)</strong> geliefert – ein unverzichtbares Dokument für die Zulassung Ihres Anhängers oder Geräts. Bei Verlust kontaktieren Sie uns für ein Duplikat.
+            Jedes bei NexusTrailer verkaufte Produkt wird mit seinem <strong>europäischen Übereinstimmungszertifikat (COC)</strong> geliefert – ein unverzichtbares Dokument für die Zulassung Ihres Anhängers oder Geräts. Bei Verlust kontaktieren Sie uns für ein Duplikat.
           </p>
         </Section>
 

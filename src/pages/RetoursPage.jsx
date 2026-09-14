@@ -1,4 +1,4 @@
-function Section({ title, children }) {
+﻿function Section({ title, children }) {
   return (
     <div style={{ marginBottom: 40 }}>
       <h2 style={{ fontSize: 18, fontWeight: 800, color: 'var(--dark)', marginBottom: 14, paddingBottom: 10, borderBottom: '2px solid var(--accent)' }}>{title}</h2>
@@ -8,7 +8,7 @@ function Section({ title, children }) {
 }
 
 const STEPS = [
-  { n: '1', label: 'Kontakt aufnehmen', desc: 'Senden Sie eine E-Mail an info@trailpro.com mit Ihrer Bestellnummer und dem Grund für die Rücksendung.' },
+  { n: '1', label: 'Kontakt aufnehmen', desc: 'Senden Sie eine E-Mail an info@nexustrailer.com mit Ihrer Bestellnummer und dem Grund für die Rücksendung.' },
   { n: '2', label: 'Bestätigung',        desc: 'Wir bestätigen Ihren Antrag innerhalb von 48 Stunden und teilen Ihnen die Rücksendeadresse mit.' },
   { n: '3', label: 'Versand',            desc: 'Senden Sie den Artikel in der Originalverpackung zurück. Bewahren Sie Ihren Versandnachweis auf.' },
   { n: '4', label: 'Erstattung',         desc: 'Nach Eingang und Prüfung des Artikels erstatten wir den Kaufpreis innerhalb von 14 Tagen.' },
@@ -60,7 +60,7 @@ export default function RetoursPage() {
                 {i < STEPS.length - 1 && (
                   <div style={{ position: 'absolute', left: 15, top: 36, bottom: 0, width: 2, background: 'var(--border)', zIndex: 0 }} />
                 )}
-                <div style={{ width: 32, height: 32, borderRadius: '50%', background: 'var(--accent)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: 13, flexShrink: 0, zIndex: 1 }}>{n}</div>
+                <div style={{ width: 32, height: 32, borderRadius: 0, background: 'var(--accent)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: 13, flexShrink: 0, zIndex: 1 }}>{n}</div>
                 <div style={{ paddingBottom: i < STEPS.length - 1 ? 24 : 0, paddingTop: 4 }}>
                   <p style={{ fontWeight: 700, color: 'var(--dark)', marginBottom: 4 }}>{label}</p>
                   <p>{desc}</p>

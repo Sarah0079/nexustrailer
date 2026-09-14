@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { fetchOrderStatus } from '../api/client';
 
-const ORDER_REF_REGEX = /^ALT-\d{4}-[A-Z0-9]{6}$/;
+const ORDER_REF_REGEX = /^NXT-\d{4}-[A-Z0-9]{6}$/;
 
 const ALL_STEPS = [
   { label: 'Bestellung eingegangen',  sub: 'Ihre Bestellung wurde erfolgreich registriert.',  icon: 'bi-check-lg',     status: 'pending' },
@@ -23,7 +23,7 @@ const STATUS_TO_STEP = {
 };
 
 const NOTIF_STYLES = {
-  info:    { color: 'var(--accent)', bg: 'var(--accent-light)', border: 'rgba(37,99,235,0.25)', icon: 'bi-info-circle-fill' },
+  info:    { color: 'var(--accent)', bg: 'var(--accent-light)', border: 'rgba(249,115,22,0.25)', icon: 'bi-info-circle-fill' },
   success: { color: 'var(--green)',  bg: '#ECFDF5',             border: '#6EE7B7',              icon: 'bi-check-circle-fill' },
   warning: { color: '#D97706',       bg: '#FFFBEB',             border: '#FDE68A',              icon: 'bi-exclamation-triangle-fill' },
 };
@@ -43,7 +43,7 @@ export default function TrackingPage() {
   const doTrack = async (override) => {
     const val = (override || input).trim().toUpperCase();
     if (!val)                       { setError('Bitte geben Sie eine Bestellnummer ein.'); return; }
-    if (!ORDER_REF_REGEX.test(val)) { setError('Ungültiges Format. Beispiel: ALT-2026-A3K7BM'); setResult(null); return; }
+    if (!ORDER_REF_REGEX.test(val)) { setError('Ungültiges Format. Beispiel: NXT-2026-A3K7BM'); setResult(null); return; }
 
     setError('');
     setLoading(true);
@@ -96,7 +96,7 @@ export default function TrackingPage() {
           <div style={{ display: 'flex', gap: 10 }}>
             <input
               className="input"
-              placeholder="z. B. ALT-2026-A3K7BM"
+              placeholder="z. B. NXT-2026-A3K7BM"
               value={input}
               onChange={(e) => { setInput(e.target.value.toUpperCase()); setError(''); setResult(null); }}
               onKeyDown={(e) => e.key === 'Enter' && doTrack()}
@@ -185,7 +185,7 @@ export default function TrackingPage() {
                           }} />
                         )}
                         <div style={{
-                          width: 32, height: 32, borderRadius: '50%', flexShrink: 0, zIndex: 1,
+                          width: 32, height: 32, borderRadius: 0, flexShrink: 0, zIndex: 1,
                           background: done ? 'var(--green)' : active ? 'var(--accent)' : 'var(--bg)',
                           border: `2px solid ${done ? 'var(--green)' : active ? 'var(--accent)' : 'var(--border)'}`,
                           display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -197,7 +197,7 @@ export default function TrackingPage() {
                           <p style={{ fontSize: 14, fontWeight: done || active ? 700 : 400, color: done || active ? 'var(--dark)' : 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: 8 }}>
                             {label}
                             {active && (
-                              <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--accent)', background: 'var(--accent-light)', padding: '2px 8px', borderRadius: 10 }}>
+                              <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--accent)', background: 'var(--accent-light)', padding: '2px 8px', borderRadius: 0 }}>
                                 Aktuell
                               </span>
                             )}

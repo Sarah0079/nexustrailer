@@ -1,4 +1,4 @@
-function Section({ title, children }) {
+﻿function Section({ title, children }) {
   return (
     <div style={{ marginBottom: 40 }}>
       <h2 style={{ fontSize: 18, fontWeight: 800, color: 'var(--dark)', marginBottom: 14, paddingBottom: 10, borderBottom: '2px solid var(--accent)' }}>{title}</h2>
@@ -35,7 +35,7 @@ export default function RetractationPage() {
         <Section title="Ausübung des Widerrufsrechts">
           <p>Um Ihr Widerrufsrecht auszuüben, müssen Sie uns mittels einer eindeutigen Erklärung (z. B. Brief, Telefax oder E-Mail) über Ihren Entschluss informieren:</p>
           <ul style={{ marginTop: 10, paddingLeft: 20, display: 'flex', flexDirection: 'column', gap: 6 }}>
-            <li><strong>E-Mail:</strong> info@trailpro.com</li>
+            <li><strong>E-Mail:</strong> info@nexustrailer.com</li>
             <li><strong>Telefon:</strong> +33 7 56 83 64 79</li>
             <li><strong>Post:</strong> LA REMORQUE M – 21 Rue du Bouchet, 63350 Maringues, Frankreich</li>
           </ul>
@@ -46,7 +46,7 @@ export default function RetractationPage() {
 
         <Section title="Muster-Widerrufsformular">
           <div style={{ background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: 'var(--r-md)', padding: 24 }}>
-            <p style={{ fontStyle: 'italic', marginBottom: 12 }}>An: LA REMORQUE M – 21 Rue du Bouchet, 63350 Maringues – info@trailpro.com</p>
+            <p style={{ fontStyle: 'italic', marginBottom: 12 }}>An: LA REMORQUE M – 21 Rue du Bouchet, 63350 Maringues – info@nexustrailer.com</p>
             <p>Hiermit widerrufe(n) ich/wir (*) den von mir/uns (*) abgeschlossenen Vertrag über den Kauf der folgenden Waren (*):</p>
             <p style={{ marginTop: 8 }}>Bestellt am (*) / erhalten am (*): _______________</p>
             <p>Name des/der Verbraucher(s): _______________</p>

@@ -1,4 +1,4 @@
-function Section({ title, children }) {
+﻿function Section({ title, children }) {
   return (
     <div style={{ marginBottom: 40 }}>
       <h2 style={{ fontSize: 18, fontWeight: 800, color: 'var(--dark)', marginBottom: 14, paddingBottom: 10, borderBottom: '2px solid var(--accent)' }}>{title}</h2>
@@ -53,7 +53,7 @@ export default function PaiementPage() {
           </p>
           <div style={{ background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: 'var(--r-md)', padding: 20, display: 'flex', flexDirection: 'column', gap: 10 }}>
             {[
-              { label: 'Empfänger',  val: 'TrailPro SAS' },
+              { label: 'Empfänger',  val: 'NexusTrailer SAS' },
               { label: 'Bank',       val: 'BNP Paribas' },
               { label: 'IBAN',       val: 'Bitte mit Ihrer echten IBAN ergänzen' },
               { label: 'BIC/SWIFT',  val: 'Bitte mit Ihrem echten BIC ergänzen' },

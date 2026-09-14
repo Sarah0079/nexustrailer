@@ -2,6 +2,46 @@ import pool from '../config/db.js';
 import { generateOrderRef } from '../utils/orderRef.js';
 import { sendOrderConfirmation } from './mailService.js';
 
+export async function getOrderByRef(ref) {
+  const [[order]] = await pool.execute(
+    `SELECT o.*, c.first_name AS del_first_name, c.last_name AS del_last_name,
+            c.email AS del_email, c.phone AS del_phone
+     FROM orders o
+     JOIN customers c ON c.id = o.customer_id
+     WHERE o.ref = ?`,
+    [ref],
+  );
+  if (!order) return null;
+
+  const [items] = await pool.execute(
+    'SELECT * FROM order_items WHERE order_id = ?',
+    [order.id],
+  );
+  const [notifications] = await pool.execute(
+    'SELECT * FROM order_notifications WHERE order_id = ? ORDER BY created_at DESC',
+    [order.id],
+  );
+  const [history] = await pool.execute(
+    'SELECT * FROM order_status_history WHERE order_id = ? ORDER BY created_at ASC',
+    [order.id],
+  );
+
+  return { ...order, items, notifications, history };
+}
+
+async function getBankSettings(conn) {
+  const [rows] = await conn.execute(
+    "SELECT `key`, value FROM settings WHERE `key` IN ('bank_beneficiaire','bank_iban','bank_bic','bank_name')"
+  );
+  const map = Object.fromEntries(rows.map((r) => [r.key, r.value]));
+  return {
+    beneficiaire: map.bank_beneficiaire || process.env.BANK_BENEFICIAIRE || '',
+    iban:         map.bank_iban         || process.env.BANK_IBAN         || '',
+    bic:          map.bank_bic          || process.env.BANK_BIC          || '',
+    banque:       map.bank_name         || process.env.BANK_NAME         || '',
+  };
+}
+
 // Frais de livraison — calculés côté serveur uniquement
 function computeShipping(/* subtotal */) {
   return 0.00; // Livraison incluse pour tous les produits (remorques/engins)
@@ -143,7 +183,10 @@ export async function createOrder({ form, items, paymentOption }) {
 
     await conn.commit();
 
+    const bank = await getBankSettings(conn);
+
     // Fire-and-forget — l'échec d'email ne doit pas annuler la commande
+    // Fire-and-forget
     sendOrderConfirmation({
       orderRef,
       customer: { email: form.email, vorname: form.vorname, nachname: form.nachname },
@@ -151,12 +194,7 @@ export async function createOrder({ form, items, paymentOption }) {
       total,
       amountDueNow,
       paymentOption,
-      bank: {
-        beneficiaire: process.env.BANK_BENEFICIAIRE,
-        iban:         process.env.BANK_IBAN,
-        bic:          process.env.BANK_BIC,
-        banque:       process.env.BANK_NAME,
-      },
+      bank,
     }).catch(err => console.error('[MAIL] Erreur envoi confirmation:', err));
 
     return { orderRef, total, amountDueNow, paymentOption };

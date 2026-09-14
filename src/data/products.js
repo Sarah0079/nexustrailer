@@ -5615,7 +5615,7 @@ export const HERO_SLIDES = [
     subtitle: 'Hochwertige Wohnwagen & Caravans – zertifiziert, versandfertig, kostenlos geliefert in ganz Europa.',
     cta: 'Jetzt entdecken',
     image: '/image/hero/1.jpg',
-    accent: '#2563EB',
+    accent: '#F97316',
   },
   {
     id: 2,

@@ -4,6 +4,9 @@ import 'bootstrap-icons/font/bootstrap-icons.css'
 import './index.css'
 import App from './App.jsx'
 
+// Initialise le cookie CSRF dès le chargement de l'app
+fetch('/api/csrf', { credentials: 'include' }).catch(() => {});
+
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <App />

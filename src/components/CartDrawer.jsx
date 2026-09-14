@@ -31,7 +31,7 @@ export default function CartDrawer() {
               Warenkorb {count > 0 && <span style={{ fontSize: 14, color: 'rgba(255,255,255,0.55)', fontWeight: 500 }}>({count})</span>}
             </h2>
           </div>
-          <button onClick={() => setOpen(false)} style={{ color: 'rgba(255,255,255,0.6)', padding: 8, borderRadius: 8, transition: 'color 0.15s' }}
+          <button onClick={() => setOpen(false)} style={{ color: 'rgba(255,255,255,0.6)', padding: 8, borderRadius: 0, transition: 'color 0.15s' }}
             onMouseEnter={e => e.currentTarget.style.color = 'white'}
             onMouseLeave={e => e.currentTarget.style.color = 'rgba(255,255,255,0.6)'}
           >
@@ -51,14 +51,14 @@ export default function CartDrawer() {
             <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
               {items.map(item => (
                 <div key={item.id} style={{ display: 'flex', gap: 14, padding: '14px 0', borderBottom: '1px solid var(--border)' }}>
-                  <div style={{ width: 72, height: 56, borderRadius: 8, overflow: 'hidden', flexShrink: 0, background: 'var(--bg)' }}>
+                  <div style={{ width: 72, height: 56, borderRadius: 0, overflow: 'hidden', flexShrink: 0, background: 'var(--bg)' }}>
                     <img src={item.image} alt={item.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                   </div>
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <p style={{ fontSize: 13, fontWeight: 600, color: 'var(--dark)', lineHeight: 1.35, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{item.name}</p>
                     <p style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{item.subtitle}</p>
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 10 }}>
-                      <div style={{ display: 'flex', alignItems: 'center', border: '1px solid var(--border)', borderRadius: 6, overflow: 'hidden' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', border: '1px solid var(--border)', borderRadius: 0, overflow: 'hidden' }}>
                         <button onClick={() => update(item.id, item.qty - 1)} style={{ padding: '4px 10px', fontSize: 16, color: 'var(--text-muted)', display: 'flex', alignItems: 'center' }}>
                           <i className="bi bi-dash" />
                         </button>
@@ -70,7 +70,7 @@ export default function CartDrawer() {
                       <span style={{ fontWeight: 800, fontSize: 15, color: 'var(--dark)' }}>{fmt(item.price * item.qty)}</span>
                     </div>
                   </div>
-                  <button onClick={() => remove(item.id)} style={{ color: 'var(--text-light)', alignSelf: 'flex-start', padding: 4, borderRadius: 4, transition: 'color 0.15s' }}
+                  <button onClick={() => remove(item.id)} style={{ color: 'var(--text-light)', alignSelf: 'flex-start', padding: 4, borderRadius: 0, transition: 'color 0.15s' }}
                     onMouseEnter={e => e.currentTarget.style.color = 'var(--sale)'}
                     onMouseLeave={e => e.currentTarget.style.color = 'var(--text-light)'}
                   >

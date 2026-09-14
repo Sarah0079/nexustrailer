@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import { useBreakpoint } from '../hooks/useBreakpoint';
+import { sendContact } from '../api/client';
 
 const CONTACT_INFO = [
   { icon: 'bi-geo-alt',   label: 'Adresse',         val: '21 Rue du Bouchet\n63350 Maringues, Frankreich' },
-  { icon: 'bi-envelope',  label: 'E-Mail',           val: 'info@trailpro.com' },
+  { icon: 'bi-envelope',  label: 'E-Mail',           val: 'info@nexustrailer.com' },
   { icon: 'bi-telephone', label: 'Telefon',          val: '+33 7 56 83 64 79' },
   { icon: 'bi-clock',     label: 'Öffnungszeiten',   val: 'Mo–Fr: 9:00 – 18:00\nSa: 9:00 – 13:00' },
 ];
@@ -64,6 +65,8 @@ export default function ContactPage() {
   const [touched, setTouched] = useState({});
   const [sent, setSent] = useState(false);
   const [triedSubmit, setTriedSubmit] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [serverError, setServerError] = useState('');
 
   const update = (k, v) => {
     setForm(f => ({ ...f, [k]: v }));
@@ -74,13 +77,27 @@ export default function ContactPage() {
     setErrors(e => ({ ...e, [k]: validateContact(form)[k] }));
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     setTriedSubmit(true);
     setTouched({ name: true, email: true, phone: true, message: true });
     const errs = validateContact(form);
     setErrors(errs);
     if (Object.keys(errs).length > 0) return;
-    setSent(true);
+    setSending(true);
+    setServerError('');
+    try {
+      await sendContact({
+        name:    form.name.trim(),
+        email:   form.email.trim(),
+        subject: form.subject,
+        message: form.message.trim(),
+      });
+      setSent(true);
+    } catch (err) {
+      setServerError(err.message || 'Nachricht konnte nicht gesendet werden. Bitte erneut versuchen.');
+    } finally {
+      setSending(false);
+    }
   };
 
   return (
@@ -105,7 +122,7 @@ export default function ContactPage() {
             <h2 style={{ fontSize: 18, fontWeight: 700, marginBottom: 24 }}>Kontaktinformationen</h2>
             {CONTACT_INFO.map(({ icon, label, val }) => (
               <div key={label} style={{ display: 'flex', gap: 14, padding: '16px 0', borderBottom: '1px solid var(--border)' }}>
-                <div style={{ width: 40, height: 40, borderRadius: 10, background: 'var(--accent-light)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                <div style={{ width: 40, height: 40, borderRadius: 0, background: 'var(--accent-light)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                   <i className={`bi ${icon}`} style={{ fontSize: 18, color: 'var(--accent)' }} />
                 </div>
                 <div>
@@ -185,12 +202,22 @@ export default function ContactPage() {
                   )}
                 </div>
 
+                {serverError && (
+                  <div style={{ marginTop: 14, padding: '12px 16px', background: '#FEF2F2', border: '1px solid #FECACA', borderRadius: 'var(--r-md)', display: 'flex', gap: 10, alignItems: 'center' }}>
+                    <i className="bi bi-exclamation-triangle-fill" style={{ color: 'var(--sale)', fontSize: 15 }} />
+                    <span style={{ fontSize: 13, color: 'var(--sale)', fontWeight: 600 }}>{serverError}</span>
+                  </div>
+                )}
                 <button
                   className="btn btn-primary btn-lg btn-full"
-                  style={{ marginTop: 20, justifyContent: 'center', gap: 8 }}
+                  style={{ marginTop: 20, justifyContent: 'center', gap: 8, opacity: sending ? 0.7 : 1 }}
                   onClick={handleSubmit}
+                  disabled={sending}
                 >
-                  <i className="bi bi-send" /> Nachricht senden
+                  {sending
+                    ? <><i className="bi bi-hourglass-split" /> Wird gesendet…</>
+                    : <><i className="bi bi-send" /> Nachricht senden</>
+                  }
                 </button>
               </>
             )}

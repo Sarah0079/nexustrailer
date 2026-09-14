@@ -22,7 +22,7 @@ async function request(method, path, body) {
   });
 
   const data = await res.json().catch(() => ({}));
-  if (!res.ok) throw new Error(data.error || `Erreur ${res.status}`);
+  if (!res.ok) throw new Error(data.error || `Fehler ${res.status}`);
   return data;
 }
 
@@ -34,6 +34,10 @@ export function createOrder(payload) {
 
 export function fetchOrderStatus(ref) {
   return request('GET', `/orders/${ref}`);
+}
+
+export function sendContact(payload) {
+  return request('POST', '/contact', payload);
 }
 
 // ── Auth ──────────────────────────────────────────────────────────────────────
@@ -76,4 +80,14 @@ export function deleteNotification(ref, id) {
 
 export function updatePaymentStatus(id, status, notes = '') {
   return request('PUT', `/admin/payments/${id}/status`, { status, notes });
+}
+
+// ── Admin — coordonnées bancaires ─────────────────────────────────────────────
+
+export function fetchBankSettings() {
+  return request('GET', '/admin/settings/bank');
+}
+
+export function updateBankSettings(data) {
+  return request('PUT', '/admin/settings/bank', data);
 }

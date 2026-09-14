@@ -28,10 +28,10 @@ const TRUST = [
 
 const BUSINESS = [
   { label: 'Firmenname',      val: 'LA REMORQUE M' },
-  { label: 'Website',         val: 'altotrailer.com' },
+  { label: 'Website',         val: 'nexustrailer.com' },
   { label: 'SIREN',           val: '948418827' },
   { label: 'SIRET',           val: '94841882700010' },
-  { label: 'E-Mail',          val: 'info@trailpro.com' },
+  { label: 'E-Mail',          val: 'info@nexustrailer.com' },
   { label: 'Telefon',         val: '+33 7 56 83 64 79' },
   { label: 'USt-ID',          val: 'FR16948418827' },
   { label: 'Handelsregister', val: '948 418 827 R.C.S. Clermont-Ferrand' },
@@ -82,8 +82,8 @@ export default function Footer() {
           {/* Brand */}
           <div>
             <Link to="/" style={{ display: 'inline-flex', marginBottom: 16, textDecoration: 'none' }}>
-              <div style={{ background: 'white', borderRadius: 10, padding: '4px 10px' }}>
-                <img src="/image/logo.png" alt="TrailPro" style={{ height: 68, width: 'auto', objectFit: 'contain', display: 'block' }} />
+              <div style={{ background: 'white', borderRadius: 0, padding: '4px 10px' }}>
+                <img src="/image/logo.png" alt="NexusTrailer" style={{ height: 68, width: 'auto', objectFit: 'contain', display: 'block' }} />
               </div>
             </Link>
             <p style={{ fontSize: 12.5, color: 'rgba(255,255,255,0.42)', lineHeight: 1.8 }}>
@@ -135,7 +135,7 @@ export default function Footer() {
         {/* Bottom bar */}
         <div style={{ borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: 24, display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: 12 }}>
           <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.3)' }}>
-            Copyright © {new Date().getFullYear()} TrailPro | Ihr Lieferant für Nutzfahrzeuganhänger und Industriemaschinen
+            Copyright © {new Date().getFullYear()} NexusTrailer | Ihr Lieferant für Nutzfahrzeuganhänger und Industriemaschinen
           </span>
           <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.3)' }}>
             Alle Rechte vorbehalten.

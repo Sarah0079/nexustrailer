@@ -65,7 +65,7 @@ export default function ProductCard({ product }) {
           onClick={handleWishlist}
           style={{
             position: 'absolute', top: 10, right: 10,
-            width: 32, height: 32, borderRadius: '50%',
+            width: 32, height: 32, borderRadius: 0,
             background: 'rgba(255,255,255,0.9)', border: 'none',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             cursor: 'pointer', transition: 'transform 0.2s',
@@ -92,10 +92,17 @@ export default function ProductCard({ product }) {
 
       {/* Info */}
       <div style={{ padding: '14px 16px 16px' }}>
+        <p style={{
+          fontSize: 11, color: 'var(--text-muted)', marginBottom: 4,
+          display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical',
+          overflow: 'hidden', height: '30px',
+        }}>{product.subtitle}</p>
         <h3 style={{
           fontSize: 14, fontWeight: 700, color: 'var(--dark)',
           lineHeight: 1.35, marginBottom: 10,
-          whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
+          overflow: 'hidden', textOverflow: 'ellipsis',
+          display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical',
+          height: '38px',
         }}>
           {product.name}
         </h3>
@@ -105,17 +112,15 @@ export default function ProductCard({ product }) {
             <div style={{ fontSize: 17, fontWeight: 900, color: 'var(--dark)', letterSpacing: '-0.02em', lineHeight: 1 }}>
               {fmt(product.price)}
             </div>
-            {product.originalPrice && (
-              <div style={{ fontSize: 11, color: 'var(--text-light)', textDecoration: 'line-through', marginTop: 2 }}>
-                {fmt(product.originalPrice)}
-              </div>
-            )}
+            <div style={{ fontSize: 11, color: 'var(--text-light)', textDecoration: 'line-through', marginTop: 2, opacity: product.originalPrice ? 1 : 0 }}>
+              {fmt(product.originalPrice || 0)}
+            </div>
           </div>
 
           <button
             onClick={handleAdd}
             style={{
-              width: 38, height: 38, borderRadius: '50%', flexShrink: 0,
+              width: 38, height: 38, borderRadius: 0, flexShrink: 0,
               background: added ? 'var(--green)' : 'var(--accent)',
               border: 'none', cursor: 'pointer',
               display: 'flex', alignItems: 'center', justifyContent: 'center',

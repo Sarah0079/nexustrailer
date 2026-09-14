@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+﻿import { Link } from 'react-router-dom';
 
 const STATS = [
   { n: '1.000+', l: 'Kunden',   d: 'Zufriedene Kunden europaweit', icon: 'bi-people' },
@@ -24,14 +24,14 @@ export default function AboutPage() {
           <div>
             <h2 style={{ fontSize: 28, fontWeight: 800, marginBottom: 20, color: 'var(--dark)' }}>Wer wir sind</h2>
             <p style={{ fontSize: 15, color: 'var(--text-muted)', lineHeight: 1.8, marginBottom: 16 }}>
-              TrailPro ist ein führender Anbieter von Anhängern, Wohnwagen und Baumaschinen mit Sitz in Frankreich. Wir importieren direkt vom Hersteller und geben den Vorteil an unsere Kunden weiter.
+              NexusTrailer ist ein führender Anbieter von Anhängern, Wohnwagen und Baumaschinen mit Sitz in Frankreich. Wir importieren direkt vom Hersteller und geben den Vorteil an unsere Kunden weiter.
             </p>
             <p style={{ fontSize: 15, color: 'var(--text-muted)', lineHeight: 1.8 }}>
               Seit unserer Gründung haben wir über 1.000 zufriedene Kunden in ganz Europa beliefert. Qualität, Zuverlässigkeit und persönlicher Service stehen dabei immer an erster Stelle.
             </p>
           </div>
           <div style={{ borderRadius: 'var(--r-lg)', overflow: 'hidden', aspectRatio: '4/3' }}>
-            <img src="https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=600&q=80" alt="TrailPro Lager" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+            <img src="https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=600&q=80" alt="NexusTrailer Lager" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
           </div>
         </div>
 

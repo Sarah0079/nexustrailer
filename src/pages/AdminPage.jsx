@@ -1,615 +1,485 @@
-import { useState, useEffect, useCallback } from 'react';
+﻿import { useState, useEffect, useCallback } from 'react';
 import {
   checkAuth, login, logout,
-  fetchAllOrders, fetchOrderDetail,
-  updateOrderStatus, addNotification, deleteNotification,
-  updatePaymentStatus,
+  fetchAllOrders, fetchOrderDetail, updateOrderStatus,
+  addNotification, deleteNotification, updatePaymentStatus,
+  fetchBankSettings, updateBankSettings,
 } from '../api/client';
 
-// ─── Constantes ───────────────────────────────────────────────────────────────
-
-const STATUS_LABELS = {
-  pending:           'Bestellung eingegangen',
-  payment_pending:   'Zahlung ausstehend',
-  payment_confirmed: 'Zahlung bestätigt',
-  processing:        'In Vorbereitung',
-  shipped:           'Versandt',
-  delivered:         'Geliefert',
-  cancelled:         'Storniert',
-  refunded:          'Rückerstattet',
+// ── Constantes ──────────────────────────────────────────────────────────────────
+const STATUSES = {
+  pending:           { label: 'Bestellung eingegangen', color: '#92400E', bg: '#FEF3C7', border: '#FDE68A' },
+  payment_pending:   { label: 'Zahlung ausstehend',     color: '#C2460A', bg: '#FFF7ED', border: '#FED7AA' },
+  payment_confirmed: { label: 'Zahlung bestätigt',      color: '#065F46', bg: '#ECFDF5', border: '#6EE7B7' },
+  processing:        { label: 'In Vorbereitung',         color: '#5B21B6', bg: '#F5F3FF', border: '#DDD6FE' },
+  shipped:           { label: 'Versandt',                color: '#0E7490', bg: '#F0F9FF', border: '#BAE6FD' },
+  delivered:         { label: 'Geliefert',               color: '#166534', bg: '#DCFCE7', border: '#86EFAC' },
+  cancelled:         { label: 'Storniert',               color: '#991B1B', bg: '#FEF2F2', border: '#FECACA' },
+  refunded:          { label: 'Rückerstattet',           color: '#374151', bg: '#F3F4F6', border: '#E5E7EB' },
 };
 
-const STATUS_COLORS = {
-  pending:           { bg: '#FEF3C7', color: '#92400E' },
-  payment_pending:   { bg: '#FEF3C7', color: '#92400E' },
-  payment_confirmed: { bg: '#DBEAFE', color: '#1D4ED8' },
-  processing:        { bg: '#EDE9FE', color: '#5B21B6' },
-  shipped:           { bg: '#F3E8FF', color: '#6B21A8' },
-  delivered:         { bg: '#D1FAE5', color: '#065F46' },
-  cancelled:         { bg: '#FEE2E2', color: '#991B1B' },
-  refunded:          { bg: '#F3F4F6', color: '#374151' },
-};
-
-const NEXT_STATUS_LABELS = {
-  payment_pending:   'Zahlung erhalten (ausstehend)',
-  payment_confirmed: 'Zahlung bestätigt',
-  processing:        'In Vorbereitung',
-  shipped:           'Versandt',
-  delivered:         'Geliefert',
-  cancelled:         'Stornieren',
-  refunded:          'Rückerstatten',
-};
-
-const NEXT_STATUS_STYLE = {
-  cancelled: { background: '#FEE2E2', color: '#991B1B', border: '#FECACA' },
-  refunded:  { background: '#F3F4F6', color: '#374151', border: '#E5E7EB' },
-};
-
-const NOTIF_TYPES = [
-  { id: 'info',    label: 'Information', color: 'var(--accent)', bg: 'var(--accent-light)', icon: 'bi-info-circle-fill' },
-  { id: 'success', label: 'Erfolg',      color: 'var(--green)',  bg: '#ECFDF5',             icon: 'bi-check-circle-fill' },
-  { id: 'warning', label: 'Hinweis',     color: '#D97706',       bg: '#FFFBEB',             icon: 'bi-exclamation-triangle-fill' },
-];
-
-const PAYMENT_STATUS_LABELS = {
-  pending:   { label: 'Ausstehend', bg: '#FEF3C7', color: '#92400E' },
-  confirmed: { label: 'Bestätigt',  bg: '#D1FAE5', color: '#065F46' },
-  rejected:  { label: 'Abgelehnt', bg: '#FEE2E2', color: '#991B1B' },
-  cancelled: { label: 'Storniert', bg: '#F3F4F6', color: '#374151' },
-  refunded:  { label: 'Rückerstattet', bg: '#F3F4F6', color: '#374151' },
-};
-
-// ─── Composants utilitaires ──────────────────────────────────────────────────
+const fmtEur  = (n) => n != null ? Number(n).toLocaleString('de-DE', { minimumFractionDigits: 2 }) + ' €' : '—';
+const fmtDate = (iso) => iso ? new Date(iso).toLocaleString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : '—';
 
 function StatusBadge({ status }) {
-  const s = STATUS_COLORS[status] || { bg: '#F3F4F6', color: '#374151' };
+  const s = STATUSES[status] || { label: status, color: '#374151', bg: '#F3F4F6', border: '#E5E7EB' };
   return (
-    <span style={{ padding: '3px 10px', borderRadius: 20, fontSize: 11, fontWeight: 700, background: s.bg, color: s.color, whiteSpace: 'nowrap' }}>
-      {STATUS_LABELS[status] || status}
+    <span style={{ fontSize: 11, fontWeight: 700, padding: '3px 9px', borderRadius: 4, background: s.bg, color: s.color, border: `1px solid ${s.border}`, whiteSpace: 'nowrap' }}>
+      {s.label}
     </span>
   );
 }
 
-function fmt(iso) {
-  return new Date(iso).toLocaleString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
-}
+// ── Login ───────────────────────────────────────────────────────────────────────
+function LoginView({ onLogin }) {
+  const [form, setForm] = useState({ username: '', password: '' });
+  const [error, setError] = useState('');
 
-function fmtEur(n) {
-  return Number(n).toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' €';
-}
-
-// ─── Composant principal ─────────────────────────────────────────────────────
-
-export default function AdminPage() {
-  const [view,         setView]         = useState('checking'); // checking | login | list | detail
-  const [loginUser,    setLoginUser]     = useState('');
-  const [loginPass,    setLoginPass]     = useState('');
-  const [loginError,   setLoginError]    = useState('');
-  const [loginLoading, setLoginLoading]  = useState(false);
-
-  const [orders,       setOrders]        = useState([]);
-  const [ordersTotal,  setOrdersTotal]   = useState(0);
-  const [statusFilter, setStatusFilter]  = useState('');
-  const [listLoading,  setListLoading]   = useState(false);
-
-  const [order,        setOrder]         = useState(null);
-  const [detailLoading, setDetailLoading] = useState(false);
-  const [detailError,  setDetailError]   = useState('');
-
-  const [notifType,    setNotifType]     = useState('info');
-  const [notifText,    setNotifText]     = useState('');
-  const [notifLoading, setNotifLoading]  = useState(false);
-
-  const [saved,        setSaved]         = useState('');
-
-  const flash = (msg = 'Gespeichert') => {
-    setSaved(msg);
-    setTimeout(() => setSaved(''), 2000);
-  };
-
-  // ─── Vérification session au mount ────────────────────────────────────────
-
-  useEffect(() => {
-    checkAuth()
-      .then((data) => {
-        if (data.authenticated) setView('list');
-        else setView('login');
-      })
-      .catch(() => setView('login'));
-  }, []);
-
-  // ─── Chargement des commandes ─────────────────────────────────────────────
-
-  const loadOrders = useCallback(async (status = statusFilter) => {
-    setListLoading(true);
-    try {
-      const qs = status ? `?status=${status}` : '';
-      const data = await fetchAllOrders(qs);
-      setOrders(data.orders || []);
-      setOrdersTotal(data.total || 0);
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setListLoading(false);
-    }
-  }, [statusFilter]);
-
-  useEffect(() => {
-    if (view === 'list') loadOrders();
-  }, [view, loadOrders]);
-
-  // ─── Détail commande ──────────────────────────────────────────────────────
-
-  const openDetail = async (ref) => {
-    setDetailLoading(true);
-    setDetailError('');
-    setOrder(null);
-    setView('detail');
-    try {
-      const data = await fetchOrderDetail(ref);
-      setOrder(data);
-    } catch (err) {
-      setDetailError(err.message);
-    } finally {
-      setDetailLoading(false);
-    }
-  };
-
-  const refreshDetail = async () => {
-    if (!order?.ref) return;
-    const data = await fetchOrderDetail(order.ref);
-    setOrder(data);
-  };
-
-  // ─── Connexion ────────────────────────────────────────────────────────────
-
-  const handleLogin = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!loginUser.trim() || !loginPass) return;
-    setLoginLoading(true);
-    setLoginError('');
+    setError('');
     try {
-      await login(loginUser.trim(), loginPass);
-      setLoginPass('');
-      setView('list');
+      const r = await login(form.username, form.password);
+      onLogin(r.user);
     } catch (err) {
-      setLoginError(err.message || 'Ungültige Anmeldedaten');
-    } finally {
-      setLoginLoading(false);
+      setError(err.message || 'Ungültige Anmeldedaten');
     }
   };
 
-  // ─── Déconnexion ──────────────────────────────────────────────────────────
-
-  const handleLogout = async () => {
-    await logout().catch(() => {});
-    setView('login');
-    setOrders([]);
-    setOrder(null);
-    setLoginUser('');
-    setLoginPass('');
-  };
-
-  // ─── Changement de statut ─────────────────────────────────────────────────
-
-  const handleStatusChange = async (newStatus) => {
-    if (!order) return;
-    try {
-      await updateOrderStatus(order.ref, newStatus);
-      flash(`Status: ${STATUS_LABELS[newStatus] || newStatus}`);
-      await refreshDetail();
-      await loadOrders();
-    } catch (err) {
-      alert(err.message);
-    }
-  };
-
-  // ─── Notifications ────────────────────────────────────────────────────────
-
-  const handleAddNotif = async () => {
-    if (!notifText.trim() || !order) return;
-    setNotifLoading(true);
-    try {
-      await addNotification(order.ref, notifType, notifText.trim());
-      setNotifText('');
-      flash('Benachrichtigung gesendet');
-      await refreshDetail();
-    } catch (err) {
-      alert(err.message);
-    } finally {
-      setNotifLoading(false);
-    }
-  };
-
-  const handleDeleteNotif = async (id) => {
-    if (!order) return;
-    try {
-      await deleteNotification(order.ref, id);
-      await refreshDetail();
-    } catch (err) {
-      alert(err.message);
-    }
-  };
-
-  // ─── Paiements ────────────────────────────────────────────────────────────
-
-  const handlePaymentAction = async (paymentId, status) => {
-    try {
-      await updatePaymentStatus(paymentId, status);
-      flash(`Zahlung ${status === 'confirmed' ? 'bestätigt' : 'abgelehnt'}`);
-      await refreshDetail();
-      await loadOrders();
-    } catch (err) {
-      alert(err.message);
-    }
-  };
-
-  // ─── Rendering ────────────────────────────────────────────────────────────
-
-  const Header = ({ back } = {}) => (
-    <div style={{ background: 'var(--dark)', padding: '20px 0' }}>
-      <div className="container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-          {back && (
-            <button onClick={() => { setView('list'); setOrder(null); }} style={{ background: 'none', border: '1px solid rgba(255,255,255,0.2)', color: 'rgba(255,255,255,0.7)', borderRadius: 6, padding: '5px 10px', cursor: 'pointer', fontSize: 13 }}>
-              <i className="bi bi-arrow-left" />
-            </button>
-          )}
-          <i className="bi bi-shield-lock-fill" style={{ color: 'var(--accent)', fontSize: 18 }} />
-          <h1 style={{ fontSize: 17, fontWeight: 900, color: 'white' }}>
-            {back ? `Bestellung ${order?.ref || '…'}` : 'Adminbereich'}
-          </h1>
-        </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          {saved && (
-            <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--green)', background: '#ECFDF5', padding: '5px 12px', borderRadius: 20 }}>
-              <i className="bi bi-check-lg" /> {saved}
-            </span>
-          )}
-          <button className="btn" style={{ fontSize: 12, color: 'rgba(255,255,255,0.6)', border: '1px solid rgba(255,255,255,0.15)' }} onClick={handleLogout}>
-            <i className="bi bi-box-arrow-right" /> Abmelden
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-
-  // ── Vérification initiale ──
-  if (view === 'checking') {
-    return (
-      <main style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--bg)' }}>
-        <i className="bi bi-hourglass-split" style={{ fontSize: 32, color: 'var(--accent)' }} />
-      </main>
-    );
-  }
-
-  // ── Connexion ──
-  if (view === 'login') {
-    return (
-      <main style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--bg)' }}>
-        <form onSubmit={handleLogin} style={{ background: 'white', border: '1px solid var(--border)', borderRadius: 'var(--r-xl)', padding: 40, width: 340, textAlign: 'center' }}>
-          <div style={{ width: 56, height: 56, borderRadius: '50%', background: 'var(--dark)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}>
-            <i className="bi bi-shield-lock-fill" style={{ fontSize: 24, color: 'white' }} />
+  return (
+    <main style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '80vh', padding: '40px 24px' }}>
+      <div style={{ background: 'white', border: '1px solid var(--border)', borderRadius: 'var(--r-xl)', padding: 40, width: '100%', maxWidth: 380 }}>
+        <div style={{ textAlign: 'center', marginBottom: 28 }}>
+          <div style={{ width: 48, height: 48, background: 'var(--dark)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 12px' }}>
+            <i className="bi bi-shield-lock" style={{ fontSize: 22, color: 'white' }} />
           </div>
-          <h1 style={{ fontSize: 20, fontWeight: 900, color: 'var(--dark)', marginBottom: 6 }}>Adminbereich</h1>
-          <p style={{ fontSize: 13, color: 'var(--text-muted)', marginBottom: 24 }}>Melden Sie sich an, um fortzufahren.</p>
-
-          <input
-            className="input" type="text" placeholder="Benutzername" autoComplete="username"
-            value={loginUser} onChange={(e) => setLoginUser(e.target.value)}
-            style={{ marginBottom: 10 }}
-          />
-          <input
-            className="input" type="password" placeholder="Passwort" autoComplete="current-password"
-            value={loginPass} onChange={(e) => setLoginPass(e.target.value)}
-            style={{ marginBottom: 10 }}
-          />
-
-          {loginError && (
-            <p style={{ fontSize: 12, color: 'var(--sale)', marginBottom: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5 }}>
-              <i className="bi bi-exclamation-triangle-fill" /> {loginError}
-            </p>
-          )}
-
-          <button className="btn btn-primary btn-lg btn-full" type="submit" disabled={loginLoading || !loginUser.trim() || !loginPass}>
-            {loginLoading ? <><i className="bi bi-hourglass-split" /> Wird überprüft…</> : <><i className="bi bi-unlock" /> Anmelden</>}
+          <h1 style={{ fontSize: 20, fontWeight: 800, color: 'var(--dark)' }}>Adminbereich</h1>
+          <p style={{ fontSize: 13, color: 'var(--text-muted)', marginTop: 4 }}>NexusTrailer</p>
+        </div>
+        {error && (
+          <div style={{ background: '#FEF2F2', border: '1px solid #FECACA', borderRadius: 4, padding: '10px 14px', marginBottom: 16, fontSize: 13, color: 'var(--sale)' }}>
+            <i className="bi bi-exclamation-circle" style={{ marginRight: 6 }} />{error}
+          </div>
+        )}
+        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+          <div>
+            <label style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-muted)', display: 'block', marginBottom: 6 }}>Benutzername</label>
+            <input className="input" required autoFocus value={form.username} onChange={e => setForm(f => ({ ...f, username: e.target.value }))} />
+          </div>
+          <div>
+            <label style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-muted)', display: 'block', marginBottom: 6 }}>Passwort</label>
+            <input className="input" type="password" required value={form.password} onChange={e => setForm(f => ({ ...f, password: e.target.value }))} />
+          </div>
+          <button type="submit" className="btn btn-primary btn-lg btn-full" style={{ marginTop: 8 }}>
+            <i className="bi bi-box-arrow-in-right" /> Anmelden
           </button>
         </form>
-      </main>
-    );
-  }
+      </div>
+    </main>
+  );
+}
 
-  // ── Liste des commandes ──
-  if (view === 'list') {
-    return (
-      <main style={{ background: 'var(--bg)', minHeight: '100vh' }}>
-        <Header />
-        <div className="container" style={{ padding: '32px 24px 80px' }}>
+// ── Bestellungen ────────────────────────────────────────────────────────────────
+function OrdersTab() {
+  const [orders, setOrders] = useState([]);
+  const [total, setTotal] = useState(0);
+  const [page, setPage] = useState(1);
+  const [filterStatus, setFilterStatus] = useState('');
+  const [selected, setSelected] = useState(null);
+  const [detail, setDetail] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [statusReason, setStatusReason] = useState('');
+  const [notifType, setNotifType] = useState('info');
+  const [notifMsg, setNotifMsg] = useState('');
+  const LIMIT = 20;
 
-          {/* Filtres */}
-          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 20 }}>
-            {['', 'pending', 'payment_pending', 'payment_confirmed', 'processing', 'shipped', 'delivered', 'cancelled'].map((s) => (
-              <button key={s || 'all'} onClick={() => { setStatusFilter(s); loadOrders(s); }}
-                style={{
-                  padding: '6px 14px', borderRadius: 20, fontSize: 12, fontWeight: 600, cursor: 'pointer',
-                  background: statusFilter === s ? 'var(--dark)' : 'white',
-                  color:      statusFilter === s ? 'white'      : 'var(--text-muted)',
-                  border:     statusFilter === s ? '1.5px solid var(--dark)' : '1px solid var(--border)',
-                }}>
-                {s ? (STATUS_LABELS[s] || s) : `Alle (${ordersTotal})`}
-              </button>
-            ))}
-            <button onClick={() => loadOrders()} style={{ marginLeft: 'auto', padding: '6px 12px', borderRadius: 6, fontSize: 12, background: 'white', border: '1px solid var(--border)', cursor: 'pointer', color: 'var(--text-muted)' }}>
-              <i className="bi bi-arrow-clockwise" />
-            </button>
-          </div>
+  const loadOrders = useCallback(async () => {
+    setLoading(true);
+    try {
+      const qs = `?page=${page}&limit=${LIMIT}${filterStatus ? `&status=${filterStatus}` : ''}`;
+      const data = await fetchAllOrders(qs);
+      setOrders(data.orders || []);
+      setTotal(data.total || 0);
+    } catch { setOrders([]); }
+    finally { setLoading(false); }
+  }, [page, filterStatus]);
 
-          {listLoading ? (
-            <div style={{ textAlign: 'center', padding: '60px 0', color: 'var(--text-muted)' }}>
-              <i className="bi bi-hourglass-split" style={{ fontSize: 32, display: 'block', marginBottom: 12 }} /> Laden…
-            </div>
+  useEffect(() => { loadOrders(); }, [loadOrders]);
+
+  const loadDetail = async (ref) => {
+    setSelected(ref); setDetail(null);
+    try { setDetail(await fetchOrderDetail(ref)); } catch { setDetail(null); }
+  };
+
+  const handleStatusUpdate = async (newStatus) => {
+    try {
+      await updateOrderStatus(selected, newStatus, statusReason);
+      setStatusReason('');
+      await loadDetail(selected);
+      await loadOrders();
+    } catch (err) { alert(err.message); }
+  };
+
+  const handleAddNotif = async () => {
+    if (!notifMsg.trim()) return;
+    try {
+      await addNotification(selected, notifType, notifMsg.trim());
+      setNotifMsg('');
+      await loadDetail(selected);
+    } catch (err) { alert(err.message); }
+  };
+
+  const handleDelNotif = async (id) => {
+    if (!confirm('Diese Benachrichtigung löschen?')) return;
+    try { await deleteNotification(selected, id); await loadDetail(selected); }
+    catch (err) { alert(err.message); }
+  };
+
+  const handlePaymentStatus = async (paymentId, newStatus) => {
+    const notes = prompt('Anmerkungen (optional):') || '';
+    try { await updatePaymentStatus(paymentId, newStatus, notes); await loadDetail(selected); }
+    catch (err) { alert(err.message); }
+  };
+
+  return (
+    <div style={{ display: 'grid', gridTemplateColumns: selected ? 'minmax(0,1fr) minmax(0,420px)' : '1fr', gap: 24, alignItems: 'start' }}>
+
+      {/* Liste */}
+      <div>
+        <div style={{ display: 'flex', gap: 10, marginBottom: 16, flexWrap: 'wrap', alignItems: 'center' }}>
+          <h2 style={{ fontSize: 15, fontWeight: 800, color: 'var(--dark)', flex: 1 }}>Bestellungen ({total})</h2>
+          <select className="input" value={filterStatus} onChange={e => { setFilterStatus(e.target.value); setPage(1); }} style={{ width: 200, fontSize: 13 }}>
+            <option value="">Alle Status</option>
+            {Object.entries(STATUSES).map(([k, v]) => <option key={k} value={k}>{v.label}</option>)}
+          </select>
+          <button className="btn btn-outline btn-sm" onClick={loadOrders}><i className="bi bi-arrow-clockwise" /></button>
+        </div>
+
+        <div style={{ background: 'white', border: '1px solid var(--border)', borderRadius: 'var(--r-lg)', overflow: 'hidden' }}>
+          {loading ? (
+            <div style={{ padding: 40, textAlign: 'center', color: 'var(--text-muted)' }}>Laden…</div>
           ) : orders.length === 0 ? (
-            <div style={{ textAlign: 'center', padding: '60px 0', color: 'var(--text-muted)' }}>
-              <i className="bi bi-inbox" style={{ fontSize: 40, display: 'block', marginBottom: 12 }} />
-              Keine Bestellungen gefunden.
-            </div>
+            <div style={{ padding: 40, textAlign: 'center', color: 'var(--text-muted)' }}>Keine Bestellungen.</div>
           ) : (
-            <div style={{ background: 'white', border: '1px solid var(--border)', borderRadius: 'var(--r-lg)', overflow: 'hidden' }}>
-              {orders.map((o, i) => (
-                <button key={o.id} onClick={() => openDetail(o.ref)} style={{
-                  display: 'grid', gridTemplateColumns: '1fr auto auto auto',
-                  gap: 16, alignItems: 'center',
-                  padding: '16px 20px',
-                  borderBottom: i < orders.length - 1 ? '1px solid var(--border)' : undefined,
-                  background: 'none', border: 'none', cursor: 'pointer', width: '100%', textAlign: 'left',
-                  transition: 'background 0.12s',
-                }}
-                  onMouseEnter={(e) => e.currentTarget.style.background = 'var(--bg)'}
-                  onMouseLeave={(e) => e.currentTarget.style.background = 'none'}
-                >
-                  <div>
-                    <p style={{ fontFamily: 'monospace', fontWeight: 700, fontSize: 13, color: 'var(--dark)', marginBottom: 3 }}>{o.ref}</p>
-                    <p style={{ fontSize: 12, color: 'var(--text-muted)' }}>{o.first_name} {o.last_name} · {o.email}</p>
-                  </div>
-                  <StatusBadge status={o.status} />
-                  <span style={{ fontSize: 14, fontWeight: 700, color: 'var(--dark)', whiteSpace: 'nowrap' }}>{fmtEur(o.total)}</span>
-                  <div style={{ textAlign: 'right' }}>
-                    <p style={{ fontSize: 11, color: 'var(--text-muted)' }}>{fmt(o.created_at)}</p>
-                    <i className="bi bi-chevron-right" style={{ fontSize: 12, color: 'var(--text-light)' }} />
-                  </div>
-                </button>
-              ))}
+            <div style={{ overflowX: 'auto' }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
+                <thead>
+                  <tr style={{ background: 'var(--bg)', borderBottom: '1px solid var(--border)' }}>
+                    {['Referenz', 'Kunde', 'Gesamt', 'Status', 'Datum'].map(h => (
+                      <th key={h} style={{ padding: '10px 14px', textAlign: 'left', fontSize: 11, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '.06em', whiteSpace: 'nowrap' }}>{h}</th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {orders.map(o => (
+                    <tr key={o.ref} onClick={() => loadDetail(o.ref)}
+                      style={{ borderBottom: '1px solid var(--border)', cursor: 'pointer', background: selected === o.ref ? 'var(--accent-light)' : 'white' }}
+                      onMouseEnter={e => { if (selected !== o.ref) e.currentTarget.style.background = 'var(--bg)'; }}
+                      onMouseLeave={e => { if (selected !== o.ref) e.currentTarget.style.background = 'white'; }}
+                    >
+                      <td style={{ padding: '12px 14px', fontFamily: 'monospace', fontWeight: 700, color: 'var(--accent)', whiteSpace: 'nowrap' }}>{o.ref}</td>
+                      <td style={{ padding: '12px 14px', color: 'var(--dark)', whiteSpace: 'nowrap' }}>{o.first_name} {o.last_name}</td>
+                      <td style={{ padding: '12px 14px', fontWeight: 700, color: 'var(--dark)', whiteSpace: 'nowrap' }}>{fmtEur(o.total)}</td>
+                      <td style={{ padding: '12px 14px', whiteSpace: 'nowrap' }}><StatusBadge status={o.status} /></td>
+                      <td style={{ padding: '12px 14px', color: 'var(--text-muted)', whiteSpace: 'nowrap' }}>{fmtDate(o.created_at)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
           )}
         </div>
-      </main>
-    );
-  }
 
-  // ── Détail commande ──
-  if (view === 'detail') {
-    if (detailLoading) {
-      return (
-        <main style={{ background: 'var(--bg)', minHeight: '100vh' }}>
-          <Header back />
-          <div style={{ textAlign: 'center', padding: '80px 0', color: 'var(--text-muted)' }}>
-            <i className="bi bi-hourglass-split" style={{ fontSize: 32, display: 'block', marginBottom: 12 }} /> Laden…
+        {total > LIMIT && (
+          <div style={{ display: 'flex', justifyContent: 'center', gap: 8, marginTop: 16 }}>
+            <button className="btn btn-outline btn-sm" disabled={page === 1} onClick={() => setPage(p => p - 1)}><i className="bi bi-chevron-left" /></button>
+            <span style={{ fontSize: 13, color: 'var(--text-muted)', display: 'flex', alignItems: 'center', padding: '0 8px' }}>Seite {page} / {Math.ceil(total / LIMIT)}</span>
+            <button className="btn btn-outline btn-sm" disabled={page >= Math.ceil(total / LIMIT)} onClick={() => setPage(p => p + 1)}><i className="bi bi-chevron-right" /></button>
           </div>
-        </main>
-      );
-    }
+        )}
+      </div>
 
-    if (detailError || !order) {
-      return (
-        <main style={{ background: 'var(--bg)', minHeight: '100vh' }}>
-          <Header back />
-          <div style={{ textAlign: 'center', padding: '60px 24px', color: 'var(--sale)' }}>
-            <i className="bi bi-exclamation-triangle" style={{ fontSize: 32, display: 'block', marginBottom: 12 }} />
-            {detailError || 'Bestellung nicht gefunden'}
-          </div>
-        </main>
-      );
-    }
-
-    return (
-      <main style={{ background: 'var(--bg)', minHeight: '100vh' }}>
-        <Header back />
-        <div className="container" style={{ padding: '32px 24px 80px', maxWidth: 800 }}>
-
-          {/* Infos client + statut */}
-          <div style={{ background: 'white', border: '1px solid var(--border)', borderRadius: 'var(--r-lg)', padding: 24, marginBottom: 20 }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 12, marginBottom: 16 }}>
-              <div>
-                <p style={{ fontFamily: 'monospace', fontSize: 18, fontWeight: 900, color: 'var(--dark)', marginBottom: 4 }}>{order.ref}</p>
-                <p style={{ fontSize: 13, color: 'var(--text-muted)' }}>Erstellt am {fmt(order.created_at)}</p>
-              </div>
-              <StatusBadge status={order.status} />
-            </div>
-
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, fontSize: 13 }}>
-              <div>
-                <p style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 6 }}>Kunde</p>
-                <p style={{ fontWeight: 700 }}>{order.first_name} {order.last_name}</p>
-                <p style={{ color: 'var(--text-muted)' }}>{order.email}</p>
-                {order.phone && <p style={{ color: 'var(--text-muted)' }}>{order.phone}</p>}
-              </div>
-              <div>
-                <p style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 6 }}>Lieferadresse</p>
-                <p>{order.del_address}</p>
-                <p>{order.del_postal_code} {order.del_city}</p>
-                <p style={{ color: 'var(--text-muted)' }}>{order.del_country}</p>
-              </div>
-            </div>
+      {/* Détail — panneau latéral */}
+      {selected && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 14, position: 'sticky', top: 16 }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <h2 style={{ fontSize: 14, fontWeight: 800, color: 'var(--dark)', fontFamily: 'monospace' }}>{selected}</h2>
+            <button onClick={() => { setSelected(null); setDetail(null); }} style={{ color: 'var(--text-muted)', padding: 6, background: 'none', border: 'none', cursor: 'pointer' }}>
+              <i className="bi bi-x-lg" />
+            </button>
           </div>
 
-          {/* Articles */}
-          <div style={{ background: 'white', border: '1px solid var(--border)', borderRadius: 'var(--r-lg)', overflow: 'hidden', marginBottom: 20 }}>
-            <div style={{ padding: '14px 20px', borderBottom: '1px solid var(--border)', fontWeight: 700, fontSize: 14, color: 'var(--dark)' }}>
-              <i className="bi bi-box-seam" style={{ color: 'var(--accent)', marginRight: 8 }} />Artikel
-            </div>
-            {(order.items || []).map((item) => (
-              <div key={item.id} style={{ display: 'flex', gap: 14, padding: '14px 20px', borderBottom: '1px solid var(--border)', alignItems: 'center' }}>
-                {item.product_image && (
-                  <img src={item.product_image} alt={item.product_name} style={{ width: 48, height: 48, objectFit: 'cover', borderRadius: 6, flexShrink: 0 }} />
-                )}
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <p style={{ fontSize: 13, fontWeight: 700 }}>{item.product_name}</p>
-                  <p style={{ fontSize: 12, color: 'var(--text-muted)', fontFamily: 'monospace' }}>{item.product_slug}</p>
-                </div>
-                <div style={{ textAlign: 'right', flexShrink: 0 }}>
-                  <p style={{ fontSize: 13, fontWeight: 700 }}>{fmtEur(item.line_total)}</p>
-                  <p style={{ fontSize: 12, color: 'var(--text-muted)' }}>{fmtEur(item.unit_price)} × {item.quantity}</p>
-                </div>
-              </div>
-            ))}
-            <div style={{ padding: '14px 20px', display: 'flex', justifyContent: 'flex-end', gap: 32, fontSize: 13 }}>
-              <span style={{ color: 'var(--text-muted)' }}>Zwischensumme : {fmtEur(order.subtotal)}</span>
-              <span style={{ fontWeight: 900, fontSize: 15, color: 'var(--dark)' }}>Gesamt : {fmtEur(order.total)}</span>
-            </div>
-          </div>
+          {!detail ? (
+            <div style={{ background: 'white', border: '1px solid var(--border)', borderRadius: 'var(--r-lg)', padding: 32, textAlign: 'center', color: 'var(--text-muted)' }}>Laden…</div>
+          ) : (<>
 
-          {/* Paiements */}
-          <div style={{ background: 'white', border: '1px solid var(--border)', borderRadius: 'var(--r-lg)', overflow: 'hidden', marginBottom: 20 }}>
-            <div style={{ padding: '14px 20px', borderBottom: '1px solid var(--border)', fontWeight: 700, fontSize: 14, color: 'var(--dark)' }}>
-              <i className="bi bi-bank2" style={{ color: 'var(--accent)', marginRight: 8 }} />Zahlungen
-            </div>
-            {(order.payments || []).map((p) => {
-              const ps = PAYMENT_STATUS_LABELS[p.status] || { label: p.status, bg: '#F3F4F6', color: '#374151' };
-              return (
-                <div key={p.id} style={{ padding: '14px 20px', borderBottom: '1px solid var(--border)', display: 'flex', gap: 12, alignItems: 'center', flexWrap: 'wrap' }}>
-                  <div style={{ flex: 1 }}>
-                    <p style={{ fontSize: 13, fontWeight: 700 }}>{fmtEur(p.amount)} — {p.payment_type === 'deposit' ? 'Anzahlung' : p.payment_type === 'balance' ? 'Restbetrag' : 'Vollzahlung'}</p>
-                    <p style={{ fontSize: 12, color: 'var(--text-muted)' }}>Ref : {p.transaction_ref || '—'} · {fmt(p.created_at)}</p>
-                    {p.notes && <p style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 2 }}>{p.notes}</p>}
-                  </div>
-                  <span style={{ padding: '3px 10px', borderRadius: 20, fontSize: 11, fontWeight: 700, background: ps.bg, color: ps.color }}>{ps.label}</span>
-                  {p.status === 'pending' && (
-                    <div style={{ display: 'flex', gap: 8 }}>
-                      <button onClick={() => handlePaymentAction(p.id, 'confirmed')} style={{ padding: '5px 12px', borderRadius: 6, fontSize: 12, fontWeight: 700, background: '#D1FAE5', color: '#065F46', border: '1px solid #6EE7B7', cursor: 'pointer' }}>
-                        <i className="bi bi-check-lg" /> Bestätigen
-                      </button>
-                      <button onClick={() => handlePaymentAction(p.id, 'rejected')} style={{ padding: '5px 12px', borderRadius: 6, fontSize: 12, fontWeight: 700, background: '#FEE2E2', color: '#991B1B', border: '1px solid #FECACA', cursor: 'pointer' }}>
-                        <i className="bi bi-x-lg" /> Ablehnen
-                      </button>
-                    </div>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-
-          {/* Statut — transitions */}
-          {(order.allowedTransitions || []).length > 0 && (
-            <div style={{ background: 'white', border: '1px solid var(--border)', borderRadius: 'var(--r-lg)', padding: 24, marginBottom: 20 }}>
-              <p style={{ fontSize: 14, fontWeight: 800, color: 'var(--dark)', marginBottom: 14 }}>
-                <i className="bi bi-arrow-right-circle" style={{ color: 'var(--accent)', marginRight: 8 }} />Status ändern
-              </p>
-              <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
-                {order.allowedTransitions.map((ns) => {
-                  const danger = NEXT_STATUS_STYLE[ns];
-                  return (
-                    <button key={ns} onClick={() => handleStatusChange(ns)} style={{
-                      padding: '8px 16px', borderRadius: 8, fontSize: 13, fontWeight: 700, cursor: 'pointer',
-                      background: danger ? danger.background : 'var(--accent)',
-                      color:      danger ? danger.color      : 'white',
-                      border:     danger ? `1px solid ${danger.border}` : 'none',
-                    }}>
-                      {NEXT_STATUS_LABELS[ns] || STATUS_LABELS[ns] || ns}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-          )}
-
-          {/* Historique */}
-          {(order.history || []).length > 0 && (
-            <div style={{ background: 'white', border: '1px solid var(--border)', borderRadius: 'var(--r-lg)', padding: 24, marginBottom: 20 }}>
-              <p style={{ fontSize: 14, fontWeight: 800, color: 'var(--dark)', marginBottom: 14 }}>
-                <i className="bi bi-clock-history" style={{ color: 'var(--accent)', marginRight: 8 }} />Statusverlauf
-              </p>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                {order.history.map((h, i) => (
-                  <div key={i} style={{ display: 'flex', gap: 10, fontSize: 12, color: 'var(--text-muted)', alignItems: 'center' }}>
-                    <i className="bi bi-circle-fill" style={{ fontSize: 6, color: 'var(--accent)', flexShrink: 0 }} />
-                    <span>{h.from_status ? `${STATUS_LABELS[h.from_status] || h.from_status} →` : ''} <strong style={{ color: 'var(--dark)' }}>{STATUS_LABELS[h.to_status] || h.to_status}</strong></span>
-                    {h.reason && <span>· {h.reason}</span>}
-                    {h.username && <span>· {h.username}</span>}
-                    <span style={{ marginLeft: 'auto', flexShrink: 0 }}>{fmt(h.created_at)}</span>
+            {/* Kunde */}
+            <div style={{ background: 'white', border: '1px solid var(--border)', borderRadius: 'var(--r-lg)', padding: 18 }}>
+              <p style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '.07em', marginBottom: 10 }}>Kunde</p>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, fontSize: 12 }}>
+                {[
+                  ['Name', `${detail.del_first_name || detail.first_name} ${detail.del_last_name || detail.last_name}`],
+                  ['E-Mail', detail.del_email || detail.email],
+                  ['Telefon', detail.del_phone || detail.phone || '—'],
+                  ['Adresse', detail.del_address ? `${detail.del_address}, ${detail.del_postal_code} ${detail.del_city}` : '—'],
+                ].map(([k, v]) => (
+                  <div key={k}>
+                    <span style={{ color: 'var(--text-muted)', fontSize: 11, fontWeight: 600 }}>{k}</span>
+                    <p style={{ color: 'var(--dark)', fontWeight: 600, marginTop: 1, wordBreak: 'break-all' }}>{v}</p>
                   </div>
                 ))}
               </div>
+              {detail.customer_note && (
+                <div style={{ marginTop: 10, padding: '8px 10px', background: 'var(--bg)', borderRadius: 4, fontSize: 12, color: 'var(--text-muted)' }}>
+                  <strong>Hinweis:</strong> {detail.customer_note}
+                </div>
+              )}
             </div>
-          )}
 
-          {/* Notification */}
-          <div style={{ background: 'white', border: '1px solid var(--border)', borderRadius: 'var(--r-lg)', padding: 24, marginBottom: 20 }}>
-            <p style={{ fontSize: 14, fontWeight: 800, color: 'var(--dark)', marginBottom: 14 }}>
-              <i className="bi bi-bell" style={{ color: 'var(--accent)', marginRight: 8 }} />Benachrichtigung senden
-            </p>
-            <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
-              {NOTIF_TYPES.map((t) => (
-                <button key={t.id} type="button" onClick={() => setNotifType(t.id)} style={{
-                  padding: '6px 14px', borderRadius: 20, fontSize: 12, fontWeight: 700, cursor: 'pointer',
-                  background: notifType === t.id ? t.bg : 'var(--bg)',
-                  border: `1.5px solid ${notifType === t.id ? t.color : 'var(--border)'}`,
-                  color: notifType === t.id ? t.color : 'var(--text-muted)',
-                }}>
-                  <i className={`bi ${t.icon}`} style={{ marginRight: 4 }} />{t.label}
-                </button>
+            {/* Artikel */}
+            <div style={{ background: 'white', border: '1px solid var(--border)', borderRadius: 'var(--r-lg)', padding: 18 }}>
+              <p style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '.07em', marginBottom: 10 }}>Artikel</p>
+              {(detail.items || []).map(item => (
+                <div key={item.id} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, paddingBottom: 6, marginBottom: 6, borderBottom: '1px solid var(--border)' }}>
+                  <span style={{ color: 'var(--dark)', fontWeight: 600 }}>{item.product_name} × {item.quantity}</span>
+                  <span style={{ color: 'var(--dark)', fontWeight: 700, flexShrink: 0 }}>{fmtEur(item.line_total)}</span>
+                </div>
               ))}
-            </div>
-            <textarea
-              className="input" rows={3}
-              placeholder="Nachricht für den Kunden…"
-              value={notifText}
-              onChange={(e) => setNotifText(e.target.value)}
-              style={{ resize: 'vertical', marginBottom: 12 }}
-              maxLength={1000}
-            />
-            <button className="btn btn-primary" onClick={handleAddNotif} disabled={!notifText.trim() || notifLoading}>
-              <i className="bi bi-send" /> {notifLoading ? 'Wird gesendet…' : 'Senden'}
-            </button>
-          </div>
-
-          {/* Notifications envoyées */}
-          {(order.notifications || []).length > 0 && (
-            <div style={{ background: 'white', border: '1px solid var(--border)', borderRadius: 'var(--r-lg)', padding: 24 }}>
-              <p style={{ fontSize: 14, fontWeight: 800, color: 'var(--dark)', marginBottom: 14 }}>
-                <i className="bi bi-chat-left-text" style={{ color: 'var(--accent)', marginRight: 8 }} />Gesendete Nachrichten
-              </p>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-                {order.notifications.map((n) => {
-                  const t = NOTIF_TYPES.find((x) => x.id === n.type) || NOTIF_TYPES[0];
-                  return (
-                    <div key={n.id} style={{
-                      padding: '12px 16px', borderRadius: 'var(--r-md)',
-                      background: t.bg, border: `1px solid ${t.color}30`,
-                      display: 'flex', gap: 12, alignItems: 'flex-start',
-                    }}>
-                      <i className={`bi ${t.icon}`} style={{ color: t.color, fontSize: 15, flexShrink: 0, marginTop: 1 }} />
-                      <div style={{ flex: 1, minWidth: 0 }}>
-                        <p style={{ fontSize: 13, color: 'var(--dark)', lineHeight: 1.55 }}>{n.message}</p>
-                        <p style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 4 }}>
-                          {fmt(n.created_at)}{n.sent_by_username ? ` · ${n.sent_by_username}` : ''}
-                        </p>
-                      </div>
-                      <button onClick={() => handleDeleteNotif(n.id)} style={{ color: 'var(--text-light)', background: 'none', border: 'none', cursor: 'pointer', padding: 2, flexShrink: 0 }}
-                        onMouseEnter={(e) => { e.currentTarget.style.color = 'var(--sale)'; }}
-                        onMouseLeave={(e) => { e.currentTarget.style.color = 'var(--text-light)'; }}>
-                        <i className="bi bi-trash3" style={{ fontSize: 14 }} />
-                      </button>
-                    </div>
-                  );
-                })}
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, fontWeight: 800, color: 'var(--dark)', paddingTop: 4 }}>
+                <span>Gesamt</span><span>{fmtEur(detail.total)}</span>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, color: 'var(--accent)', marginTop: 4 }}>
+                <span>Fällig ({detail.payment_option === 'deposit' ? '50 % Anzahlung' : 'Vollzahlung'})</span>
+                <span style={{ fontWeight: 700 }}>{fmtEur(detail.amount_due_now)}</span>
               </div>
             </div>
-          )}
 
+            {/* Status */}
+            <div style={{ background: 'white', border: '1px solid var(--border)', borderRadius: 'var(--r-lg)', padding: 18 }}>
+              <p style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '.07em', marginBottom: 10 }}>Status</p>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
+                <StatusBadge status={detail.status} />
+                <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>{fmtDate(detail.updated_at)}</span>
+              </div>
+              {(detail.allowedTransitions || []).length > 0 && (
+                <div>
+                  <input className="input" placeholder="Grund (optional)" value={statusReason} onChange={e => setStatusReason(e.target.value)} style={{ marginBottom: 8, fontSize: 12 }} />
+                  <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+                    {detail.allowedTransitions.map(s => (
+                      <button key={s} className="btn btn-outline btn-sm" onClick={() => handleStatusUpdate(s)} style={{ fontSize: 11 }}>
+                        → {STATUSES[s]?.label || s}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Zahlungen */}
+            {(detail.payments || []).length > 0 && (
+              <div style={{ background: 'white', border: '1px solid var(--border)', borderRadius: 'var(--r-lg)', padding: 18 }}>
+                <p style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '.07em', marginBottom: 10 }}>Zahlungen</p>
+                {detail.payments.map(p => (
+                  <div key={p.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8, padding: '8px 10px', background: 'var(--bg)', borderRadius: 4, marginBottom: 6 }}>
+                    <div style={{ fontSize: 12 }}>
+                      <span style={{ fontWeight: 700, color: 'var(--dark)' }}>{fmtEur(p.amount)}</span>
+                      <span style={{ color: 'var(--text-muted)', marginLeft: 6 }}>{p.payment_type === 'deposit' ? 'Anzahlung' : 'Vollzahlung'}</span>
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                      <StatusBadge status={p.status} />
+                      {p.status === 'pending' && (
+                        <button className="btn btn-outline btn-sm" style={{ fontSize: 11 }} onClick={() => handlePaymentStatus(p.id, 'confirmed')}>
+                          Bestätigen
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* Benachrichtigungen */}
+            <div style={{ background: 'white', border: '1px solid var(--border)', borderRadius: 'var(--r-lg)', padding: 18 }}>
+              <p style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '.07em', marginBottom: 10 }}>Kundenbenachrichtigung</p>
+              <div style={{ display: 'flex', gap: 6, marginBottom: 10 }}>
+                <select className="input" value={notifType} onChange={e => setNotifType(e.target.value)} style={{ width: 110, fontSize: 12 }}>
+                  <option value="info">Info</option>
+                  <option value="success">Erfolg</option>
+                  <option value="warning">Hinweis</option>
+                </select>
+                <input className="input" placeholder="Nachricht für den Kunden…" value={notifMsg} onChange={e => setNotifMsg(e.target.value)} onKeyDown={e => e.key === 'Enter' && handleAddNotif()} style={{ fontSize: 12 }} />
+                <button className="btn btn-primary btn-sm" onClick={handleAddNotif}><i className="bi bi-send" /></button>
+              </div>
+              {(detail.notifications || []).length === 0 ? (
+                <p style={{ fontSize: 12, color: 'var(--text-muted)' }}>Keine Benachrichtigungen.</p>
+              ) : (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                  {detail.notifications.map(n => (
+                    <div key={n.id} style={{ display: 'flex', alignItems: 'flex-start', gap: 8, padding: '8px 10px', background: 'var(--bg)', borderRadius: 4, fontSize: 12 }}>
+                      <div style={{ flex: 1 }}>
+                        <p style={{ color: 'var(--dark)', fontWeight: 600 }}>{n.message}</p>
+                        <p style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 2 }}>{n.type} · {fmtDate(n.created_at)}</p>
+                      </div>
+                      <button onClick={() => handleDelNotif(n.id)} style={{ color: 'var(--text-light)', padding: 4, background: 'none', border: 'none', cursor: 'pointer' }}
+                        onMouseEnter={e => e.currentTarget.style.color = 'var(--sale)'}
+                        onMouseLeave={e => e.currentTarget.style.color = 'var(--text-light)'}
+                      ><i className="bi bi-trash3" /></button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+          </>)}
         </div>
-      </main>
-    );
-  }
+      )}
+    </div>
+  );
+}
 
-  return null;
+// ── Bankverbindung ──────────────────────────────────────────────────────────────
+function SettingsTab() {
+  const [form, setForm]       = useState({ beneficiaire: '', iban: '', bic: '', banque: '' });
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving]   = useState(false);
+  const [error, setError]     = useState('');
+  const [success, setSuccess] = useState('');
+
+  useEffect(() => {
+    fetchBankSettings()
+      .then(data => setForm({ beneficiaire: data.beneficiaire || '', iban: data.iban || '', bic: data.bic || '', banque: data.banque || '' }))
+      .catch(() => setError('Fehler beim Laden der Bankverbindung.'))
+      .finally(() => setLoading(false));
+  }, []);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError(''); setSuccess(''); setSaving(true);
+    try {
+      await updateBankSettings(form);
+      setSuccess('Bankverbindung erfolgreich gespeichert.');
+    } catch (err) {
+      setError(err.message || 'Speichern fehlgeschlagen.');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const field = (key, label, placeholder, hint) => (
+    <div>
+      <label style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '.06em', display: 'block', marginBottom: 5 }}>{label}</label>
+      <input className="input" required value={form[key]} placeholder={placeholder}
+        onChange={e => { setSuccess(''); setForm(f => ({ ...f, [key]: e.target.value })); }}
+        style={{ fontSize: 14 }}
+      />
+      {hint && <p style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 4 }}>{hint}</p>}
+    </div>
+  );
+
+  return (
+    <div style={{ maxWidth: 560 }}>
+      <div style={{ marginBottom: 24 }}>
+        <h2 style={{ fontSize: 20, fontWeight: 900, color: 'var(--dark)' }}>Bankverbindung</h2>
+        <p style={{ fontSize: 13, color: 'var(--text-muted)', marginTop: 4 }}>Diese Daten werden dem Kunden nach der Bestellung angezeigt, damit er die Überweisung durchführen kann.</p>
+      </div>
+
+      {loading ? (
+        <div style={{ padding: 40, textAlign: 'center', color: 'var(--text-muted)' }}>Laden…</div>
+      ) : (
+        <form onSubmit={handleSubmit}>
+          <div style={{ background: 'white', border: '1px solid var(--border)', borderRadius: 'var(--r-lg)', padding: 28, display: 'flex', flexDirection: 'column', gap: 20 }}>
+            {error   && <div style={{ background: '#FEF2F2', border: '1px solid #FECACA', borderRadius: 4, padding: '10px 14px', fontSize: 13, color: '#991B1B' }}>{error}</div>}
+            {success && <div style={{ background: '#ECFDF5', border: '1px solid #6EE7B7', borderRadius: 4, padding: '10px 14px', fontSize: 13, color: '#065F46' }}><i className="bi bi-check-circle" style={{ marginRight: 6 }} />{success}</div>}
+
+            {field('beneficiaire', 'Kontoinhaber',  'LA REMORQUE M',   'Name des Unternehmens oder der Person, der das Konto gehört.')}
+            {field('iban',         'IBAN',           'FR76 XXXX XXXX XXXX XXXX XXXX XXX', 'IBAN-Code des Bankkontos (mit oder ohne Leerzeichen).')}
+            {field('bic',          'BIC / SWIFT',    'XXXXXXXX',        'BIC/SWIFT-Code der Bank (8 oder 11 Zeichen, Großbuchstaben).')}
+            {field('banque',       'Bankname',       'Crédit Agricole', '')}
+
+            <div style={{ paddingTop: 4, borderTop: '1px solid var(--border)' }}>
+              <button type="submit" className="btn btn-primary" disabled={saving} style={{ fontSize: 14 }}>
+                {saving
+                  ? <><i className="bi bi-arrow-repeat" style={{ marginRight: 6 }} />Wird gespeichert…</>
+                  : <><i className="bi bi-floppy" style={{ marginRight: 6 }} />Änderungen speichern</>}
+              </button>
+            </div>
+          </div>
+
+          <div style={{ background: '#F0F9FF', border: '1px solid #BAE6FD', borderRadius: 'var(--r-lg)', padding: 20, marginTop: 16 }}>
+            <p style={{ fontSize: 12, fontWeight: 700, color: '#0E7490', marginBottom: 8 }}><i className="bi bi-info-circle" style={{ marginRight: 5 }} />Vorschau — was der Kunde sieht</p>
+            <div style={{ fontSize: 13, color: '#0F172A', display: 'flex', flexDirection: 'column', gap: 4 }}>
+              <div><span style={{ fontWeight: 700, color: '#64748B', width: 120, display: 'inline-block' }}>Kontoinhaber:</span>{form.beneficiaire || '—'}</div>
+              <div><span style={{ fontWeight: 700, color: '#64748B', width: 120, display: 'inline-block' }}>IBAN:</span>{form.iban || '—'}</div>
+              <div><span style={{ fontWeight: 700, color: '#64748B', width: 120, display: 'inline-block' }}>BIC:</span>{form.bic || '—'}</div>
+              <div><span style={{ fontWeight: 700, color: '#64748B', width: 120, display: 'inline-block' }}>Bank:</span>{form.banque || '—'}</div>
+            </div>
+          </div>
+        </form>
+      )}
+    </div>
+  );
+}
+
+// ── Page principale ─────────────────────────────────────────────────────────────
+export default function AdminPage() {
+  const [auth, setAuth] = useState(null);
+  const [user, setUser] = useState(null);
+  const [tab, setTab] = useState('orders');
+
+  useEffect(() => {
+    checkAuth().then(r => {
+      setAuth(r.authenticated);
+      if (r.authenticated) setUser(r.user);
+    }).catch(() => setAuth(false));
+  }, []);
+
+  const handleLogout = async () => {
+    await logout().catch(() => {});
+    setAuth(false); setUser(null);
+  };
+
+  if (auth === null) return (
+    <main style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '60vh' }}>
+      <p style={{ color: 'var(--text-muted)' }}>Laden…</p>
+    </main>
+  );
+  if (!auth) return <LoginView onLogin={(u) => { setUser(u); setAuth(true); }} />;
+
+  const TABS = [
+    { id: 'orders',   icon: 'bi-bag',  label: 'Bestellungen' },
+    { id: 'settings', icon: 'bi-bank', label: 'Bankverbindung' },
+  ];
+
+  return (
+    <main style={{ background: 'var(--bg)', minHeight: '80vh' }}>
+      {/* Topbar */}
+      <div style={{ background: 'var(--dark)', borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
+        <div className="container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 24px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 0 }}>
+            {TABS.map(t => (
+              <button key={t.id} onClick={() => setTab(t.id)}
+                style={{ padding: '14px 18px', fontSize: 13, fontWeight: tab === t.id ? 700 : 500, color: tab === t.id ? 'white' : 'rgba(255,255,255,0.45)', background: 'none', border: 'none', cursor: 'pointer', borderBottom: tab === t.id ? '2px solid var(--accent)' : '2px solid transparent', display: 'flex', alignItems: 'center', gap: 7, transition: 'color .15s' }}
+              >
+                <i className={`bi ${t.icon}`} />{t.label}
+              </button>
+            ))}
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.4)' }}>{user?.username}</span>
+            <button onClick={handleLogout} className="btn btn-ghost btn-sm" style={{ color: 'rgba(255,255,255,0.45)', fontSize: 12 }}
+              onMouseEnter={e => e.currentTarget.style.color = 'white'}
+              onMouseLeave={e => e.currentTarget.style.color = 'rgba(255,255,255,0.45)'}
+            >
+              <i className="bi bi-box-arrow-right" /> Abmelden
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div className="container" style={{ padding: '28px 24px 60px' }}>
+        {tab === 'orders'   && <OrdersTab />}
+        {tab === 'settings' && <SettingsTab />}
+      </div>
+    </main>
+  );
 }

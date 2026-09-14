@@ -57,7 +57,7 @@ export default function OrderConfirmationPage() {
           display: 'flex', gap: 20, alignItems: 'flex-start',
           marginBottom: 28,
         }}>
-          <div style={{ width: 52, height: 52, borderRadius: '50%', flexShrink: 0, background: 'var(--green)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div style={{ width: 52, height: 52, borderRadius: 0, flexShrink: 0, background: 'var(--green)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <i className="bi bi-check-lg" style={{ fontSize: 26, color: 'white' }} />
           </div>
           <div>
@@ -146,7 +146,7 @@ export default function OrderConfirmationPage() {
             {steps.map((text, i) => (
               <div key={i} style={{ display: 'flex', gap: 16, alignItems: 'flex-start' }}>
                 <div style={{
-                  width: 36, height: 36, borderRadius: '50%', flexShrink: 0,
+                  width: 36, height: 36, borderRadius: 0, flexShrink: 0,
                   background: 'var(--accent-light)', border: '1.5px solid var(--accent)',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   fontSize: 13, fontWeight: 900, color: 'var(--accent)',

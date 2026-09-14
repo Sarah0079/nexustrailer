@@ -18,12 +18,12 @@ function formatPrice(n) {
 
 export async function sendOrderConfirmation({ orderRef, customer, items, total, amountDueNow, paymentOption, bank }) {
   if (!process.env.SMTP_USER || !process.env.SMTP_PASS) {
-    console.warn('[MAIL] SMTP non configuré — email de confirmation non envoyé');
+    console.warn('[MAIL] SMTP nicht konfiguriert — Bestätigungs-E-Mail nicht gesendet');
     return;
   }
 
   const transporter = createTransport();
-  const from = `"TrailPro" <${process.env.SMTP_FROM || process.env.SMTP_USER}>`;
+  const from = `"NexusTrailer" <${process.env.SMTP_FROM || process.env.SMTP_USER}>`;
   const admin = process.env.SMTP_ADMIN || process.env.SMTP_USER;
 
   const isDeposit = paymentOption === 'deposit';
@@ -42,24 +42,20 @@ export async function sendOrderConfirmation({ orderRef, customer, items, total, 
     <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
     <body style="margin:0;padding:0;background:#F9FAFB;font-family:Arial,sans-serif;color:#111827;">
       <div style="max-width:600px;margin:32px auto;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.08);">
-        <!-- Header -->
         <div style="background:#0F172A;padding:28px 32px;text-align:center;">
-          <div style="font-size:22px;font-weight:900;color:#fff;letter-spacing:-.02em;">TrailPro</div>
+          <div style="font-size:22px;font-weight:900;color:#fff;letter-spacing:-.02em;">NexusTrailer</div>
           <div style="font-size:12px;color:rgba(255,255,255,.5);margin-top:4px;">Ihr Partner für Transportlösungen</div>
         </div>
-        <!-- Body -->
         <div style="padding:32px;">
           <h1 style="font-size:20px;font-weight:800;color:#0F172A;margin:0 0 8px;">Bestellbestätigung</h1>
           <p style="color:#6B7280;font-size:14px;margin:0 0 24px;">
             Guten Tag ${customer.vorname} ${customer.nachname},<br>
-            vielen Dank für Ihre Bestellung bei TrailPro. Ihre Bestellreferenz lautet:
+            vielen Dank für Ihre Bestellung bei NexusTrailer. Ihre Bestellreferenz lautet:
           </p>
           <div style="background:#EFF6FF;border:2px solid #BFDBFE;border-radius:8px;padding:14px 20px;text-align:center;margin-bottom:28px;">
             <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#2563EB;margin-bottom:4px;">Bestellreferenz</div>
             <div style="font-size:22px;font-weight:900;font-family:monospace;color:#1E40AF;letter-spacing:.04em;">${orderRef}</div>
           </div>
-
-          <!-- Artikel -->
           <h2 style="font-size:14px;font-weight:700;color:#0F172A;margin:0 0 12px;text-transform:uppercase;letter-spacing:.06em;">Bestellübersicht</h2>
           <table style="width:100%;border-collapse:collapse;font-size:13px;margin-bottom:16px;">
             <thead>
@@ -82,8 +78,6 @@ export async function sendOrderConfirmation({ orderRef, customer, items, total, 
               </tr>` : ''}
             </tfoot>
           </table>
-
-          <!-- Bankdaten -->
           <div style="background:#F9FAFB;border:1px solid #E5E7EB;border-radius:8px;padding:20px;margin-bottom:24px;">
             <h2 style="font-size:14px;font-weight:700;color:#0F172A;margin:0 0 14px;text-transform:uppercase;letter-spacing:.06em;">Bankverbindung für die Überweisung</h2>
             <table style="width:100%;font-size:13px;">
@@ -98,16 +92,14 @@ export async function sendOrderConfirmation({ orderRef, customer, items, total, 
               ⚠ Bitte geben Sie unbedingt die Bestellreferenz <strong>${orderRef}</strong> im Verwendungszweck an. Ihre Bestellung wird nach Zahlungseingang bearbeitet (1–3 Werktage).
             </div>
           </div>
-
           <p style="font-size:13px;color:#6B7280;line-height:1.7;">
-            Bei Fragen stehen wir Ihnen gerne unter <a href="mailto:info@altotrailer.com" style="color:#2563EB;">info@altotrailer.com</a> oder <a href="tel:+33756836479" style="color:#2563EB;">+33 7 56 83 64 79</a> zur Verfügung.
+            Bei Fragen stehen wir Ihnen gerne unter <a href="mailto:${process.env.SMTP_FROM || process.env.SMTP_USER}" style="color:#2563EB;">${process.env.SMTP_FROM || process.env.SMTP_USER}</a> zur Verfügung.
           </p>
         </div>
-        <!-- Footer -->
         <div style="background:#F9FAFB;border-top:1px solid #E5E7EB;padding:20px 32px;text-align:center;">
           <p style="font-size:11px;color:#9CA3AF;margin:0;">
-            TrailPro · LA REMORQUE M · 21 Rue du Bouchet, 63350 Maringues, Frankreich<br>
-            SIREN 948 418 827 · <a href="https://altotrailer.com" style="color:#9CA3AF;">altotrailer.com</a>
+            NexusTrailer · ${process.env.COMPANY_ADDRESS || 'LA REMORQUE M · 21 Rue du Bouchet, 63350 Maringues, Frankreich'}<br>
+            SIREN ${process.env.COMPANY_SIREN || '948 418 827'} · <a href="https://${process.env.COMPANY_DOMAIN || 'nexustrailer.com'}" style="color:#9CA3AF;">${process.env.COMPANY_DOMAIN || 'nexustrailer.com'}</a>
           </p>
         </div>
       </div>
@@ -123,14 +115,42 @@ Artikel: ${items.map(i => `${i.product_name} x${i.quantity}`).join(', ')}`;
     transporter.sendMail({
       from,
       to: customer.email,
-      subject: `Bestellbestätigung ${orderRef} — TrailPro`,
+      subject: `Bestellbestätigung ${orderRef} — NexusTrailer`,
       html: customerHtml,
     }),
     transporter.sendMail({
       from,
       to: admin,
-      subject: `[TrailPro] Neue Bestellung: ${orderRef}`,
+      subject: `[NexusTrailer] Neue Bestellung: ${orderRef}`,
       text: adminText,
     }),
   ]);
+}
+
+export async function sendContactEmail({ name, email, subject, message }) {
+  if (!process.env.SMTP_USER || !process.env.SMTP_PASS) {
+    throw new Error('EMAIL_NOT_CONFIGURED');
+  }
+
+  const transporter = createTransport();
+  const from = `"NexusTrailer Kontakt" <${process.env.SMTP_FROM || process.env.SMTP_USER}>`;
+  const admin = process.env.SMTP_ADMIN || process.env.SMTP_USER;
+
+  await transporter.sendMail({
+    from,
+    to: admin,
+    replyTo: email,
+    subject: `[NexusTrailer Kontakt] ${subject}`,
+    text: `Von: ${name} <${email}>\nBetreff: ${subject}\n\n${message}`,
+    html: `
+      <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;">
+        <h2 style="color:#0F172A;">Neue Kontaktanfrage</h2>
+        <p><strong>Name:</strong> ${name}</p>
+        <p><strong>E-Mail:</strong> <a href="mailto:${email}">${email}</a></p>
+        <p><strong>Betreff:</strong> ${subject}</p>
+        <hr style="border:none;border-top:1px solid #E5E7EB;margin:16px 0;">
+        <p style="white-space:pre-wrap;">${message}</p>
+      </div>
+    `,
+  });
 }

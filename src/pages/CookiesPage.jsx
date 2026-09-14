@@ -1,4 +1,4 @@
-function Section({ title, children }) {
+﻿function Section({ title, children }) {
   return (
     <div style={{ marginBottom: 40 }}>
       <h2 style={{ fontSize: 18, fontWeight: 800, color: 'var(--dark)', marginBottom: 14, paddingBottom: 10, borderBottom: '2px solid var(--accent)' }}>{title}</h2>
@@ -58,7 +58,7 @@ export default function CookiesPage() {
         </Section>
 
         <Section title="Kontakt">
-          <p>Bei Fragen zu unserer Cookie-Richtlinie wenden Sie sich bitte an: <strong>info@trailpro.com</strong></p>
+          <p>Bei Fragen zu unserer Cookie-Richtlinie wenden Sie sich bitte an: <strong>info@nexustrailer.com</strong></p>
         </Section>
 
       </div>

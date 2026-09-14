@@ -1,395 +1,454 @@
-import { useState, useEffect, useRef } from 'react';
-import { Link } from 'react-router-dom';
-import { PRODUCTS, CATEGORIES, HERO_SLIDES, TRUST_BADGES, TESTIMONIALS } from '../data/products';
+﻿import { useState, useEffect, useMemo } from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import { PRODUCTS, CATEGORIES, TRUST_BADGES, TESTIMONIALS } from '../data/products';
 import ProductCard from '../components/ProductCard';
 import { useBreakpoint } from '../hooks/useBreakpoint';
 
-function HeroSlider() {
-  const [current, setCurrent] = useState(0);
-  const timerRef = useRef(null);
+/* ── Kontakt-Widget ──────────────────────────────────────────────────────── */
+function KontaktWidget() {
+  const [form, setForm] = useState({ name: '', email: '', nachricht: '' });
+  const [sent, setSent] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const isMobile = useBreakpoint(640);
+  const set = k => e => setForm(f => ({ ...f, [k]: e.target.value }));
 
-  const go = (i) => {
-    setCurrent((i + HERO_SLIDES.length) % HERO_SLIDES.length);
-    clearInterval(timerRef.current);
-    timerRef.current = setInterval(() => setCurrent(c => (c + 1) % HERO_SLIDES.length), 5000);
+  const handleSubmit = e => {
+    e.preventDefault();
+    setLoading(true);
+    setTimeout(() => { setSent(true); setLoading(false); }, 600);
   };
 
-  useEffect(() => {
-    timerRef.current = setInterval(() => setCurrent(c => (c + 1) % HERO_SLIDES.length), 5000);
-    return () => clearInterval(timerRef.current);
+  return sent ? (
+    <div style={{ textAlign: 'center', padding: '56px 24px', background: 'white', border: '1px solid var(--border)' }}>
+      <i className="bi bi-check-circle-fill" style={{ fontSize: 36, color: 'var(--green)', display: 'block', marginBottom: 16 }} />
+      <h3 style={{ fontSize: 18, fontWeight: 800, color: 'var(--dark)', marginBottom: 8 }}>Nachricht gesendet!</h3>
+      <p style={{ color: 'var(--text-muted)', fontSize: 14, lineHeight: 1.65 }}>Wir antworten innerhalb von 24 Werktunden.</p>
+    </div>
+  ) : (
+    <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 16, background: 'white', padding: '36px 32px', border: '1px solid var(--border)' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: 14 }}>
+        <div>
+          <label style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-muted)', display: 'block', marginBottom: 7, letterSpacing: '0.02em' }}>Name *</label>
+          <input className="input" required placeholder="Ihr Name" value={form.name} onChange={set('name')} maxLength={80} />
+        </div>
+        <div>
+          <label style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-muted)', display: 'block', marginBottom: 7, letterSpacing: '0.02em' }}>E-Mail *</label>
+          <input className="input" type="email" required placeholder="ihre@email.de" value={form.email} onChange={set('email')} maxLength={254} />
+        </div>
+      </div>
+      <div>
+        <label style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-muted)', display: 'block', marginBottom: 7, letterSpacing: '0.02em' }}>Nachricht *</label>
+        <textarea className="input" required rows={5} placeholder="Womit können wir helfen?" value={form.nachricht} onChange={set('nachricht')} style={{ resize: 'vertical' }} maxLength={1000} />
+      </div>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
+        <button type="submit" className="btn btn-accent btn-lg" disabled={loading} style={{ opacity: loading ? 0.7 : 1 }}>
+          {loading ? <><i className="bi bi-hourglass-split" /> Wird gesendet…</> : <><i className="bi bi-send" /> Nachricht senden</>}
+        </button>
+        <span style={{ fontSize: 12, color: 'var(--text-light)', display: 'flex', alignItems: 'center', gap: 5 }}>
+          Antwort innerhalb 24 h
+        </span>
+      </div>
+    </form>
+  );
+}
+
+/* ── Daten ───────────────────────────────────────────────────────────────── */
+const FEATURES = [
+  { icon: 'bi-truck',         title: 'Kostenlose Lieferung',   desc: 'Versandkostenfrei in ganz Europa in 5–7 Werktagen. Express auf Anfrage.' },
+  { icon: 'bi-shield-check',  title: '2 Jahre Garantie',       desc: 'Herstellergarantie auf alle Produkte gegen Fabrikationsfehler.' },
+  { icon: 'bi-arrow-repeat',  title: '30 Tage Rückgabe',       desc: 'Nicht zufrieden? Wir holen das Produkt ab und erstatten den vollen Betrag.' },
+  { icon: 'bi-patch-check',   title: 'COC-zertifiziert',       desc: 'Alle Wohnwagen mit EU-Übereinstimmungszertifikat für die direkte Zulassung.' },
+];
+
+const FAQS = [
+  { q: 'Wie lange dauert die Lieferung?',          a: 'Die Standardlieferung dauert 5–7 Werktage nach Zahlungsbestätigung. Ein Express-Service in 1–3 Werktagen ist auf Anfrage mit Aufpreis verfügbar.' },
+  { q: 'Sind die Wohnwagen in gutem Zustand?',     a: 'Ja. Jeder Wohnwagen wird vor dem Versand technisch geprüft und mit einem Zustandszertifikat geliefert.' },
+  { q: 'Wie wird die Zahlung abgewickelt?',         a: 'Ausschließlich per SEPA-Banküberweisung – entweder 100 % im Voraus oder 50 % Anzahlung zur Reservierung, Rest vor Lieferung.' },
+  { q: 'Kann ich den Wohnwagen zurückgeben?',       a: 'Sie haben 30 Tage ab Lieferung Rückgaberecht. Wir organisieren die Abholung und erstatten den vollen Kaufpreis.' },
+];
+
+const STATS = [
+  ['1.000+', 'Zufriedene Kunden'],
+  ['200+',   'Produkte auf Lager'],
+  ['4,8★',   'Durchschnittsbewertung'],
+  ['2–3',    'Werktage Lieferzeit'],
+];
+
+/* ── Komponente ─────────────────────────────────────────────────────────── */
+export default function HomePage() {
+  const location = useLocation();
+  const isMobile = useBreakpoint(768);
+  const featured = PRODUCTS.filter(p => p.featured).slice(0, 4);
+  const [openFaq, setOpenFaq] = useState(null);
+
+  const counts = useMemo(() => {
+    const c = {};
+    PRODUCTS.forEach(p => { c[p.category] = (c[p.category] || 0) + 1; });
+    return c;
   }, []);
 
-  const slide = HERO_SLIDES[current];
+  useEffect(() => {
+    const id = location.hash.replace('#', '');
+    if (!id) return;
+    const t = setTimeout(() => {
+      document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+    }, 80);
+    return () => clearTimeout(t);
+  }, [location.hash]);
+
+  const scrollToKontakt = () => {
+    document.getElementById('kontakt')?.scrollIntoView({ behavior: 'smooth' });
+  };
 
   return (
-    <div style={{ position: 'relative', height: 'clamp(420px, 60vh, 680px)', overflow: 'hidden', background: 'var(--dark)' }}>
-      {HERO_SLIDES.map((s, i) => (
-        <img key={s.id} src={s.image} alt="" style={{
-          position: 'absolute', inset: 0,
-          width: '100%', height: '100%', objectFit: 'cover',
-          opacity: i === current ? 1 : 0,
-          transition: 'opacity 0.8s ease',
-        }} />
-      ))}
-      <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to right, rgba(15,23,42,0.85) 0%, rgba(15,23,42,0.4) 60%, rgba(15,23,42,0.1) 100%)' }} />
+    <main>
 
-      <div className="container" style={{ position: 'relative', height: '100%', display: 'flex', alignItems: 'center' }}>
-        <div style={{ maxWidth: 560, animation: 'slideUp 0.5s ease', padding: '40px 0' }} key={current}>
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'var(--accent)', borderRadius: 20, padding: '4px 14px', marginBottom: 10 }}>
-            <i className="bi bi-patch-check-fill" style={{ color: 'white', fontSize: 12 }} />
-            <span style={{ fontSize: 11, fontWeight: 700, color: 'white', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
-              TrailPro – Zertifizierte Qualität
+      {/* ── Hero ──────────────────────────────────────────────────────────── */}
+      <section style={{
+        minHeight: '88vh',
+        display: 'grid',
+        gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr',
+        background: 'var(--dark)',
+      }}>
+        {/* Left — text */}
+        <div style={{
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          paddingTop: isMobile ? 48 : 'clamp(48px, 6vw, 96px)',
+          paddingBottom: isMobile ? 40 : 'clamp(48px, 6vw, 96px)',
+          paddingRight: isMobile ? 24 : 'clamp(32px, 4vw, 72px)',
+          paddingLeft: isMobile ? 24 : 'max(24px, calc((100vw - 1280px) / 2 + 24px))',
+          order: isMobile ? 2 : 1,
+        }}>
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'var(--accent)', padding: '5px 14px', marginBottom: 24, alignSelf: 'flex-start' }}>
+            <i className="bi bi-patch-check-fill" style={{ color: 'white', fontSize: 11 }} />
+            <span style={{ fontSize: 11, fontWeight: 700, color: 'white', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+              NexusTrailer – Zertifizierte Qualität
             </span>
           </div>
-          <h1 style={{ fontSize: 'clamp(20px, 3vw, 44px)', fontWeight: 900, color: 'white', lineHeight: 1.15, marginBottom: 10, letterSpacing: '-0.02em' }}>
-            {slide.title}
-          </h1>
-          <p style={{ fontSize: 'clamp(13px, 1.2vw, 15px)', color: 'rgba(255,255,255,0.7)', lineHeight: 1.55, marginBottom: 20, maxWidth: 460 }}>
-            {slide.subtitle}
-          </p>
-          <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap' }}>
-            <Link to="/shop" className="btn btn-accent btn-lg">
-              <i className="bi bi-grid" /> {slide.cta}
-            </Link>
-            <Link to="/uber-uns" className="btn btn-lg" style={{ background: 'rgba(255,255,255,0.12)', color: 'white', border: '1.5px solid rgba(255,255,255,0.25)', backdropFilter: 'blur(4px)' }}>
-              Mehr erfahren
-            </Link>
-          </div>
-        </div>
-      </div>
-
-      {/* Dots */}
-      <div style={{ position: 'absolute', bottom: 28, left: '50%', transform: 'translateX(-50%)', display: 'flex', gap: 8 }}>
-        {HERO_SLIDES.map((_, i) => (
-          <button key={i} onClick={() => go(i)} style={{
-            width: i === current ? 28 : 8, height: 8, borderRadius: 4,
-            background: i === current ? 'var(--accent)' : 'rgba(255,255,255,0.4)',
-            border: 'none', cursor: 'pointer', padding: 0, transition: 'all 0.3s ease',
-          }} />
-        ))}
-      </div>
-
-      {/* Arrows */}
-      {[[-1, 'bi-chevron-left', 'left: 20px'], [1, 'bi-chevron-right', 'right: 20px']].map(([dir, icon, pos]) => (
-        <button key={dir} onClick={() => go(current + dir)} style={{
-          position: 'absolute', top: '50%', transform: 'translateY(-50%)',
-          [pos.split(': ')[0]]: pos.split(': ')[1],
-          width: 44, height: 44, borderRadius: '50%',
-          background: 'rgba(255,255,255,0.12)', color: 'white',
-          border: '1px solid rgba(255,255,255,0.2)',
-          fontSize: 18, display: 'flex', alignItems: 'center', justifyContent: 'center',
-          cursor: 'pointer', backdropFilter: 'blur(4px)', transition: 'background 0.15s',
-        }}
-          onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.25)'}
-          onMouseLeave={e => e.currentTarget.style.background = 'rgba(255,255,255,0.12)'}
-        >
-          <i className={`bi ${icon}`} />
-        </button>
-      ))}
-    </div>
-  );
-}
-
-function TrustBar() {
-  const items = [
-    { icon: 'bi-patch-check', text: 'Zertifizierte Robustheit' },
-    { icon: 'bi-truck', text: 'Schnelle & sichere Lieferung' },
-    { icon: 'bi-headset', text: 'Personalisierte Unterstützung' },
-    { icon: 'bi-lock', text: '100% sichere Zahlung' },
-  ];
-  return (
-    <div style={{ background: 'var(--bg)', borderBottom: '1px solid var(--border)' }}>
-      <div className="container" style={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap' }}>
-        {items.map(({ icon, text }) => (
-          <div key={text} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '13px 24px', borderRight: '1px solid var(--border)', whiteSpace: 'nowrap' }}>
-            <i className={`bi ${icon}`} style={{ fontSize: 15, color: 'var(--accent)' }} />
-            <span style={{ fontSize: 12, fontWeight: 500, color: 'var(--text-muted)' }}>{text}</span>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-function CategoryGrid() {
-  const trackRef = useRef(null);
-  const autoRef = useRef(null);
-  const [active, setActive] = useState(0);
-  const count = CATEGORIES.length;
-
-  const scrollTo = (i) => {
-    const idx = (i + count) % count;
-    setActive(idx);
-    const track = trackRef.current;
-    if (!track) return;
-    const card = track.children[idx];
-    if (card) track.scrollTo({ left: card.offsetLeft - track.offsetLeft, behavior: 'smooth' });
-  };
-
-  const resetAuto = () => {
-    clearInterval(autoRef.current);
-    autoRef.current = setInterval(() => setActive(a => { const next = (a + 1) % count; scrollTo(next); return next; }), 3500);
-  };
-
-  useEffect(() => {
-    autoRef.current = setInterval(() => setActive(a => { const next = (a + 1) % count; scrollTo(next); return next; }), 3500);
-    return () => clearInterval(autoRef.current);
-  }, []);
-
-  const nav = (dir) => { resetAuto(); scrollTo(active + dir); };
-
-  return (
-    <section className="section">
-      <div className="container">
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 32 }}>
-          <div>
-            <p style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--accent)', marginBottom: 6 }}>ALLE KATEGORIEN</p>
-            <h2 style={{ fontSize: 'clamp(22px, 3vw, 32px)', fontWeight: 800, color: 'var(--dark)', letterSpacing: '-0.02em' }}>Nach Kategorien einkaufen</h2>
-          </div>
-          <Link to="/shop" className="btn btn-outline btn-sm">
-            Alle ansehen <i className="bi bi-arrow-right" />
-          </Link>
-        </div>
-
-        <div style={{ position: 'relative' }}>
-          {[[-1, 'left'], [1, 'right']].map(([dir, side]) => (
-            <button key={dir} onClick={() => nav(dir)} style={{
-              position: 'absolute', top: '50%', transform: 'translateY(-50%)',
-              [side]: -18, zIndex: 2,
-              width: 42, height: 42, borderRadius: '50%',
-              background: 'white', border: '1.5px solid var(--border-strong)',
-              boxShadow: '0 2px 8px rgba(0,0,0,0.12)',
-              cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
-              color: 'var(--dark)', fontSize: 17, transition: 'background 0.2s, color 0.2s',
-            }}
-              onMouseEnter={e => { e.currentTarget.style.background = 'var(--dark)'; e.currentTarget.style.color = 'white'; }}
-              onMouseLeave={e => { e.currentTarget.style.background = 'white'; e.currentTarget.style.color = 'var(--dark)'; }}
-            >
-              <i className={`bi bi-chevron-${dir === -1 ? 'left' : 'right'}`} />
-            </button>
-          ))}
-
-          <div ref={trackRef} style={{
-            display: 'flex', gap: 16, overflowX: 'auto', scrollSnapType: 'x mandatory',
-            scrollbarWidth: 'none', msOverflowStyle: 'none', paddingBottom: 4,
+          <h1 style={{
+            fontSize: 'clamp(28px, 3.6vw, 54px)',
+            fontWeight: 900,
+            color: 'white',
+            lineHeight: 1.07,
+            letterSpacing: '-0.03em',
+            marginBottom: 24,
           }}>
-            {CATEGORIES.map((cat, i) => (
-              <Link key={cat.id} to={`/shop?category=${cat.id}`} onClick={resetAuto} style={{
-                position: 'relative', borderRadius: 'var(--r-lg)', overflow: 'hidden',
-                flexShrink: 0, width: 'clamp(220px, 28vw, 320px)', aspectRatio: '3/2',
-                display: 'block', textDecoration: 'none', scrollSnapAlign: 'start',
-                outline: i === active ? '2px solid var(--accent)' : 'none',
-                outlineOffset: 2, transition: 'outline 0.2s',
-              }}>
-                <img src={cat.image} alt={cat.label} style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.4s' }}
-                  onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.07)'}
-                  onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
-                />
-                <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(15,23,42,0.75) 0%, rgba(15,23,42,0.1) 60%)' }} />
-                <div style={{ position: 'absolute', bottom: 16, left: 16 }}>
-                  <p style={{ fontSize: 13, fontWeight: 800, color: 'white', letterSpacing: '-0.01em' }}>{cat.label}</p>
-                </div>
-              </Link>
+            Ihr Zuhause,{' '}
+            <span style={{ color: 'var(--accent)' }}>wohin die Straße Sie führt</span>
+          </h1>
+          <p style={{
+            fontSize: 'clamp(14px, 1.25vw, 17px)',
+            color: 'rgba(255,255,255,0.65)',
+            lineHeight: 1.82,
+            marginBottom: 36,
+            maxWidth: 420,
+          }}>
+            Hochwertige Wohnwagen & Anhänger – zertifiziert, versandfertig, kostenlos geliefert in ganz Europa. Bis zu 55&nbsp;% unter Händlerpreis.
+          </p>
+          <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', marginBottom: 32 }}>
+            <Link to="/shop" className="btn btn-accent btn-lg">
+              <i className="bi bi-grid" /> Jetzt entdecken
+            </Link>
+            <button onClick={scrollToKontakt} className="btn btn-lg" style={{ background: 'rgba(255,255,255,0.1)', color: 'white', border: '1.5px solid rgba(255,255,255,0.2)' }}>
+              Experten kontaktieren
+            </button>
+          </div>
+          <div style={{ display: 'flex', gap: 20, flexWrap: 'wrap' }}>
+            {[['bi-truck','Kostenloser Versand'], ['bi-shield-check','2 Jahre Garantie'], ['bi-arrow-repeat','30 Tage Rückgabe']].map(([icon, text]) => (
+              <span key={text} style={{ fontSize: 12.5, color: 'rgba(255,255,255,0.55)', display: 'flex', alignItems: 'center', gap: 6 }}>
+                <i className={`bi ${icon}`} style={{ color: 'var(--accent)', fontSize: 13 }} />{text}
+              </span>
             ))}
           </div>
         </div>
 
-        <div style={{ display: 'flex', justifyContent: 'center', gap: 6, marginTop: 20 }}>
-          {CATEGORIES.map((_, i) => (
-            <button key={i} onClick={() => { resetAuto(); scrollTo(i); }} style={{
-              width: i === active ? 24 : 7, height: 7, borderRadius: 4, border: 'none', padding: 0, cursor: 'pointer',
-              background: i === active ? 'var(--accent)' : 'var(--border-strong)', transition: 'all 0.3s',
-            }} />
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function FeaturedSection() {
-  const featured = PRODUCTS.filter(p => p.featured);
-  const isMobile = useBreakpoint(640);
-  return (
-    <section className="section" style={{ background: 'var(--bg)' }}>
-      <div className="container">
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 32 }}>
-          <div>
-            <p style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--accent)', marginBottom: 6 }}>HERVORGEHOBEN</p>
-            <h2 style={{ fontSize: 'clamp(22px, 3vw, 32px)', fontWeight: 800, color: 'var(--dark)', letterSpacing: '-0.02em' }}>Empfohlene Produkte</h2>
+        {/* Right — image + badge */}
+        {!isMobile && (
+          <div style={{ position: 'relative', overflow: 'hidden', order: 2, minHeight: 'auto' }}>
+            <img
+              src="/image/hero/1.jpg"
+              alt="NexusTrailer Wohnwagen"
+              style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+            />
+            <div style={{
+              position: 'absolute', bottom: 36, left: -20,
+              background: 'white', padding: '18px 24px',
+              boxShadow: '0 8px 32px rgba(0,0,0,0.25)',
+            }}>
+              <p style={{ fontSize: 11, fontWeight: 700, color: 'var(--accent)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 4 }}>BIS ZU</p>
+              <p style={{ fontSize: 30, fontWeight: 900, color: 'var(--dark)', letterSpacing: '-0.03em', lineHeight: 1 }}>
+                55% <span style={{ fontSize: 15, fontWeight: 600 }}>Rabatt</span>
+              </p>
+              <p style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 4 }}>vs. Neupreis beim Händler</p>
+            </div>
           </div>
-          <Link to="/shop" className="btn btn-outline btn-sm" style={{ flexShrink: 0 }}>
-            Alle ansehen <i className="bi bi-arrow-right" />
-          </Link>
-        </div>
-        <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(auto-fill, minmax(280px, 1fr))', gap: 24 }}>
-          {featured.map(p => <ProductCard key={p.id} product={p} />)}
+        )}
+      </section>
+
+      {/* ── Trust-Strip ──────────────────────────────────────────────────── */}
+      <div style={{ borderTop: '1px solid var(--border)', borderBottom: '1px solid var(--border)', background: 'white', padding: '14px 0' }}>
+        <div className="container">
+          <div style={{ display: 'flex', gap: 0, justifyContent: 'center', flexWrap: 'wrap', alignItems: 'stretch' }}>
+            {[
+              { icon: 'bi-lock',         label: 'Sicheres Zahlen' },
+              { icon: 'bi-truck',        label: 'Kostenloser Versand' },
+              { icon: 'bi-shield-check', label: '2 Jahre Garantie' },
+              { icon: 'bi-arrow-repeat', label: '30 Tage Rückgabe' },
+              { icon: 'bi-headset',      label: 'Persönlicher Support' },
+            ].map(({ icon, label }, i) => (
+              <div key={label} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '6px 24px', borderLeft: i > 0 ? '1px solid var(--border)' : 'none' }}>
+                <i className={`bi ${icon}`} style={{ fontSize: 14, color: 'var(--accent)', flexShrink: 0 }} />
+                <span style={{ fontSize: 12.5, fontWeight: 500, color: 'var(--text-muted)', whiteSpace: 'nowrap' }}>{label}</span>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
-    </section>
-  );
-}
 
-function SalesBanner() {
-  return (
-    <div style={{ background: 'var(--dark-2)', padding: '14px 0', overflow: 'hidden', position: 'relative' }}>
-      <div style={{ display: 'flex', gap: 80, animation: 'marquee 20s linear infinite', whiteSpace: 'nowrap' }}>
-        {[...Array(3)].map((_, idx) => (
-          <span key={idx} style={{ fontSize: 13, fontWeight: 700, color: 'rgba(255,255,255,0.8)', flexShrink: 0, display: 'inline-flex', alignItems: 'center', gap: 8 }}>
-            <i className="bi bi-fire" style={{ color: 'var(--accent)' }} />
-            SONDERANGEBOT: Bis zu 61% Rabatt auf ausgewählte Modelle – Jetzt entdecken
-            <i className="bi bi-arrow-right" style={{ opacity: 0.5 }} />
-            &nbsp;&nbsp;&nbsp;
-            <i className="bi bi-fire" style={{ color: 'var(--accent)' }} />
-            SONDERANGEBOT: Bis zu 61% Rabatt auf ausgewählte Modelle – Jetzt entdecken
-            <i className="bi bi-arrow-right" style={{ opacity: 0.5 }} />
-            &nbsp;&nbsp;&nbsp;
-          </span>
-        ))}
-      </div>
-      <style>{`@keyframes marquee { from { transform: translateX(0) } to { transform: translateX(-33.33%) } }`}</style>
-    </div>
-  );
-}
-
-const BADGE_ICONS = {
-  'Schnelle Lieferung': 'bi-truck',
-  'Sicher bezahlen': 'bi-lock',
-  'Garantie': 'bi-shield-check',
-  'Support': 'bi-headset',
-};
-
-function TrustSection() {
-  const isMobile = useBreakpoint(640);
-  return (
-    <section className="section">
-      <div className="container">
-        <div style={{ textAlign: 'center', marginBottom: 48 }}>
-          <p style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--accent)', marginBottom: 8 }}>WARUM TRAILPRO</p>
-          <h2 style={{ fontSize: 'clamp(24px, 3vw, 36px)', fontWeight: 900, color: 'var(--dark)', letterSpacing: '-0.02em', marginBottom: 12 }}>
-            Warum über 1.000 Kunden uns wählen
-          </h2>
-          <p style={{ fontSize: 15, color: 'var(--text-muted)', maxWidth: 500, margin: '0 auto' }}>
-            Qualität, Zuverlässigkeit und Service – alles aus einer Hand.
-          </p>
-        </div>
-        <div style={{ display: 'grid', gridTemplateColumns: isMobile ? 'repeat(2, 1fr)' : 'repeat(4, 1fr)', gap: 24 }}>
-          {TRUST_BADGES.map(b => {
-            const iconKey = Object.keys(BADGE_ICONS).find(k => b.title.includes(k)) || 'bi-star';
-            const iconName = BADGE_ICONS[iconKey] || b.icon || 'bi-star';
-            return (
-              <div key={b.title} style={{
-                padding: '28px 20px', borderRadius: 'var(--r-lg)',
-                border: '1px solid var(--border)', background: 'white',
-                textAlign: 'center', transition: 'box-shadow 0.2s, transform 0.2s',
+      {/* ── Kategorien ────────────────────────────────────────────────────── */}
+      <section className="section-sm" style={{ background: 'var(--bg)' }}>
+        <div className="container">
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
+            <h2 style={{ fontSize: 19, fontWeight: 800, color: 'var(--dark)', letterSpacing: '-0.02em' }}>Kategorien</h2>
+            <Link to="/shop" style={{ fontSize: 12.5, color: 'var(--accent)', fontWeight: 600 }}>
+              Alle ansehen
+            </Link>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: `repeat(${isMobile ? 2 : 4}, 1fr)`, gap: 10 }}>
+            {CATEGORIES.map(cat => (
+              <Link key={cat.id} to={`/shop?category=${cat.id}`} style={{
+                display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                padding: '14px 16px', background: 'white',
+                border: '1px solid var(--border)', textDecoration: 'none',
+                transition: 'border-color 0.18s, box-shadow 0.18s',
               }}
-                onMouseEnter={e => { e.currentTarget.style.boxShadow = 'var(--shadow-md)'; e.currentTarget.style.transform = 'translateY(-2px)'; }}
-                onMouseLeave={e => { e.currentTarget.style.boxShadow = 'none'; e.currentTarget.style.transform = 'translateY(0)'; }}
+                onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--accent)'; e.currentTarget.style.boxShadow = '0 2px 12px rgba(249,115,22,0.10)'; }}
+                onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--border)'; e.currentTarget.style.boxShadow = 'none'; }}
               >
-                <div style={{ width: 52, height: 52, borderRadius: '50%', background: 'var(--accent-light)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px' }}>
-                  <i className={`bi ${b.icon || iconName}`} style={{ fontSize: 24, color: 'var(--accent)' }} />
-                </div>
-                <h3 style={{ fontSize: 14, fontWeight: 700, color: 'var(--dark)', marginBottom: 8 }}>{b.title}</h3>
-                <p style={{ fontSize: 12, color: 'var(--text-muted)', lineHeight: 1.6 }}>{b.desc}</p>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function StatsBar() {
-  const stats = [
-    { n: '1.000+', l: 'Zufriedene Kunden', icon: 'bi-people' },
-    { n: '200+', l: 'Produkte auf Lager', icon: 'bi-box-seam' },
-    { n: '2–3', l: 'Werktage Lieferzeit', icon: 'bi-truck' },
-    { n: '4.8', l: 'Durchschnittsbewertung', icon: 'bi-star-fill' },
-  ];
-  return (
-    <div style={{ background: 'var(--dark)', padding: '40px 0' }}>
-      <div className="container" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: 32 }}>
-        {stats.map(({ n, l, icon }) => (
-          <div key={l} style={{ textAlign: 'center' }}>
-            <i className={`bi ${icon}`} style={{ fontSize: 24, color: 'var(--accent)', display: 'block', marginBottom: 8 }} />
-            <div style={{ fontSize: 32, fontWeight: 900, color: 'white', letterSpacing: '-0.03em', lineHeight: 1 }}>{n}</div>
-            <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.45)', marginTop: 6, letterSpacing: '0.03em' }}>{l}</div>
+                <span style={{ fontSize: 13.5, fontWeight: 600, color: 'var(--dark)' }}>{cat.label}</span>
+                <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>{counts[cat.id] || 0}</span>
+              </Link>
+            ))}
           </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-function Testimonials() {
-  return (
-    <section className="section" style={{ background: 'var(--bg)' }}>
-      <div className="container">
-        <div style={{ textAlign: 'center', marginBottom: 40 }}>
-          <p style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--accent)', marginBottom: 8 }}>KUNDENMEINUNGEN</p>
-          <h2 style={{ fontSize: 'clamp(22px, 3vw, 32px)', fontWeight: 800, color: 'var(--dark)', letterSpacing: '-0.02em' }}>
-            <i className="bi bi-chat-quote" style={{ marginRight: 10 }} />
-            Das sagen unsere Kunden
-          </h2>
         </div>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 24 }}>
-          {TESTIMONIALS.map(t => (
-            <div key={t.name} style={{ background: 'white', border: '1px solid var(--border)', borderRadius: 'var(--r-lg)', padding: 28 }}>
-              <div style={{ display: 'flex', gap: 2, marginBottom: 16 }}>
-                {[1,2,3,4,5].map(i => (
-                  <i key={i} className={`bi bi-star${i <= t.rating ? '-fill' : ''}`} style={{ color: i <= t.rating ? '#F59E0B' : '#E2E8F0', fontSize: 16 }} />
-                ))}
+      </section>
+
+      {/* ── Empfohlene Produkte ───────────────────────────────────────────── */}
+      <section className="section">
+        <div className="container">
+          <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', marginBottom: 28, flexWrap: 'wrap', gap: 12 }}>
+            <div>
+              <p style={{ fontSize: 11.5, fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.12em', marginBottom: 6 }}>Auswahl</p>
+              <h2 style={{ fontSize: 26, fontWeight: 900, color: 'var(--dark)', letterSpacing: '-0.025em' }}>Empfohlene Produkte</h2>
+            </div>
+            <Link to="/shop" className="btn btn-outline btn-sm">
+              Alle ansehen <i className="bi bi-arrow-right" />
+            </Link>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 20 }}>
+            {featured.map(p => <ProductCard key={p.id} product={p} />)}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Kundenmeinungen ───────────────────────────────────────────────── */}
+      <section className="section" style={{ background: 'var(--bg)' }}>
+        <div className="container">
+          <div style={{ textAlign: 'center', marginBottom: 48 }}>
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 6, marginBottom: 16 }}>
+              <div style={{ display: 'flex', gap: 2 }}>
+                {[...Array(5)].map((_, i) => <i key={i} className="bi bi-star-fill" style={{ color: '#f59e0b', fontSize: 14 }} />)}
               </div>
-              <p style={{ fontSize: 15, color: 'var(--dark)', lineHeight: 1.7, marginBottom: 20, fontStyle: 'italic' }}>"{t.text}"</p>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                <div style={{ width: 36, height: 36, borderRadius: '50%', background: 'var(--accent-light)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <i className="bi bi-person" style={{ color: 'var(--accent)', fontSize: 18 }} />
+              <span style={{ fontSize: 13, color: 'var(--text-muted)', fontWeight: 500 }}>4,8 / 5 · über 1.000 Bewertungen</span>
+            </div>
+            <h2 style={{ fontSize: 28, fontWeight: 900, color: 'var(--dark)', letterSpacing: '-0.025em' }}>
+              Das sagen unsere Kunden
+            </h2>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(3, 1fr)', gap: 20 }}>
+            {TESTIMONIALS.map(({ name, role, rating, text }) => (
+              <div key={name} style={{
+                background: 'white', padding: '28px 26px',
+                border: '1px solid var(--border)', display: 'flex', flexDirection: 'column',
+              }}>
+                <div style={{ display: 'flex', gap: 2, marginBottom: 16 }}>
+                  {[...Array(rating)].map((_, i) => <i key={i} className="bi bi-star-fill" style={{ color: '#f59e0b', fontSize: 12 }} />)}
+                </div>
+                <p style={{ fontSize: 14, color: 'var(--text)', lineHeight: 1.8, flex: 1, fontStyle: 'italic' }}>
+                  „{text}"
+                </p>
+                <div style={{ marginTop: 20, paddingTop: 16, borderTop: '1px solid var(--border)', display: 'flex', alignItems: 'center', gap: 10 }}>
+                  <div style={{ width: 34, height: 34, background: 'var(--accent-light)', border: '1px solid var(--border)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, fontSize: 13, fontWeight: 700, color: 'var(--accent)' }}>
+                    {name.charAt(0)}
+                  </div>
+                  <div>
+                    <p style={{ fontSize: 13.5, fontWeight: 700, color: 'var(--dark)' }}>{name}</p>
+                    <p style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 1 }}>{role}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Über uns ──────────────────────────────────────────────────────── */}
+      <section id="uber-uns" className="section" style={{ scrollMarginTop: '64px' }}>
+        <div className="container">
+          <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '55% 45%', gap: isMobile ? 48 : 80, alignItems: 'center' }}>
+            <div>
+              <p style={{ fontSize: 11.5, fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.12em', marginBottom: 14 }}>
+                Über uns
+              </p>
+              <h2 style={{ fontSize: 'clamp(22px, 2.8vw, 36px)', fontWeight: 900, color: 'var(--dark)', letterSpacing: '-0.025em', marginBottom: 20, lineHeight: 1.1 }}>
+                Ihr Spezialist für Wohnwagen & Anhänger seit 2015
+              </h2>
+              <p style={{ fontSize: 15, color: 'var(--text-muted)', lineHeight: 1.82, marginBottom: 16 }}>
+                NexusTrailer wurde mit einem klaren Ziel gegründet: Hochwertige Wohnwagen und Anhänger für Privatpersonen und Unternehmen in ganz Europa zugänglich zu machen – zu fairen Preisen, mit transparentem Service und einem persönlichen Kundenerlebnis.
+              </p>
+              <p style={{ fontSize: 15, color: 'var(--text-muted)', lineHeight: 1.82, marginBottom: 32 }}>
+                Wir arbeiten direkt mit Herstellern wie Sterckeman, ERIBA und Caravelair zusammen, um Ihnen die besten Produkte zum günstigsten Preis zu bieten – kostenloser Versand und COC-Zertifikat inklusive.
+              </p>
+              <Link to="/shop" className="btn btn-primary">Zum Shop</Link>
+            </div>
+
+            {/* Stats */}
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', overflow: 'hidden', border: '1px solid var(--border)' }}>
+              {STATS.map(([n, l], i) => (
+                <div key={l} style={{
+                  padding: '32px 20px', textAlign: 'center',
+                  background: i % 2 === 0 ? 'white' : 'var(--bg)',
+                  borderRight: i % 2 === 0 ? '1px solid var(--border)' : 'none',
+                  borderBottom: i < 2 ? '1px solid var(--border)' : 'none',
+                }}>
+                  <div style={{ fontSize: 30, fontWeight: 900, color: 'var(--dark)', letterSpacing: '-0.03em' }}>{n}</div>
+                  <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 6, lineHeight: 1.45 }}>{l}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Warum NexusTrailer ────────────────────────────────────────────────── */}
+      <section className="section" style={{ background: 'var(--bg)' }}>
+        <div className="container">
+          <div style={{ marginBottom: 32 }}>
+            <p style={{ fontSize: 11.5, fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.12em', marginBottom: 8 }}>Unsere Garantien</p>
+            <h2 style={{ fontSize: 26, fontWeight: 900, color: 'var(--dark)', letterSpacing: '-0.025em' }}>Warum NexusTrailer?</h2>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: 12 }}>
+            {FEATURES.map(({ icon, title, desc }) => (
+              <div key={title} style={{
+                display: 'flex', gap: 18, padding: '24px 24px',
+                background: 'white', border: '1px solid var(--border)',
+              }}>
+                <div style={{ flexShrink: 0, width: 44, height: 44, background: 'var(--accent-light)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <i className={`bi ${icon}`} style={{ fontSize: 20, color: 'var(--accent)' }} />
                 </div>
                 <div>
-                  <p style={{ fontSize: 13, fontWeight: 700, color: 'var(--dark)' }}>— {t.name}</p>
-                  <p style={{ fontSize: 12, color: 'var(--text-muted)' }}>{t.role}</p>
+                  <h3 style={{ fontSize: 14.5, fontWeight: 700, color: 'var(--dark)', marginBottom: 6 }}>{title}</h3>
+                  <p style={{ fontSize: 13.5, color: 'var(--text-muted)', lineHeight: 1.72 }}>{desc}</p>
                 </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
-      </div>
-    </section>
-  );
-}
+      </section>
 
-function CtaBanner() {
-  return (
-    <section style={{ background: 'var(--dark)', padding: '72px 0' }}>
-      <div className="container" style={{ textAlign: 'center' }}>
-        <p style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--accent)', marginBottom: 12 }}>JETZT STARTEN</p>
-        <h2 style={{ fontSize: 'clamp(26px, 4vw, 44px)', fontWeight: 900, color: 'white', letterSpacing: '-0.02em', marginBottom: 16 }}>
-          Bereit für Ihren neuen Anhänger?
-        </h2>
-        <p style={{ fontSize: 16, color: 'rgba(255,255,255,0.6)', marginBottom: 36 }}>
-          Über 200 Produkte. Kostenloser Versand. 30 Tage Rückgabe. Sofort lieferbar.
-        </p>
-        <Link to="/shop" className="btn btn-accent btn-lg">
-          <i className="bi bi-grid" /> Jetzt alle Produkte entdecken
-        </Link>
-      </div>
-    </section>
-  );
-}
+      {/* ── FAQ ───────────────────────────────────────────────────────────── */}
+      <section className="section">
+        <div className="container">
+          <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: isMobile ? 40 : 80, alignItems: 'start' }}>
+            <div>
+              <p style={{ fontSize: 11.5, fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.12em', marginBottom: 14 }}>Häufige Fragen</p>
+              <h2 style={{ fontSize: 'clamp(22px, 2.8vw, 34px)', fontWeight: 900, color: 'var(--dark)', letterSpacing: '-0.025em', lineHeight: 1.1, marginBottom: 20 }}>
+                Alles, was Sie wissen müssen
+              </h2>
+              <p style={{ fontSize: 14.5, color: 'var(--text-muted)', lineHeight: 1.8, marginBottom: 28 }}>
+                Wir beantworten die häufigsten Fragen. Haben Sie weitere? Schreiben Sie uns gerne.
+              </p>
+              <button onClick={scrollToKontakt} className="btn btn-outline">
+                Uns kontaktieren
+              </button>
+            </div>
+            <div>
+              {FAQS.map(({ q, a }, i) => (
+                <div key={q} style={{ borderTop: '1px solid var(--border)' }}>
+                  <button
+                    onClick={() => setOpenFaq(openFaq === i ? null : i)}
+                    style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '18px 0', background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left', gap: 16 }}
+                  >
+                    <span style={{ fontSize: 14.5, fontWeight: 600, color: 'var(--dark)' }}>{q}</span>
+                    <i className={`bi bi-${openFaq === i ? 'dash' : 'plus'}`} style={{ fontSize: 18, color: 'var(--text-muted)', flexShrink: 0 }} />
+                  </button>
+                  {openFaq === i && (
+                    <div style={{ paddingBottom: 18, fontSize: 14, color: 'var(--text-muted)', lineHeight: 1.8 }}>
+                      {a}
+                    </div>
+                  )}
+                </div>
+              ))}
+              <div style={{ borderTop: '1px solid var(--border)' }} />
+              <div style={{ marginTop: 20 }}>
+                <Link to="/faq" style={{ fontSize: 13, color: 'var(--accent)', fontWeight: 600 }}>
+                  Alle Fragen anzeigen
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
 
-export default function HomePage() {
-  return (
-    <>
-      <HeroSlider />
-      <TrustBar />
-      <CategoryGrid />
-      <FeaturedSection />
-      <SalesBanner />
-      <TrustSection />
-      <StatsBar />
-      <Testimonials />
-      <CtaBanner />
-    </>
+      {/* ── Kontakt ───────────────────────────────────────────────────────── */}
+      <section id="kontakt" className="section" style={{ background: 'var(--bg)', scrollMarginTop: '64px' }}>
+        <div className="container" style={{ maxWidth: 760 }}>
+          <div style={{ marginBottom: 36 }}>
+            <p style={{ fontSize: 11.5, fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.12em', marginBottom: 12 }}>Kontakt</p>
+            <h2 style={{ fontSize: 'clamp(22px, 2.8vw, 34px)', fontWeight: 900, color: 'var(--dark)', letterSpacing: '-0.025em', lineHeight: 1.1, marginBottom: 10 }}>Haben Sie eine Frage?</h2>
+            <p style={{ fontSize: 15, color: 'var(--text-muted)', lineHeight: 1.7 }}>
+              Wir antworten innerhalb von 24 Werktunden. Sie erreichen uns auch per{' '}
+              <a href="mailto:info@nexustrailer.com" style={{ color: 'var(--accent)', fontWeight: 600 }}>info@nexustrailer.com</a>{' '}
+              oder telefonisch unter{' '}
+              <a href="tel:+33756836479" style={{ color: 'var(--accent)', fontWeight: 600 }}>+33 7 56 83 64 79</a>.
+            </p>
+          </div>
+          <KontaktWidget />
+        </div>
+      </section>
+
+      {/* ── CTA final ─────────────────────────────────────────────────────── */}
+      <section style={{ background: 'var(--dark)', padding: '80px 0', position: 'relative', overflow: 'hidden' }}>
+        <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse 60% 80% at 80% 50%, rgba(249,115,22,0.10) 0%, transparent 70%)', pointerEvents: 'none' }} />
+        <div className="container" style={{ textAlign: 'center', position: 'relative' }}>
+          <p style={{ fontSize: 11.5, fontWeight: 600, color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', letterSpacing: '0.14em', marginBottom: 20 }}>
+            Über 1.000 zufriedene Kunden
+          </p>
+          <h2 style={{ fontSize: 'clamp(22px, 3vw, 36px)', fontWeight: 900, color: 'white', letterSpacing: '-0.025em', marginBottom: 16, lineHeight: 1.1 }}>
+            Bereit für Ihren neuen Wohnwagen?
+          </h2>
+          <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.5)', marginBottom: 40, maxWidth: 440, margin: '0 auto 40px' }}>
+            Kostenloser Versand in ganz Europa. Ohne Überraschungen. Mit 2 Jahren Garantie.
+          </p>
+          <div style={{ display: 'flex', gap: 14, justifyContent: 'center', flexWrap: 'wrap' }}>
+            <Link to="/shop" className="btn btn-accent btn-lg">
+              <i className="bi bi-grid" /> Zum Katalog
+            </Link>
+            <button
+              onClick={scrollToKontakt}
+              className="btn btn-lg"
+              style={{ background: 'transparent', border: '1.5px solid rgba(255,255,255,0.25)', color: 'white' }}
+              onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.6)'; e.currentTarget.style.background = 'rgba(255,255,255,0.07)'; }}
+              onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.25)'; e.currentTarget.style.background = 'transparent'; }}
+            >
+              Angebot anfragen
+            </button>
+          </div>
+        </div>
+      </section>
+
+    </main>
   );
 }

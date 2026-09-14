@@ -1,5 +1,5 @@
 {
-  "name": "altotrailer",
+  "name": "nexustrailer",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -12,6 +12,7 @@
     "lint": "oxlint",
     "setup:admin": "node server/create-admin.js",
     "db:seed": "node server/sql/seed.js",
+    "db:settings": "node server/sql/create-settings.js",
     "start:prod": "node server/index.js"
   },
   "overrides": {
@@ -20,6 +21,7 @@
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "bootstrap-icons": "^1.13.1",
+    "compression": "^1.8.2",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
@@ -27,6 +29,7 @@
     "express-rate-limit": "^8.6.2",
     "helmet": "^8.3.0",
     "jose": "^5.9.6",
+    "morgan": "^1.12.1",
     "mysql2": "^3.23.3",
     "nodemailer": "^6.9.16",
     "react": "^19.2.8",

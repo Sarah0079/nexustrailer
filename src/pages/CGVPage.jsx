@@ -1,4 +1,4 @@
-function Section({ title, children }) {
+﻿function Section({ title, children }) {
   return (
     <div style={{ marginBottom: 40 }}>
       <h2 style={{ fontSize: 18, fontWeight: 800, color: 'var(--dark)', marginBottom: 14, paddingBottom: 10, borderBottom: '2px solid var(--accent)' }}>{title}</h2>
@@ -20,7 +20,7 @@ export default function CGVPage() {
       <div className="container" style={{ padding: '56px 24px 80px', maxWidth: 800 }}>
 
         <Section title="Geltungsbereich">
-          <p>Diese Allgemeinen Geschäftsbedingungen gelten für alle Kaufverträge, die über die Website TrailPro zwischen LA REMORQUE M (nachfolgend „Verkäufer") und dem Käufer (nachfolgend „Kunde") geschlossen werden.</p>
+          <p>Diese Allgemeinen Geschäftsbedingungen gelten für alle Kaufverträge, die über die Website NexusTrailer zwischen LA REMORQUE M (nachfolgend „Verkäufer") und dem Käufer (nachfolgend „Kunde") geschlossen werden.</p>
         </Section>
 
         <Section title="Vertragsgegenstand">
@@ -93,7 +93,7 @@ export default function CGVPage() {
             <a href="https://ec.europa.eu/consumers/odr" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent)' }}>
               ec.europa.eu/consumers/odr
             </a>
-            . Unsere E-Mail-Adresse für Verbraucherbeschwerden lautet: info@altotrailer.com
+            . Unsere E-Mail-Adresse für Verbraucherbeschwerden lautet: info@nexustrailer.com
           </p>
         </Section>
 

@@ -1,4 +1,4 @@
-function Section({ title, children }) {
+﻿function Section({ title, children }) {
   return (
     <div style={{ marginBottom: 40 }}>
       <h2 style={{ fontSize: 18, fontWeight: 800, color: 'var(--dark)', marginBottom: 14, paddingBottom: 10, borderBottom: '2px solid var(--accent)' }}>{title}</h2>
@@ -21,7 +21,7 @@ export default function MentionsLegalesPage() {
 
         <Section title="Anbieter">
           <p><strong>Unternehmensname:</strong> LA REMORQUE M</p>
-          <p><strong>Handelsname:</strong> TrailPro</p>
+          <p><strong>Handelsname:</strong> NexusTrailer</p>
           <p><strong>Rechtsform:</strong> Einzelunternehmen (Frankreich)</p>
           <p><strong>SIREN:</strong> 948 418 827</p>
           <p><strong>SIRET:</strong> 94841882700010</p>
@@ -29,7 +29,7 @@ export default function MentionsLegalesPage() {
           <p><strong>Handelsregisternummer:</strong> 948 418 827 R.C.S. Clermont-Ferrand</p>
           <p><strong>Anschrift:</strong> 21 Rue du Bouchet, 63350 Maringues, Frankreich</p>
           <p><strong>Telefon:</strong> +33 7 56 83 64 79</p>
-          <p><strong>E-Mail:</strong> info@trailpro.com</p>
+          <p><strong>E-Mail:</strong> info@nexustrailer.com</p>
         </Section>
 
         <Section title="Verantwortlicher für den Inhalt">
@@ -44,7 +44,7 @@ export default function MentionsLegalesPage() {
 
         <Section title="Urheberrecht">
           <p>
-            Alle Inhalte dieser Website (Texte, Bilder, Grafiken, Logos, Icons, Sounds, Software usw.) sind – sofern nicht anders angegeben – Eigentum von LA REMORQUE M / TrailPro und urheberrechtlich geschützt.
+            Alle Inhalte dieser Website (Texte, Bilder, Grafiken, Logos, Icons, Sounds, Software usw.) sind – sofern nicht anders angegeben – Eigentum von LA REMORQUE M / NexusTrailer und urheberrechtlich geschützt.
           </p>
           <p style={{ marginTop: 10 }}>
             Jegliche Vervielfältigung, Verbreitung, Veröffentlichung oder Bearbeitung ohne vorherige schriftliche Genehmigung von LA REMORQUE M ist untersagt.
@@ -53,7 +53,7 @@ export default function MentionsLegalesPage() {
 
         <Section title="Haftungsausschluss">
           <p>
-            TrailPro übernimmt keine Haftung für Schäden, die durch die Nutzung dieser Website entstehen, insbesondere nicht für technische Störungen, Datenverlust oder unrichtige Angaben Dritter.
+            NexusTrailer übernimmt keine Haftung für Schäden, die durch die Nutzung dieser Website entstehen, insbesondere nicht für technische Störungen, Datenverlust oder unrichtige Angaben Dritter.
           </p>
         </Section>
 

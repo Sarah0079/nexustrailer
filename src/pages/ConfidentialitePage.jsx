@@ -1,4 +1,4 @@
-function Section({ title, children }) {
+﻿function Section({ title, children }) {
   return (
     <div style={{ marginBottom: 40 }}>
       <h2 style={{ fontSize: 18, fontWeight: 800, color: 'var(--dark)', marginBottom: 14, paddingBottom: 10, borderBottom: '2px solid var(--accent)' }}>{title}</h2>
@@ -22,8 +22,8 @@ export default function ConfidentialitePage() {
 
         <Section title="Verantwortliche Stelle">
           <p>
-            LA REMORQUE M (TrailPro), 21 Rue du Bouchet, 63350 Maringues, Frankreich<br />
-            E-Mail: info@trailpro.com – Telefon: +33 7 56 83 64 79
+            LA REMORQUE M (NexusTrailer), 21 Rue du Bouchet, 63350 Maringues, Frankreich<br />
+            E-Mail: info@nexustrailer.com – Telefon: +33 7 56 83 64 79
           </p>
         </Section>
 
@@ -82,7 +82,7 @@ export default function ConfidentialitePage() {
             <li><strong>Widerspruchsrecht:</strong> Bestimmten Verarbeitungen widersprechen.</li>
           </ul>
           <p style={{ marginTop: 12 }}>
-            Zur Ausübung dieser Rechte wenden Sie sich bitte an: <strong>info@trailpro.com</strong>. Sie können auch eine Beschwerde bei der zuständigen Datenschutzbehörde einreichen.
+            Zur Ausübung dieser Rechte wenden Sie sich bitte an: <strong>info@nexustrailer.com</strong>. Sie können auch eine Beschwerde bei der zuständigen Datenschutzbehörde einreichen.
           </p>
         </Section>
 
