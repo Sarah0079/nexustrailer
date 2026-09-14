@@ -106,8 +106,8 @@ export default function HomePage() {
       {/* ── Hero ──────────────────────────────────────────────────────────── */}
       <section style={{
         position: 'relative',
-        height: '100vh',
-        minHeight: 600,
+        height: 'calc(100vh - 98px)',
+        minHeight: 500,
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
