@@ -121,6 +121,7 @@ img { max-width: 100%; display: block; }
 @keyframes slideLeft { from { transform: translateX(-100%) } to { transform: translateX(0) } }
 @keyframes spin      { to { transform: rotate(360deg) } }
 @keyframes pulse     { 0%,100% { opacity:1 } 50% { opacity:0.5 } }
+@keyframes bounce-y  { 0%,100% { transform: translateY(0) } 50% { transform: translateY(8px) } }
 
 /* ── Scrollbar ───────────────────────────── */
 ::-webkit-scrollbar { width: 6px; }

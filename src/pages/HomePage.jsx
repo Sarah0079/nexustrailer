@@ -216,14 +216,14 @@ export default function HomePage() {
         {/* Scroll indicator */}
         <div style={{
           position: 'absolute', bottom: 28, left: '50%', transform: 'translateX(-50%)',
-          zIndex: 2, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6,
+          zIndex: 2,
+          animation: 'bounce-y 1.6s ease-in-out infinite',
         }}>
-          <span style={{
-            fontSize: 10, fontWeight: 700, letterSpacing: '0.16em',
-            color: 'rgba(255,255,255,0.45)', textTransform: 'uppercase',
-          }}>
-            Scrollen ↓
-          </span>
+          <i className="bi bi-chevron-down" style={{
+            fontSize: 28,
+            color: 'rgba(255,255,255,0.5)',
+            display: 'block',
+          }} />
         </div>
       </section>
 
