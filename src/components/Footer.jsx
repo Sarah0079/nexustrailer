@@ -83,7 +83,7 @@ export default function Footer() {
           <div>
             <Link to="/" style={{ display: 'inline-flex', marginBottom: 16, textDecoration: 'none' }}>
               <div style={{ background: 'white', borderRadius: 0, padding: '4px 10px' }}>
-                <img src="/image/logo.png" alt="NexusTrailer" style={{ height: 68, width: 'auto', objectFit: 'contain', display: 'block' }} />
+                <img src="/image/NexusTrailer.png" alt="NexusTrailer" style={{ height: 68, width: 'auto', objectFit: 'contain', display: 'block' }} />
               </div>
             </Link>
             <p style={{ fontSize: 12.5, color: 'rgba(255,255,255,0.42)', lineHeight: 1.8 }}>

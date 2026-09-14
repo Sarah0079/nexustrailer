@@ -91,7 +91,7 @@ export default function Header() {
 
           {/* Logo */}
           <Link to="/" style={{ display: 'flex', alignItems: 'center', flexShrink: 0, textDecoration: 'none' }}>
-            <img src="/image/logo.png" alt="NexusTrailer" style={{ height: 62, width: 'auto', objectFit: 'contain' }} />
+            <img src="/image/NexusTrailer.png" alt="NexusTrailer" style={{ height: 62, width: 'auto', objectFit: 'contain' }} />
           </Link>
 
           {/* Search */}
