@@ -133,21 +133,6 @@ export default function HomePage() {
           padding: isMobile ? '0 24px' : '0 48px',
           maxWidth: 800,
         }}>
-          {/* Badge pill */}
-          <div style={{
-            display: 'inline-flex', alignItems: 'center', gap: 8,
-            background: 'rgba(255,255,255,0.12)',
-            backdropFilter: 'blur(12px)',
-            border: '1px solid rgba(255,255,255,0.22)',
-            borderRadius: 999,
-            padding: '7px 20px',
-            marginBottom: 32,
-          }}>
-            <span style={{ fontSize: 12.5, fontWeight: 600, color: 'white', letterSpacing: '0.01em' }}>
-              COC-zertifiziert · Direktversand aus Frankreich 🇫🇷
-            </span>
-          </div>
-
           {/* Headline */}
           <h1 style={{
             fontSize: isMobile ? 'clamp(34px, 9vw, 52px)' : 'clamp(52px, 6vw, 78px)',
