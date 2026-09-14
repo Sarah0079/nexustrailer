@@ -115,9 +115,10 @@ export default function HomePage() {
         overflow: 'hidden',
         textAlign: 'center',
         backgroundImage: 'url(/image/2.png)',
-        backgroundSize: 'cover',
+        backgroundSize: 'auto 100%',
         backgroundPosition: 'center center',
         backgroundRepeat: 'no-repeat',
+        backgroundColor: '#0F172A',
       }}>
         {/* Overlay */}
         <div style={{
