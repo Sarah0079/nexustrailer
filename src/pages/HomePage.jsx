@@ -192,15 +192,15 @@ export default function HomePage() {
 
         {/* Scroll indicator */}
         <div style={{
-          position: 'absolute', bottom: 28, left: '50%', transform: 'translateX(-50%)',
-          zIndex: 2,
-          animation: 'bounce-y 1.6s ease-in-out infinite',
+          position: 'absolute', bottom: 24, left: '50%', transform: 'translateX(-50%)',
+          zIndex: 2, animation: 'bounce-y 1.8s ease-in-out infinite',
+          width: 40, height: 40, borderRadius: '50%',
+          background: 'rgba(255,255,255,0.12)',
+          backdropFilter: 'blur(8px)',
+          border: '1px solid rgba(255,255,255,0.22)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
         }}>
-          <i className="bi bi-chevron-down" style={{
-            fontSize: 28,
-            color: 'rgba(255,255,255,0.5)',
-            display: 'block',
-          }} />
+          <i className="bi bi-chevron-down" style={{ fontSize: 16, color: 'white' }} />
         </div>
       </section>
 
