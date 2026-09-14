@@ -105,86 +105,126 @@ export default function HomePage() {
 
       {/* ── Hero ──────────────────────────────────────────────────────────── */}
       <section style={{
-        minHeight: '88vh',
-        display: 'grid',
-        gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr',
-        background: 'var(--dark)',
+        position: 'relative',
+        height: '100vh',
+        minHeight: 600,
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        overflow: 'hidden',
+        textAlign: 'center',
       }}>
-        {/* Left — text */}
+        {/* Background image */}
+        <img
+          src="/image/2.png"
+          alt=""
+          aria-hidden="true"
+          style={{
+            position: 'absolute', inset: 0,
+            width: '100%', height: '100%',
+            objectFit: 'cover', objectPosition: 'center',
+            zIndex: 0,
+          }}
+        />
+        {/* Overlay */}
         <div style={{
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          paddingTop: isMobile ? 48 : 'clamp(48px, 6vw, 96px)',
-          paddingBottom: isMobile ? 40 : 'clamp(48px, 6vw, 96px)',
-          paddingRight: isMobile ? 24 : 'clamp(32px, 4vw, 72px)',
-          paddingLeft: isMobile ? 24 : 'max(24px, calc((100vw - 1280px) / 2 + 24px))',
-          order: isMobile ? 2 : 1,
+          position: 'absolute', inset: 0,
+          background: 'linear-gradient(to bottom, rgba(15,23,42,0.60) 0%, rgba(15,23,42,0.25) 45%, rgba(15,23,42,0.70) 100%)',
+          zIndex: 1,
+        }} />
+
+        {/* Content */}
+        <div style={{
+          position: 'relative', zIndex: 2,
+          display: 'flex', flexDirection: 'column', alignItems: 'center',
+          padding: isMobile ? '0 24px' : '0 48px',
+          maxWidth: 800,
         }}>
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'var(--accent)', padding: '5px 14px', marginBottom: 24, alignSelf: 'flex-start' }}>
-            <i className="bi bi-patch-check-fill" style={{ color: 'white', fontSize: 11 }} />
-            <span style={{ fontSize: 11, fontWeight: 700, color: 'white', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
-              NexusTrailer – Zertifizierte Qualität
+          {/* Badge pill */}
+          <div style={{
+            display: 'inline-flex', alignItems: 'center', gap: 8,
+            background: 'rgba(255,255,255,0.12)',
+            backdropFilter: 'blur(12px)',
+            border: '1px solid rgba(255,255,255,0.22)',
+            borderRadius: 999,
+            padding: '7px 20px',
+            marginBottom: 32,
+          }}>
+            <span style={{ fontSize: 12.5, fontWeight: 600, color: 'white', letterSpacing: '0.01em' }}>
+              COC-zertifiziert · Direktversand aus Frankreich 🇫🇷
             </span>
           </div>
+
+          {/* Headline */}
           <h1 style={{
-            fontSize: 'clamp(28px, 3.6vw, 54px)',
+            fontSize: isMobile ? 'clamp(34px, 9vw, 52px)' : 'clamp(52px, 6vw, 78px)',
             fontWeight: 900,
             color: 'white',
-            lineHeight: 1.07,
+            lineHeight: 1.06,
             letterSpacing: '-0.03em',
-            marginBottom: 24,
+            marginBottom: 22,
+            textWrap: 'balance',
           }}>
             Ihr Zuhause,{' '}
             <span style={{ color: 'var(--accent)' }}>wohin die Straße Sie führt</span>
           </h1>
+
+          {/* Subtitle */}
           <p style={{
-            fontSize: 'clamp(14px, 1.25vw, 17px)',
-            color: 'rgba(255,255,255,0.65)',
-            lineHeight: 1.82,
-            marginBottom: 36,
-            maxWidth: 420,
+            fontSize: isMobile ? 14.5 : 17,
+            color: 'rgba(255,255,255,0.72)',
+            lineHeight: 1.72,
+            marginBottom: 40,
+            maxWidth: 520,
           }}>
-            Hochwertige Wohnwagen & Anhänger – zertifiziert, versandfertig, kostenlos geliefert in ganz Europa. Bis zu 55&nbsp;% unter Händlerpreis.
+            Hochwertige Wohnwagen & Anhänger – zertifiziert, versandfertig,
+            kostenlos geliefert in ganz Europa. Bis zu 55&nbsp;% unter Händlerpreis.
           </p>
-          <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', marginBottom: 32 }}>
-            <Link to="/shop" className="btn btn-accent btn-lg">
-              <i className="bi bi-grid" /> Jetzt entdecken
+
+          {/* CTA buttons */}
+          <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap', justifyContent: 'center' }}>
+            <Link to="/shop" style={{
+              display: 'inline-flex', alignItems: 'center', gap: 8,
+              background: 'white', color: 'var(--dark)',
+              borderRadius: 999, padding: isMobile ? '12px 24px' : '14px 32px',
+              fontWeight: 700, fontSize: 14, textDecoration: 'none',
+              border: '1.5px solid transparent',
+              transition: 'opacity 0.15s',
+            }}
+              onMouseEnter={e => e.currentTarget.style.opacity = '0.88'}
+              onMouseLeave={e => e.currentTarget.style.opacity = '1'}
+            >
+              Jetzt entdecken →
             </Link>
-            <button onClick={scrollToKontakt} className="btn btn-lg" style={{ background: 'rgba(255,255,255,0.1)', color: 'white', border: '1.5px solid rgba(255,255,255,0.2)' }}>
+            <button onClick={scrollToKontakt} style={{
+              display: 'inline-flex', alignItems: 'center', gap: 8,
+              background: 'transparent', color: 'white',
+              borderRadius: 999, padding: isMobile ? '12px 24px' : '14px 32px',
+              fontWeight: 600, fontSize: 14,
+              border: '1.5px solid rgba(255,255,255,0.38)',
+              cursor: 'pointer', transition: 'border-color 0.15s',
+            }}
+              onMouseEnter={e => e.currentTarget.style.borderColor = 'rgba(255,255,255,0.8)'}
+              onMouseLeave={e => e.currentTarget.style.borderColor = 'rgba(255,255,255,0.38)'}
+            >
               Experten kontaktieren
             </button>
           </div>
-          <div style={{ display: 'flex', gap: 20, flexWrap: 'wrap' }}>
-            {[['bi-truck','Kostenloser Versand'], ['bi-shield-check','2 Jahre Garantie'], ['bi-arrow-repeat','30 Tage Rückgabe']].map(([icon, text]) => (
-              <span key={text} style={{ fontSize: 12.5, color: 'rgba(255,255,255,0.55)', display: 'flex', alignItems: 'center', gap: 6 }}>
-                <i className={`bi ${icon}`} style={{ color: 'var(--accent)', fontSize: 13 }} />{text}
-              </span>
-            ))}
-          </div>
         </div>
 
-        {/* Right — image + badge */}
-        {!isMobile && (
-          <div style={{ position: 'relative', overflow: 'hidden', order: 2, minHeight: 'auto' }}>
-            <img
-              src="/image/hero/1.jpg"
-              alt="NexusTrailer Wohnwagen"
-              style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
-            />
-            <div style={{
-              position: 'absolute', bottom: 36, left: -20,
-              background: 'white', padding: '18px 24px',
-              boxShadow: '0 8px 32px rgba(0,0,0,0.25)',
-            }}>
-              <p style={{ fontSize: 11, fontWeight: 700, color: 'var(--accent)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 4 }}>BIS ZU</p>
-              <p style={{ fontSize: 30, fontWeight: 900, color: 'var(--dark)', letterSpacing: '-0.03em', lineHeight: 1 }}>
-                55% <span style={{ fontSize: 15, fontWeight: 600 }}>Rabatt</span>
-              </p>
-              <p style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 4 }}>vs. Neupreis beim Händler</p>
-            </div>
-          </div>
-        )}
+        {/* Scroll indicator */}
+        <div style={{
+          position: 'absolute', bottom: 28, left: '50%', transform: 'translateX(-50%)',
+          zIndex: 2, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6,
+        }}>
+          <span style={{
+            fontSize: 10, fontWeight: 700, letterSpacing: '0.16em',
+            color: 'rgba(255,255,255,0.45)', textTransform: 'uppercase',
+          }}>
+            Scrollen ↓
+          </span>
+        </div>
       </section>
 
       {/* ── Trust-Strip ──────────────────────────────────────────────────── */}
