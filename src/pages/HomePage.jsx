@@ -194,13 +194,13 @@ export default function HomePage() {
         <div style={{ position: 'absolute', bottom: 24, left: 0, right: 0, zIndex: 2, display: 'flex', justifyContent: 'center' }}>
           <div style={{
             animation: 'bounce-y 1.8s ease-in-out infinite',
-            width: 40, height: 40, borderRadius: '50%',
+            width: isMobile ? 30 : 40, height: isMobile ? 30 : 40, borderRadius: '50%',
             background: 'rgba(255,255,255,0.12)',
             backdropFilter: 'blur(8px)',
             border: '1px solid rgba(255,255,255,0.22)',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
           }}>
-            <i className="bi bi-chevron-down" style={{ fontSize: 16, color: 'white' }} />
+            <i className="bi bi-chevron-down" style={{ fontSize: isMobile ? 12 : 16, color: 'white' }} />
           </div>
         </div>
       </section>
