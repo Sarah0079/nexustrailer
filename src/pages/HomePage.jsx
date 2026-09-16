@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { PRODUCTS, CATEGORIES, TESTIMONIALS } from '../data/products';
 import ProductCard from '../components/ProductCard';
@@ -25,8 +25,10 @@ const FAQ_PREVIEW = [
 ];
 
 export default function HomePage() {
-  const isMobile = useBreakpoint(768);
-  const featured = PRODUCTS.filter(p => p.featured).slice(0, 4);
+  const isMobile  = useBreakpoint(768);
+  const featured  = PRODUCTS.filter(p => p.featured).slice(0, 4);
+  const videoRef  = useRef(null);
+  useEffect(() => { if (videoRef.current) videoRef.current.muted = true; }, []);
 
   const counts = useMemo(() => {
     const c = {};
@@ -39,7 +41,7 @@ export default function HomePage() {
 
       {/* ── Hero ── */}
       <section style={{ position: 'relative', overflow: 'hidden', minHeight: 560, display: 'flex', alignItems: 'center' }}>
-        <video autoPlay muted loop playsInline style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', zIndex: 0 }}>
+        <video ref={videoRef} autoPlay loop playsInline style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', zIndex: 0 }}>
           <source src="/image/hero.mp4" type="video/mp4" />
         </video>
         <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to right, rgba(15,23,42,0.90) 0%, rgba(15,23,42,0.58) 60%, rgba(15,23,42,0.20) 100%)', zIndex: 1 }} />
