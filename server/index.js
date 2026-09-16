@@ -86,12 +86,13 @@ app.use('/api/admin/angebote',    adminAngeboteRoutes);
 app.get('/api/health', (_, res) => res.json({ ok: true }));
 
 if (process.env.NODE_ENV === 'production') {
-  const distDir        = path.join(__dirname, '..', 'dist');
-  const publicDir      = path.join(__dirname, '..', 'public');
-  const persistentDir  = path.join(__dirname, '..', '..', '..', 'public_html');
-  app.use(express.static(distDir,       { maxAge: '1y', etag: false }));
-  app.use(express.static(publicDir,     { maxAge: '1y', etag: false }));
-  app.use(express.static(persistentDir, { maxAge: '1y', etag: false }));
+  const distDir    = path.join(__dirname, '..', 'dist');
+  const publicDir  = path.join(__dirname, '..', 'public');
+  app.use(express.static(distDir,   { maxAge: '1y', etag: false }));
+  app.use(express.static(publicDir, { maxAge: '1y', etag: false }));
+  if (process.env.MEDIA_DIR) {
+    app.use(express.static(process.env.MEDIA_DIR, { maxAge: '1y', etag: false }));
+  }
   app.get('*', (req, res) => {
     if (req.path.startsWith('/api/')) return res.status(404).json({ error: 'Not found' });
     res.sendFile(path.join(distDir, 'index.html'));
