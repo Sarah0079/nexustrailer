@@ -28,84 +28,114 @@ export async function sendOrderConfirmation({ orderRef, customer, items, total, 
   const admin = process.env.SMTP_ADMIN || process.env.SMTP_USER;
 
   const isDeposit = paymentOption === 'deposit';
-  const itemsHtml = items.map(item =>
-    `<tr>
-      <td style="padding:8px 12px;border-bottom:1px solid #E5E7EB;">${item.product_name}</td>
-      <td style="padding:8px 12px;border-bottom:1px solid #E5E7EB;text-align:center;">${item.quantity}</td>
-      <td style="padding:8px 12px;border-bottom:1px solid #E5E7EB;text-align:right;">${formatPrice(item.unit_price)}</td>
-      <td style="padding:8px 12px;border-bottom:1px solid #E5E7EB;text-align:right;font-weight:600;">${formatPrice(item.line_total)}</td>
-    </tr>`
-  ).join('');
+  const itemsHtml = items.map(item => `
+    <tr>
+      <td style="padding:12px 16px;border-bottom:1px solid #E5E7EB;font-size:13px;color:#0F172A;">
+        <div style="font-weight:600;">${item.product_name}</div>
+        <div style="color:#6B7280;font-size:12px;margin-top:2px;">Menge: ${item.quantity} &nbsp;·&nbsp; ${formatPrice(item.unit_price)} / Stk.</div>
+      </td>
+      <td style="padding:12px 16px;border-bottom:1px solid #E5E7EB;text-align:right;font-weight:700;font-size:14px;color:#0F172A;white-space:nowrap;">${formatPrice(item.line_total)}</td>
+    </tr>`).join('');
 
-  const customerHtml = `
-    <!DOCTYPE html>
-    <html lang="de">
-    <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
-    <body style="margin:0;padding:0;background:#F9FAFB;font-family:Arial,sans-serif;color:#111827;">
-      <div style="max-width:600px;margin:32px auto;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.08);">
-        <div style="background:#0F172A;padding:28px 32px;text-align:center;">
-          <div style="font-size:22px;font-weight:900;color:#fff;letter-spacing:-.02em;">NexusTrailer</div>
-          <div style="font-size:12px;color:rgba(255,255,255,.5);margin-top:4px;">Ihr Partner für Transportlösungen</div>
-        </div>
-        <div style="padding:32px;">
-          <h1 style="font-size:20px;font-weight:800;color:#0F172A;margin:0 0 8px;">Bestellbestätigung</h1>
-          <p style="color:#6B7280;font-size:14px;margin:0 0 24px;">
-            Guten Tag ${customer.vorname} ${customer.nachname},<br>
-            vielen Dank für Ihre Bestellung bei NexusTrailer. Ihre Bestellreferenz lautet:
-          </p>
-          <div style="background:#EFF6FF;border:2px solid #BFDBFE;border-radius:8px;padding:14px 20px;text-align:center;margin-bottom:28px;">
-            <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#2563EB;margin-bottom:4px;">Bestellreferenz</div>
-            <div style="font-size:22px;font-weight:900;font-family:monospace;color:#1E40AF;letter-spacing:.04em;">${orderRef}</div>
-          </div>
-          <h2 style="font-size:14px;font-weight:700;color:#0F172A;margin:0 0 12px;text-transform:uppercase;letter-spacing:.06em;">Bestellübersicht</h2>
-          <table style="width:100%;border-collapse:collapse;font-size:13px;margin-bottom:16px;">
-            <thead>
-              <tr style="background:#F9FAFB;">
-                <th style="padding:8px 12px;text-align:left;color:#6B7280;font-weight:600;border-bottom:2px solid #E5E7EB;">Artikel</th>
-                <th style="padding:8px 12px;text-align:center;color:#6B7280;font-weight:600;border-bottom:2px solid #E5E7EB;">Menge</th>
-                <th style="padding:8px 12px;text-align:right;color:#6B7280;font-weight:600;border-bottom:2px solid #E5E7EB;">Einzelpreis</th>
-                <th style="padding:8px 12px;text-align:right;color:#6B7280;font-weight:600;border-bottom:2px solid #E5E7EB;">Gesamt</th>
-              </tr>
-            </thead>
-            <tbody>${itemsHtml}</tbody>
-            <tfoot>
-              <tr>
-                <td colspan="3" style="padding:12px;text-align:right;font-weight:700;color:#0F172A;">Gesamtbetrag:</td>
-                <td style="padding:12px;text-align:right;font-weight:900;color:#0F172A;font-size:15px;">${formatPrice(total)}</td>
-              </tr>
-              ${isDeposit ? `<tr>
-                <td colspan="3" style="padding:4px 12px;text-align:right;font-weight:600;color:#2563EB;">Jetzt fällig (50 % Anzahlung):</td>
-                <td style="padding:4px 12px;text-align:right;font-weight:900;color:#2563EB;font-size:15px;">${formatPrice(amountDueNow)}</td>
-              </tr>` : ''}
-            </tfoot>
-          </table>
-          <div style="background:#F9FAFB;border:1px solid #E5E7EB;border-radius:8px;padding:20px;margin-bottom:24px;">
-            <h2 style="font-size:14px;font-weight:700;color:#0F172A;margin:0 0 14px;text-transform:uppercase;letter-spacing:.06em;">Bankverbindung für die Überweisung</h2>
-            <table style="width:100%;font-size:13px;">
-              <tr><td style="color:#6B7280;padding:4px 0;width:160px;">Empfänger</td><td style="font-weight:600;color:#0F172A;">${bank.beneficiaire || '—'}</td></tr>
-              <tr><td style="color:#6B7280;padding:4px 0;">IBAN</td><td style="font-weight:700;font-family:monospace;letter-spacing:.04em;color:#0F172A;">${bank.iban || '—'}</td></tr>
-              <tr><td style="color:#6B7280;padding:4px 0;">BIC / SWIFT</td><td style="font-weight:600;font-family:monospace;color:#0F172A;">${bank.bic || '—'}</td></tr>
-              <tr><td style="color:#6B7280;padding:4px 0;">Bank</td><td style="color:#0F172A;">${bank.banque || '—'}</td></tr>
-              <tr><td style="color:#6B7280;padding:4px 0;">Verwendungszweck</td>
-                <td style="font-weight:900;color:#1D4ED8;font-family:monospace;font-size:14px;">${orderRef}</td></tr>
-            </table>
-            <div style="margin-top:14px;padding:10px 14px;background:#FFFBEB;border:1px solid #FDE68A;border-radius:6px;font-size:12px;color:#92400E;">
-              ⚠ Bitte geben Sie unbedingt die Bestellreferenz <strong>${orderRef}</strong> im Verwendungszweck an. Ihre Bestellung wird nach Zahlungseingang bearbeitet (1–3 Werktage).
-            </div>
-          </div>
-          <p style="font-size:13px;color:#6B7280;line-height:1.7;">
-            Bei Fragen stehen wir Ihnen gerne unter <a href="mailto:${process.env.SMTP_FROM || process.env.SMTP_USER}" style="color:#2563EB;">${process.env.SMTP_FROM || process.env.SMTP_USER}</a> zur Verfügung.
-          </p>
-        </div>
-        <div style="background:#F9FAFB;border-top:1px solid #E5E7EB;padding:20px 32px;text-align:center;">
-          <p style="font-size:11px;color:#9CA3AF;margin:0;">
-            NexusTrailer · ${process.env.COMPANY_ADDRESS || 'LA REMORQUE M · 21 Rue du Bouchet, 63350 Maringues, Frankreich'}<br>
-            SIREN ${process.env.COMPANY_SIREN || '948 418 827'} · <a href="https://${process.env.COMPANY_DOMAIN || 'nexustrailer.com'}" style="color:#9CA3AF;">${process.env.COMPANY_DOMAIN || 'nexustrailer.com'}</a>
-          </p>
+  const bankRowHtml = (label, value, mono = false) => `
+    <tr>
+      <td style="padding:6px 0;font-size:12px;color:#6B7280;vertical-align:top;">${label}</td>
+      <td style="padding:6px 0;font-size:13px;font-weight:600;color:#0F172A;word-break:break-all;${mono ? 'font-family:monospace;' : ''}">${value || '—'}</td>
+    </tr>`;
+
+  const customerHtml = `<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+  @media only screen and (max-width:600px){
+    .wrapper{padding:16px !important;}
+    .inner{padding:20px 16px !important;}
+    .footer{padding:14px 16px !important;}
+  }
+</style>
+</head>
+<body style="margin:0;padding:0;background:#F9FAFB;font-family:Arial,sans-serif;color:#111827;">
+<table width="100%" cellpadding="0" cellspacing="0">
+<tr><td align="center" class="wrapper" style="padding:24px 16px;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;background:#fff;border-radius:12px;overflow:hidden;border:1px solid #E5E7EB;">
+
+    <!-- HEADER -->
+    <tr><td style="background:#0F172A;padding:22px 24px;text-align:center;">
+      <div style="font-size:20px;font-weight:900;color:#fff;letter-spacing:-.02em;">NexusTrailer</div>
+      <div style="font-size:11px;color:rgba(255,255,255,.5);margin-top:3px;">Ihr Partner für Transportlösungen</div>
+    </td></tr>
+
+    <!-- BODY -->
+    <tr><td class="inner" style="padding:24px 24px;">
+      <p style="font-size:15px;font-weight:700;color:#0F172A;margin:0 0 6px;">Bestellbestätigung</p>
+      <p style="font-size:13px;color:#6B7280;margin:0 0 20px;line-height:1.6;">
+        Guten Tag ${customer.vorname} ${customer.nachname},<br>
+        vielen Dank für Ihre Bestellung bei NexusTrailer.
+      </p>
+
+      <!-- REF -->
+      <div style="background:#EFF6FF;border:2px solid #BFDBFE;border-radius:8px;padding:14px;text-align:center;margin-bottom:24px;">
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#2563EB;margin-bottom:4px;">Bestellreferenz</div>
+        <div style="font-size:20px;font-weight:900;font-family:monospace;color:#1E40AF;letter-spacing:.04em;word-break:break-all;">${orderRef}</div>
+      </div>
+
+      <!-- PRODUCTS -->
+      <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#6B7280;margin:0 0 8px;">Bestellübersicht</p>
+      <table width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;border:1px solid #E5E7EB;border-radius:8px;overflow:hidden;margin-bottom:8px;">
+        <thead>
+          <tr style="background:#F9FAFB;">
+            <th style="padding:10px 16px;text-align:left;font-size:11px;color:#6B7280;font-weight:600;border-bottom:1px solid #E5E7EB;">Artikel</th>
+            <th style="padding:10px 16px;text-align:right;font-size:11px;color:#6B7280;font-weight:600;border-bottom:1px solid #E5E7EB;">Betrag</th>
+          </tr>
+        </thead>
+        <tbody>${itemsHtml}</tbody>
+        <tfoot>
+          <tr style="background:#F9FAFB;">
+            <td style="padding:12px 16px;font-size:13px;font-weight:700;color:#0F172A;">Gesamtbetrag</td>
+            <td style="padding:12px 16px;text-align:right;font-size:15px;font-weight:900;color:#0F172A;white-space:nowrap;">${formatPrice(total)}</td>
+          </tr>
+          ${isDeposit ? `<tr style="background:#EFF6FF;">
+            <td style="padding:10px 16px;font-size:13px;font-weight:600;color:#1D4ED8;">Jetzt fällig (50&nbsp;% Anzahlung)</td>
+            <td style="padding:10px 16px;text-align:right;font-size:15px;font-weight:900;color:#1D4ED8;white-space:nowrap;">${formatPrice(amountDueNow)}</td>
+          </tr>` : ''}
+        </tfoot>
+      </table>
+
+      <!-- BANK -->
+      <div style="background:#F9FAFB;border:1px solid #E5E7EB;border-radius:8px;padding:16px;margin-top:20px;margin-bottom:20px;">
+        <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#6B7280;margin:0 0 12px;">Bankverbindung für die Überweisung</p>
+        <table width="100%" cellpadding="0" cellspacing="0">
+          ${bankRowHtml('Empfänger', bank.beneficiaire)}
+          ${bankRowHtml('IBAN', bank.iban, true)}
+          ${bankRowHtml('BIC / SWIFT', bank.bic, true)}
+          ${bankRowHtml('Bank', bank.banque)}
+          ${bankRowHtml('Verwendungszweck', `<strong style="color:#1D4ED8;">${orderRef}</strong>`)}
+        </table>
+        <div style="margin-top:12px;padding:10px 14px;background:#FFFBEB;border-left:3px solid #F59E0B;font-size:12px;color:#92400E;line-height:1.5;">
+          ⚠ Bitte geben Sie die Bestellreferenz <strong>${orderRef}</strong> im Verwendungszweck an. Ihre Bestellung wird nach Zahlungseingang bearbeitet (1–3&nbsp;Werktage).
         </div>
       </div>
-    </body>
-    </html>`;
+
+      <p style="font-size:12px;color:#6B7280;line-height:1.6;margin:0;">
+        Bei Fragen: <a href="mailto:${process.env.SMTP_FROM || process.env.SMTP_USER}" style="color:#2563EB;">${process.env.SMTP_FROM || process.env.SMTP_USER}</a>
+      </p>
+    </td></tr>
+
+    <!-- FOOTER -->
+    <tr><td class="footer" style="background:#F9FAFB;border-top:1px solid #E5E7EB;padding:14px 24px;text-align:center;">
+      <p style="font-size:11px;color:#9CA3AF;margin:0;line-height:1.6;">
+        NexusTrailer · ${process.env.COMPANY_ADDRESS || '21 Rue du Bouchet, 63350 Maringues'}<br>
+        SIREN ${process.env.COMPANY_SIREN || '948 418 827'} · <a href="https://${process.env.COMPANY_DOMAIN || 'nexustrailer.de'}" style="color:#9CA3AF;">${process.env.COMPANY_DOMAIN || 'nexustrailer.de'}</a>
+      </p>
+    </td></tr>
+
+  </table>
+</td></tr>
+</table>
+</body>
+</html>`;
 
   const adminText = `Neue Bestellung: ${orderRef}
 Kunde: ${customer.vorname} ${customer.nachname} <${customer.email}>
