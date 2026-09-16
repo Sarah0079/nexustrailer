@@ -79,11 +79,11 @@ export default function OrderConfirmationPage() {
           display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12,
           marginBottom: 20,
         }}>
-          <div style={{ minWidth: 0 }}>
+          <div style={{ minWidth: 0, flex: 1 }}>
             <p style={{ fontSize: 10, fontWeight: 700, color: 'var(--accent)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 4 }}>
               Ihre Bestellnummer / Verwendungszweck
             </p>
-            <p style={{ fontSize: isMobile ? 20 : 26, fontWeight: 900, color: 'var(--dark)', letterSpacing: '0.04em', fontFamily: 'monospace', wordBreak: 'break-all' }}>
+            <p style={{ fontSize: 'clamp(18px, 5vw, 26px)', fontWeight: 900, color: 'var(--dark)', letterSpacing: '0.04em', fontFamily: 'monospace', wordBreak: 'break-all', overflowWrap: 'anywhere' }}>
               {orderRef}
             </p>
           </div>
@@ -102,20 +102,16 @@ export default function OrderConfirmationPage() {
             const isRef = label === 'Verwendungszweck';
             return (
               <div key={label} style={{
-                padding: isMobile ? '12px 16px' : '14px 24px',
+                padding: '12px 20px',
                 borderBottom: i < arr.length - 1 ? '1px solid var(--border)' : undefined,
                 background: isRef ? 'var(--accent-light)' : undefined,
-                display: 'flex',
-                flexDirection: isMobile ? 'column' : 'row',
-                justifyContent: 'space-between',
-                alignItems: isMobile ? 'flex-start' : 'center',
-                gap: isMobile ? 4 : 16,
               }}>
-                <span style={{ fontSize: 12, color: isRef ? 'var(--accent)' : 'var(--text-muted)', fontWeight: isRef ? 700 : 500, flexShrink: 0 }}>
+                <span style={{ display: 'block', fontSize: 11, color: isRef ? 'var(--accent)' : 'var(--text-muted)', fontWeight: isRef ? 700 : 500, marginBottom: 3, textTransform: isRef ? 'uppercase' : undefined, letterSpacing: isRef ? '0.04em' : undefined }}>
                   {label}
                 </span>
                 <span style={{
-                  fontSize: isRef ? (isMobile ? 14 : 15) : (isMobile ? 13 : 14),
+                  display: 'block',
+                  fontSize: isRef ? 15 : 14,
                   fontWeight: 800,
                   color: isRef ? 'var(--accent)' : 'var(--dark)',
                   letterSpacing: mono || isRef ? '0.04em' : undefined,
