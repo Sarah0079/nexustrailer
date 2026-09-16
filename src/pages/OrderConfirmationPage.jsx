@@ -1,4 +1,5 @@
 import { Link, useLocation, Navigate } from 'react-router-dom';
+import { useBreakpoint } from '../hooks/useBreakpoint';
 
 export default function OrderConfirmationPage() {
   const location = useLocation();
@@ -8,6 +9,7 @@ export default function OrderConfirmationPage() {
     return <Navigate to="/" replace />;
   }
 
+  const isMobile = useBreakpoint(600);
   const { orderRef, bank, paymentType, total, amountDueNow: serverAmount } = state;
   const fmt = (n) => n.toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' €';
 
@@ -53,18 +55,18 @@ export default function OrderConfirmationPage() {
           background: 'linear-gradient(135deg, #ECFDF5 0%, #D1FAE5 100%)',
           border: '1.5px solid #6EE7B7',
           borderRadius: 'var(--r-lg)',
-          padding: '28px 32px',
-          display: 'flex', gap: 20, alignItems: 'flex-start',
-          marginBottom: 28,
+          padding: isMobile ? '20px 18px' : '28px 32px',
+          display: 'flex', gap: 16, alignItems: 'flex-start',
+          marginBottom: 20,
         }}>
-          <div style={{ width: 52, height: 52, borderRadius: 0, flexShrink: 0, background: 'var(--green)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <i className="bi bi-check-lg" style={{ fontSize: 26, color: 'white' }} />
+          <div style={{ width: 44, height: 44, flexShrink: 0, background: 'var(--green)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <i className="bi bi-check-lg" style={{ fontSize: 22, color: 'white' }} />
           </div>
-          <div>
-            <h2 style={{ fontSize: 20, fontWeight: 800, color: '#065F46', marginBottom: 6 }}>
+          <div style={{ minWidth: 0 }}>
+            <h2 style={{ fontSize: isMobile ? 16 : 20, fontWeight: 800, color: '#065F46', marginBottom: 6 }}>
               Bestellung erfolgreich aufgegeben!
             </h2>
-            <p style={{ fontSize: 14, color: '#047857', lineHeight: 1.6 }}>
+            <p style={{ fontSize: 13, color: '#047857', lineHeight: 1.6 }}>
               Vielen Dank für Ihre Bestellung. Schließen Sie Ihren Kauf ab, indem Sie die Banküberweisung mit der untenstehenden Referenz durchführen.
             </p>
           </div>
@@ -73,58 +75,67 @@ export default function OrderConfirmationPage() {
         {/* Bestellnummer */}
         <div style={{
           background: 'var(--accent-light)', border: '2px solid var(--accent)',
-          borderRadius: 'var(--r-lg)', padding: '18px 24px',
-          display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16,
-          marginBottom: 28,
+          padding: isMobile ? '14px 16px' : '18px 24px',
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12,
+          marginBottom: 20,
         }}>
-          <div>
-            <p style={{ fontSize: 11, fontWeight: 700, color: 'var(--accent)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 4 }}>
+          <div style={{ minWidth: 0 }}>
+            <p style={{ fontSize: 10, fontWeight: 700, color: 'var(--accent)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 4 }}>
               Ihre Bestellnummer / Verwendungszweck
             </p>
-            <p style={{ fontSize: 26, fontWeight: 900, color: 'var(--dark)', letterSpacing: '0.04em', fontFamily: 'monospace' }}>
+            <p style={{ fontSize: isMobile ? 20 : 26, fontWeight: 900, color: 'var(--dark)', letterSpacing: '0.04em', fontFamily: 'monospace', wordBreak: 'break-all' }}>
               {orderRef}
             </p>
           </div>
-          <i className="bi bi-tag-fill" style={{ fontSize: 28, color: 'var(--accent)', flexShrink: 0, opacity: 0.6 }} />
+          <i className="bi bi-tag-fill" style={{ fontSize: 24, color: 'var(--accent)', flexShrink: 0, opacity: 0.6 }} />
         </div>
 
         {/* Bankverbindung */}
-        <div style={{ background: 'white', border: '1px solid var(--border)', borderRadius: 'var(--r-lg)', overflow: 'hidden', marginBottom: 28 }}>
-          <div style={{ padding: '16px 24px', background: 'var(--dark)', display: 'flex', alignItems: 'center', gap: 10 }}>
-            <i className="bi bi-building" style={{ color: 'white', fontSize: 16 }} />
-            <span style={{ fontSize: 13, fontWeight: 700, color: 'white', textTransform: 'uppercase', letterSpacing: '0.07em' }}>
+        <div style={{ background: 'white', border: '1px solid var(--border)', overflow: 'hidden', marginBottom: 20 }}>
+          <div style={{ padding: '14px 20px', background: 'var(--dark)', display: 'flex', alignItems: 'center', gap: 10 }}>
+            <i className="bi bi-building" style={{ color: 'white', fontSize: 15 }} />
+            <span style={{ fontSize: 12, fontWeight: 700, color: 'white', textTransform: 'uppercase', letterSpacing: '0.07em' }}>
               Bankverbindung
             </span>
           </div>
-          {bankRows.map(([label, value, mono], i, arr) => (
-            <div key={label} style={{
-              display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-              padding: '14px 24px',
-              borderBottom: i < arr.length - 1 ? '1px solid var(--border)' : undefined,
-              background: label === 'Verwendungszweck' ? 'var(--accent-light)' : undefined,
-            }}>
-              <span style={{ fontSize: 13, color: label === 'Verwendungszweck' ? 'var(--accent)' : 'var(--text-muted)', fontWeight: label === 'Verwendungszweck' ? 700 : 500 }}>
-                {label}
-              </span>
-              <span style={{
-                fontSize: label === 'Verwendungszweck' ? 15 : 14,
-                fontWeight: 800,
-                color: label === 'Verwendungszweck' ? 'var(--accent)' : 'var(--dark)',
-                letterSpacing: mono || label === 'Verwendungszweck' ? '0.05em' : undefined,
-                fontFamily: mono || label === 'Verwendungszweck' ? 'monospace' : undefined,
-              }}>{value}</span>
-            </div>
-          ))}
+          {bankRows.map(([label, value, mono], i, arr) => {
+            const isRef = label === 'Verwendungszweck';
+            return (
+              <div key={label} style={{
+                padding: isMobile ? '12px 16px' : '14px 24px',
+                borderBottom: i < arr.length - 1 ? '1px solid var(--border)' : undefined,
+                background: isRef ? 'var(--accent-light)' : undefined,
+                display: 'flex',
+                flexDirection: isMobile ? 'column' : 'row',
+                justifyContent: 'space-between',
+                alignItems: isMobile ? 'flex-start' : 'center',
+                gap: isMobile ? 4 : 16,
+              }}>
+                <span style={{ fontSize: 12, color: isRef ? 'var(--accent)' : 'var(--text-muted)', fontWeight: isRef ? 700 : 500, flexShrink: 0 }}>
+                  {label}
+                </span>
+                <span style={{
+                  fontSize: isRef ? (isMobile ? 14 : 15) : (isMobile ? 13 : 14),
+                  fontWeight: 800,
+                  color: isRef ? 'var(--accent)' : 'var(--dark)',
+                  letterSpacing: mono || isRef ? '0.04em' : undefined,
+                  fontFamily: mono || isRef ? 'monospace' : undefined,
+                  wordBreak: 'break-all',
+                  overflowWrap: 'anywhere',
+                }}>{value}</span>
+              </div>
+            );
+          })}
         </div>
 
         {/* Betrag */}
         {typeof amountDue === 'number' && (
-          <div style={{ background: 'var(--dark)', borderRadius: 'var(--r-lg)', padding: '18px 24px', marginBottom: 28, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <div>
+          <div style={{ background: 'var(--dark)', padding: isMobile ? '16px 18px' : '18px 24px', marginBottom: 20, display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12 }}>
+            <div style={{ minWidth: 0 }}>
               <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.55)', marginBottom: 4 }}>
                 {paymentType === 'deposit' ? 'Jetzt zu überweisender Betrag (50 %)' : 'Zu überweisender Betrag'}
               </p>
-              <p style={{ fontSize: 28, fontWeight: 900, color: 'var(--accent)', letterSpacing: '-0.02em', fontFamily: 'monospace' }}>
+              <p style={{ fontSize: isMobile ? 24 : 28, fontWeight: 900, color: 'var(--accent)', letterSpacing: '-0.02em', fontFamily: 'monospace', wordBreak: 'break-all' }}>
                 {fmt(amountDue)}
               </p>
               {paymentType === 'deposit' && typeof total === 'number' && (
@@ -133,7 +144,7 @@ export default function OrderConfirmationPage() {
                 </p>
               )}
             </div>
-            <i className="bi bi-bank2" style={{ fontSize: 36, color: 'rgba(255,255,255,0.15)' }} />
+            <i className="bi bi-bank2" style={{ fontSize: 32, color: 'rgba(255,255,255,0.12)', flexShrink: 0 }} />
           </div>
         )}
 
