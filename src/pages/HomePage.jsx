@@ -32,7 +32,11 @@ export default function HomePage() {
     const v = videoRef.current;
     if (!v) return;
     v.muted = true;
+    v.loop = true;
     v.play().catch(() => {});
+    const restart = () => { v.currentTime = 0; v.play().catch(() => {}); };
+    v.addEventListener('ended', restart);
+    return () => v.removeEventListener('ended', restart);
   }, []);
 
   const counts = useMemo(() => {
