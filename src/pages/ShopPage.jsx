@@ -1,4 +1,4 @@
-import { useState, useMemo, useRef } from 'react';
+import { useState, useMemo, useRef, useEffect, useCallback } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { PRODUCTS, CATEGORIES } from '../data/products';
 import ProductCard from '../components/ProductCard';
@@ -66,6 +66,84 @@ function CategoryRow({ cat, products }) {
             <ProductCard product={p} />
           </div>
         ))}
+      </div>
+    </div>
+  );
+}
+
+function CategoryScrollBar({ categories, active, onSelect }) {
+  const railRef = useRef(null);
+  const [fadeLeft, setFadeLeft]   = useState(false);
+  const [fadeRight, setFadeRight] = useState(true);
+
+  const updateFades = useCallback(() => {
+    const el = railRef.current;
+    if (!el) return;
+    setFadeLeft(el.scrollLeft > 4);
+    setFadeRight(el.scrollLeft < el.scrollWidth - el.clientWidth - 4);
+  }, []);
+
+  useEffect(() => {
+    const el = railRef.current;
+    if (!el) return;
+    updateFades();
+    el.addEventListener('scroll', updateFades, { passive: true });
+    return () => el.removeEventListener('scroll', updateFades);
+  }, [updateFades]);
+
+  return (
+    <div style={{ position: 'relative' }}>
+      {/* Rail */}
+      <div
+        ref={railRef}
+        style={{
+          display: 'flex', gap: 8,
+          overflowX: 'auto', paddingBottom: 6,
+          scrollbarWidth: 'none',
+          msOverflowStyle: 'none',
+          WebkitOverflowScrolling: 'touch',
+        }}
+      >
+        <style>{`.cat-rail::-webkit-scrollbar{display:none}`}</style>
+        {categories.map(c => (
+          <button
+            key={c.id}
+            onClick={() => onSelect(c.id)}
+            style={{
+              padding: '7px 16px', fontSize: 13, fontWeight: 600, flexShrink: 0,
+              background: active === c.id ? 'var(--dark)' : 'white',
+              color: active === c.id ? 'white' : 'var(--text-muted)',
+              border: `1.5px solid ${active === c.id ? 'var(--dark)' : 'var(--border)'}`,
+              cursor: 'pointer', transition: 'all 0.15s',
+              whiteSpace: 'nowrap',
+            }}
+          >
+            {c.label}
+          </button>
+        ))}
+        {/* Spacer so the last chip is never hidden behind the gradient */}
+        <div style={{ flexShrink: 0, width: 24 }} />
+      </div>
+
+      {/* Left fade */}
+      <div style={{
+        position: 'absolute', left: 0, top: 0, bottom: 6, width: 32,
+        background: 'linear-gradient(to right, white 30%, transparent)',
+        pointerEvents: 'none',
+        opacity: fadeLeft ? 1 : 0,
+        transition: 'opacity 0.2s',
+      }} />
+
+      {/* Right fade + chevron hint */}
+      <div style={{
+        position: 'absolute', right: 0, top: 0, bottom: 6, width: 48,
+        background: 'linear-gradient(to left, white 40%, transparent)',
+        pointerEvents: 'none',
+        opacity: fadeRight ? 1 : 0,
+        transition: 'opacity 0.2s',
+        display: 'flex', alignItems: 'center', justifyContent: 'flex-end',
+      }}>
+        <i className="bi bi-chevron-right" style={{ fontSize: 14, color: 'var(--text-muted)', marginRight: 2 }} />
       </div>
     </div>
   );
@@ -213,19 +291,11 @@ export default function ShopPage() {
                   <i className="bi bi-search" style={{ position: 'absolute', left: 11, top: '50%', transform: 'translateY(-50%)', color: 'var(--text-light)', fontSize: 13, pointerEvents: 'none' }} />
                   <input className="input" placeholder="Produkt suchen..." value={search} onChange={e => setSearch(e.target.value)} style={{ paddingLeft: 34 }} />
                 </div>
-                <div style={{ display: 'flex', gap: 8, overflowX: 'auto', paddingBottom: 4 }}>
-                  {allCategories.map(c => (
-                    <button key={c.id} onClick={() => handleCategoryClick(c.id)} style={{
-                      padding: '6px 14px', fontSize: 12, fontWeight: 600, flexShrink: 0,
-                      background: category === c.id ? 'var(--dark)' : 'white',
-                      color: category === c.id ? 'white' : 'var(--text-muted)',
-                      border: `1.5px solid ${category === c.id ? 'var(--dark)' : 'var(--border)'}`,
-                      cursor: 'pointer', transition: 'all 0.15s',
-                    }}>
-                      {c.label}
-                    </button>
-                  ))}
-                </div>
+                <CategoryScrollBar
+                  categories={allCategories}
+                  active={category}
+                  onSelect={handleCategoryClick}
+                />
               </div>
             )}
 
