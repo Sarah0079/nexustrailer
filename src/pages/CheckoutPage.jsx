@@ -49,16 +49,25 @@ function Field({ field, value, error, onChange }) {
   );
 }
 
+const NAME_RE  = /^[a-zA-ZÀ-ÖØ-öø-ÿäöüÄÖÜß\s'\-]{2,}$/;
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+const HTML_RE  = /<[^>]*>/;
+
 function validate(form) {
   const errors = {};
-  FIELDS.forEach(({ key, label, required, max }) => {
+  FIELDS.forEach(({ key, label, required, max, lettersOnly }) => {
     const v = form[key]?.trim() || '';
     if (required && !v) { errors[key] = `${label} ist erforderlich`; return; }
-    if (v.length > max) errors[key] = `Maximal ${max} Zeichen`;
+    if (v.length > max) { errors[key] = `Maximal ${max} Zeichen`; return; }
+    if (lettersOnly && v && !NAME_RE.test(v)) {
+      errors[key] = 'Nur Buchstaben und Bindestriche erlaubt';
+    }
   });
-  if (form.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) errors.email = 'Ungültige E-Mail-Adresse';
+  if (form.email && !EMAIL_RE.test(form.email.trim())) errors.email = 'Ungültige E-Mail-Adresse';
   if (form.telefon && !/^[0-9+\-\s()]{6,20}$/.test(form.telefon.trim())) errors.telefon = 'Ungültige Telefonnummer';
   if (form.plz && !/^\d{4,10}$/.test(form.plz.trim())) errors.plz = 'Ungültige PLZ';
+  if (form.adresse && HTML_RE.test(form.adresse)) errors.adresse = 'Ungültige Zeichen';
+  if (form.hinweis && HTML_RE.test(form.hinweis)) errors.hinweis = 'HTML-Tags sind nicht erlaubt';
   return errors;
 }
 

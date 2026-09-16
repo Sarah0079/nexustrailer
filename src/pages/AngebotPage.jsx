@@ -15,41 +15,96 @@ const PRODUCT_TYPES = [
 
 const QUANTITIES = ['1 Einheit', '2–5 Einheiten', '6–10 Einheiten', '10+ Einheiten'];
 
+const NAME_RE  = /^[a-zA-ZÀ-ÖØ-öø-ÿäöüÄÖÜß\s'\-]{2,}$/;
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+const PHONE_RE = /^[0-9+\-\s()]{6,30}$/;
+const HTML_RE  = /<[^>]*>/;
+
+function validateAngebot(form) {
+  const errors = {};
+  if (!form.company.trim())                          errors.company     = 'Firmenname ist erforderlich';
+  else if (HTML_RE.test(form.company))               errors.company     = 'Ungültige Zeichen';
+
+  const n = form.name.trim();
+  if (!n)                                            errors.name        = 'Ansprechpartner ist erforderlich';
+  else if (!NAME_RE.test(n))                         errors.name        = 'Nur Buchstaben und Bindestriche erlaubt';
+
+  if (!form.email.trim())                            errors.email       = 'E-Mail ist erforderlich';
+  else if (!EMAIL_RE.test(form.email.trim()))        errors.email       = 'Ungültige E-Mail-Adresse';
+
+  if (form.phone.trim() && !PHONE_RE.test(form.phone.trim())) errors.phone = 'Nur Ziffern, +, - und Klammern erlaubt';
+
+  if (!form.productType)                             errors.productType = 'Produktkategorie ist erforderlich';
+
+  const msg = form.message.trim();
+  if (!msg)                                          errors.message     = 'Nachricht ist erforderlich';
+  else if (msg.length < 10)                          errors.message     = 'Mindestens 10 Zeichen';
+  else if (HTML_RE.test(msg))                        errors.message     = 'HTML-Tags sind nicht erlaubt';
+
+  return errors;
+}
+
 export default function AngebotPage() {
   const isMobile = useBreakpoint(768);
   const [form, setForm] = useState({
     company: '', name: '', email: '', phone: '',
     productType: '', quantity: '', budget: '', message: '', siret: '',
   });
-  const [sent, setSent] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [errors, setErrors]         = useState({});
+  const [touched, setTouched]       = useState({});
+  const [triedSubmit, setTriedSubmit] = useState(false);
+  const [sent, setSent]             = useState(false);
+  const [loading, setLoading]       = useState(false);
+  const [serverError, setServerError] = useState('');
 
-  const set = k => e => setForm(f => ({ ...f, [k]: e.target.value }));
+  const setField = (k, filter) => e => {
+    let val = e.target.value;
+    if (filter === 'name')  val = val.replace(/[0-9]/g, '');
+    if (filter === 'phone') val = val.replace(/[^0-9+\-\s()]/g, '');
+    setForm(f => ({ ...f, [k]: val }));
+    if (touched[k]) {
+      setErrors(prev => ({ ...prev, [k]: validateAngebot({ ...form, [k]: val })[k] }));
+    }
+  };
+
+  const touch = k => {
+    setTouched(t => ({ ...t, [k]: true }));
+    setErrors(prev => ({ ...prev, [k]: validateAngebot(form)[k] }));
+  };
 
   const handleSubmit = async e => {
     e.preventDefault();
-    setError('');
+    setTriedSubmit(true);
+    setTouched({ company: true, name: true, email: true, phone: true, productType: true, message: true });
+    const errs = validateAngebot(form);
+    setErrors(errs);
+    if (Object.keys(errs).length > 0) return;
+
+    setServerError('');
     setLoading(true);
     try {
       await sendAngebot({
-        company:      form.company,
-        name:         form.name,
-        email:        form.email,
-        phone:        form.phone || undefined,
-        siret:        form.siret || undefined,
+        company:      form.company.trim(),
+        name:         form.name.trim(),
+        email:        form.email.trim(),
+        phone:        form.phone.trim() || undefined,
+        siret:        form.siret.trim() || undefined,
         product_type: form.productType,
         quantity:     form.quantity || undefined,
-        budget:       form.budget || undefined,
-        message:      form.message,
+        budget:       form.budget.trim() || undefined,
+        message:      form.message.trim(),
       });
       setSent(true);
     } catch (err) {
-      setError(err.message || 'Anfrage konnte nicht gesendet werden. Bitte erneut versuchen.');
+      setServerError(err.message || 'Anfrage konnte nicht gesendet werden. Bitte erneut versuchen.');
     } finally {
       setLoading(false);
     }
   };
+
+  const showErr = k => (touched[k] || triedSubmit) && errors[k];
+  const errStyle = { fontSize: 11, color: 'var(--sale)', marginTop: 4, display: 'flex', alignItems: 'center', gap: 4 };
+  const inputStyle = k => ({ borderColor: showErr(k) ? 'var(--sale)' : undefined, outline: showErr(k) ? '2px solid rgba(220,38,38,.15)' : undefined });
 
   return (
     <main>
@@ -102,12 +157,19 @@ export default function AngebotPage() {
                 </p>
               </div>
             ) : (
-              <form onSubmit={handleSubmit} style={{ border: '1px solid var(--border)', background: 'white', padding: isMobile ? '28px 20px' : '40px 40px' }}>
-                {error && (
-                  <div style={{ background: '#FEF2F2', border: '1px solid #FECACA', borderRadius: 4, padding: '10px 14px', marginBottom: 20, fontSize: 13, color: '#991B1B' }}>
-                    <i className="bi bi-exclamation-circle" style={{ marginRight: 6 }} />{error}
+              <form onSubmit={handleSubmit} noValidate style={{ border: '1px solid var(--border)', background: 'white', padding: isMobile ? '28px 20px' : '40px 40px' }}>
+
+                {triedSubmit && Object.keys(errors).length > 0 && (
+                  <div style={{ background: '#FEF2F2', border: '1px solid #FECACA', borderRadius: 4, padding: '10px 14px', marginBottom: 20, fontSize: 13, color: '#991B1B', display: 'flex', gap: 8, alignItems: 'center' }}>
+                    <i className="bi bi-exclamation-triangle-fill" /><span>Bitte korrigieren Sie die markierten Felder.</span>
                   </div>
                 )}
+                {serverError && (
+                  <div style={{ background: '#FEF2F2', border: '1px solid #FECACA', borderRadius: 4, padding: '10px 14px', marginBottom: 20, fontSize: 13, color: '#991B1B', display: 'flex', gap: 8, alignItems: 'center' }}>
+                    <i className="bi bi-exclamation-circle" /><span>{serverError}</span>
+                  </div>
+                )}
+
                 <h3 style={{ fontSize: 16, fontWeight: 800, color: 'var(--dark)', marginBottom: 24, paddingBottom: 16, borderBottom: '1px solid var(--border)' }}>
                   Ihre Angaben
                 </h3>
@@ -116,11 +178,15 @@ export default function AngebotPage() {
                 <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: 16, marginBottom: 16 }}>
                   <div>
                     <label style={labelStyle}>Unternehmen *</label>
-                    <input className="input" required placeholder="Firmenname" value={form.company} onChange={set('company')} maxLength={100} />
+                    <input className="input" placeholder="Firmenname" value={form.company}
+                      onChange={setField('company')} onBlur={() => touch('company')}
+                      maxLength={100} style={inputStyle('company')} />
+                    {showErr('company') && <p style={errStyle}><i className="bi bi-exclamation-circle" /> {errors.company}</p>}
                   </div>
                   <div>
                     <label style={labelStyle}>USt-IdNr. / SIRET</label>
-                    <input className="input" placeholder="DE123456789" value={form.siret} onChange={set('siret')} maxLength={30} />
+                    <input className="input" placeholder="DE123456789" value={form.siret}
+                      onChange={setField('siret')} maxLength={30} />
                   </div>
                 </div>
 
@@ -128,18 +194,27 @@ export default function AngebotPage() {
                 <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: 16, marginBottom: 16 }}>
                   <div>
                     <label style={labelStyle}>Ansprechpartner *</label>
-                    <input className="input" required placeholder="Vor- und Nachname" value={form.name} onChange={set('name')} maxLength={80} />
+                    <input className="input" placeholder="Vor- und Nachname" value={form.name}
+                      onChange={setField('name', 'name')} onBlur={() => touch('name')}
+                      maxLength={80} style={inputStyle('name')} autoComplete="name" />
+                    {showErr('name') && <p style={errStyle}><i className="bi bi-exclamation-circle" /> {errors.name}</p>}
                   </div>
                   <div>
                     <label style={labelStyle}>E-Mail *</label>
-                    <input className="input" type="email" required placeholder="ihre@firma.de" value={form.email} onChange={set('email')} maxLength={100} />
+                    <input className="input" type="email" placeholder="ihre@firma.de" value={form.email}
+                      onChange={setField('email')} onBlur={() => touch('email')}
+                      maxLength={100} style={inputStyle('email')} autoComplete="email" />
+                    {showErr('email') && <p style={errStyle}><i className="bi bi-exclamation-circle" /> {errors.email}</p>}
                   </div>
                 </div>
 
                 {/* Telefon */}
                 <div style={{ marginBottom: 16 }}>
                   <label style={labelStyle}>Telefon</label>
-                  <input className="input" placeholder="+49 000 000 000" value={form.phone} onChange={set('phone')} maxLength={30} />
+                  <input className="input" placeholder="+49 000 000 000" value={form.phone}
+                    onChange={setField('phone', 'phone')} onBlur={() => touch('phone')}
+                    maxLength={30} inputMode="tel" autoComplete="tel" style={inputStyle('phone')} />
+                  {showErr('phone') && <p style={errStyle}><i className="bi bi-exclamation-circle" /> {errors.phone}</p>}
                 </div>
 
                 <h3 style={{ fontSize: 16, fontWeight: 800, color: 'var(--dark)', marginBottom: 20, paddingTop: 20, borderTop: '1px solid var(--border)', paddingBottom: 16, borderBottom: '1px solid var(--border)' }}>
@@ -150,16 +225,18 @@ export default function AngebotPage() {
                 <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: 16, marginBottom: 16 }}>
                   <div>
                     <label style={labelStyle}>Produktkategorie *</label>
-                    <select className="input" required value={form.productType} onChange={set('productType')}
-                      style={{ appearance: 'none', backgroundImage: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'12\' height=\'8\'%3E%3Cpath d=\'M1 1l5 5 5-5\' stroke=\'%236B7280\' stroke-width=\'1.5\' fill=\'none\'/%3E%3C/svg%3E")', backgroundRepeat: 'no-repeat', backgroundPosition: 'right 12px center' }}
+                    <select className="input" value={form.productType}
+                      onChange={setField('productType')} onBlur={() => touch('productType')}
+                      style={{ ...inputStyle('productType'), appearance: 'none', backgroundImage: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'12\' height=\'8\'%3E%3Cpath d=\'M1 1l5 5 5-5\' stroke=\'%236B7280\' stroke-width=\'1.5\' fill=\'none\'/%3E%3C/svg%3E")', backgroundRepeat: 'no-repeat', backgroundPosition: 'right 12px center' }}
                     >
                       <option value="">Kategorie wählen…</option>
                       {PRODUCT_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
                     </select>
+                    {showErr('productType') && <p style={errStyle}><i className="bi bi-exclamation-circle" /> {errors.productType}</p>}
                   </div>
                   <div>
                     <label style={labelStyle}>Anzahl</label>
-                    <select className="input" value={form.quantity} onChange={set('quantity')}
+                    <select className="input" value={form.quantity} onChange={setField('quantity')}
                       style={{ appearance: 'none', backgroundImage: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'12\' height=\'8\'%3E%3Cpath d=\'M1 1l5 5 5-5\' stroke=\'%236B7280\' stroke-width=\'1.5\' fill=\'none\'/%3E%3C/svg%3E")', backgroundRepeat: 'no-repeat', backgroundPosition: 'right 12px center' }}
                     >
                       <option value="">Menge wählen…</option>
@@ -171,13 +248,21 @@ export default function AngebotPage() {
                 {/* Budget */}
                 <div style={{ marginBottom: 16 }}>
                   <label style={labelStyle}>Budget (ca.)</label>
-                  <input className="input" placeholder="z. B. 10.000 €" value={form.budget} onChange={set('budget')} maxLength={50} />
+                  <input className="input" placeholder="z. B. 10.000 €" value={form.budget}
+                    onChange={setField('budget')} maxLength={50} />
                 </div>
 
                 {/* Nachricht */}
                 <div style={{ marginBottom: 28 }}>
-                  <label style={labelStyle}>Weitere Angaben *</label>
-                  <textarea className="input" required rows={5} placeholder="Beschreiben Sie Ihren Bedarf – Modellwünsche, Ausstattung, Lieferzeitraum…" value={form.message} onChange={set('message')} style={{ resize: 'vertical' }} maxLength={1500} />
+                  <label style={{ ...labelStyle, display: 'flex', justifyContent: 'space-between' }}>
+                    <span>Weitere Angaben *</span>
+                    <span style={{ fontWeight: 400 }}>{form.message.length}/1500</span>
+                  </label>
+                  <textarea className="input" rows={5}
+                    placeholder="Beschreiben Sie Ihren Bedarf – Modellwünsche, Ausstattung, Lieferzeitraum…"
+                    value={form.message} onChange={setField('message')} onBlur={() => touch('message')}
+                    style={{ resize: 'vertical', ...inputStyle('message') }} maxLength={1500} />
+                  {showErr('message') && <p style={errStyle}><i className="bi bi-exclamation-circle" /> {errors.message}</p>}
                 </div>
 
                 <button type="submit" className="btn btn-accent btn-lg" disabled={loading} style={{ width: '100%', justifyContent: 'center', opacity: loading ? 0.75 : 1 }}>

@@ -14,30 +14,69 @@ const angebotLimiter = rateLimit({
   message: { error: 'Zu viele Anfragen. Bitte in einer Stunde erneut versuchen.' },
 });
 
+const NAME_RE  = /^[a-zA-ZÀ-ÖØ-öø-ÿäöüÄÖÜß\s'\-]{2,}$/;
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+const PHONE_RE = /^[0-9+\-\s()]{6,30}$/;
+const HTML_RE  = /<[^>]*>/;
+
+const ALLOWED_PRODUCT_TYPES = new Set([
+  'Wohnwagen / Caravan',
+  'Tiny House / Mobilheim',
+  'Kipperanhänger',
+  'Transportanhänger / Pritsche',
+  'Verkaufsanhänger / Food Truck',
+  'Kühlanhänger',
+  'Baumaschinen / Bagger',
+  'Sonstiges',
+]);
+
+const ALLOWED_QUANTITIES = new Set([
+  '1 Einheit', '2–5 Einheiten', '6–10 Einheiten', '10+ Einheiten',
+]);
+
 function validate(req, res, next) {
-  const { company, name, email, product_type, message } = req.body;
+  const { company, name, email, product_type, message, phone, siret, quantity, budget } = req.body;
 
-  if (!company?.trim())      return res.status(400).json({ error: 'Firmenname ist erforderlich.' });
-  if (!name?.trim())         return res.status(400).json({ error: 'Ansprechpartner ist erforderlich.' });
-  if (!email?.trim())        return res.status(400).json({ error: 'E-Mail ist erforderlich.' });
-  if (!product_type?.trim()) return res.status(400).json({ error: 'Produktkategorie ist erforderlich.' });
-  if (!message?.trim())      return res.status(400).json({ error: 'Nachricht ist erforderlich.' });
+  const co = company?.trim();
+  if (!co)               return res.status(400).json({ error: 'Firmenname ist erforderlich.' });
+  if (co.length > 100)   return res.status(400).json({ error: 'Firmenname zu lang (max. 100).' });
+  if (HTML_RE.test(co))  return res.status(400).json({ error: 'Firmenname enthält ungültige Zeichen.' });
 
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-    return res.status(400).json({ error: 'E-Mail-Adresse ist ungültig.' });
+  const n = name?.trim();
+  if (!n)                return res.status(400).json({ error: 'Ansprechpartner ist erforderlich.' });
+  if (!NAME_RE.test(n))  return res.status(400).json({ error: 'Name ungültig — nur Buchstaben erlaubt.' });
+  if (n.length > 80)     return res.status(400).json({ error: 'Name zu lang (max. 80).' });
+
+  const e = email?.trim();
+  if (!e)                return res.status(400).json({ error: 'E-Mail ist erforderlich.' });
+  if (!EMAIL_RE.test(e)) return res.status(400).json({ error: 'E-Mail-Adresse ist ungültig.' });
+  if (e.length > 100)    return res.status(400).json({ error: 'E-Mail zu lang.' });
+
+  if (phone?.trim() && !PHONE_RE.test(phone.trim())) {
+    return res.status(400).json({ error: 'Telefonnummer ungültig.' });
+  }
+  if (siret?.trim() && siret.trim().length > 30) {
+    return res.status(400).json({ error: 'USt-IdNr. zu lang.' });
   }
 
-  if (company.trim().length      > 100)  return res.status(400).json({ error: 'Firmenname zu lang.' });
-  if (name.trim().length         > 80)   return res.status(400).json({ error: 'Name zu lang.' });
-  if (email.trim().length        > 100)  return res.status(400).json({ error: 'E-Mail zu lang.' });
-  if (product_type.trim().length > 100)  return res.status(400).json({ error: 'Produktkategorie zu lang.' });
-  if (message.trim().length      > 1500) return res.status(400).json({ error: 'Nachricht zu lang (max. 1500 Zeichen).' });
+  const pt = product_type?.trim();
+  if (!pt || !ALLOWED_PRODUCT_TYPES.has(pt)) {
+    return res.status(400).json({ error: 'Ungültige Produktkategorie.' });
+  }
 
-  const { phone, siret, quantity, budget } = req.body;
-  if (phone    && phone.trim().length    > 30) return res.status(400).json({ error: 'Telefon zu lang.' });
-  if (siret    && siret.trim().length    > 30) return res.status(400).json({ error: 'USt-IdNr. zu lang.' });
-  if (quantity && quantity.trim().length > 50) return res.status(400).json({ error: 'Menge zu lang.' });
-  if (budget   && budget.trim().length   > 50) return res.status(400).json({ error: 'Budget zu lang.' });
+  if (quantity?.trim() && !ALLOWED_QUANTITIES.has(quantity.trim())) {
+    return res.status(400).json({ error: 'Ungültige Mengenangabe.' });
+  }
+
+  if (budget?.trim() && budget.trim().length > 50) {
+    return res.status(400).json({ error: 'Budget zu lang.' });
+  }
+
+  const msg = message?.trim();
+  if (!msg)              return res.status(400).json({ error: 'Nachricht ist erforderlich.' });
+  if (msg.length < 10)   return res.status(400).json({ error: 'Nachricht zu kurz (min. 10 Zeichen).' });
+  if (msg.length > 1500) return res.status(400).json({ error: 'Nachricht zu lang (max. 1500 Zeichen).' });
+  if (HTML_RE.test(msg)) return res.status(400).json({ error: 'HTML-Tags sind in der Nachricht nicht erlaubt.' });
 
   next();
 }
