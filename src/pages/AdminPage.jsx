@@ -4,6 +4,7 @@ import {
   fetchAllOrders, fetchOrderDetail, updateOrderStatus,
   addNotification, deleteNotification, updatePaymentStatus,
   fetchBankSettings, updateBankSettings,
+  fetchAllAngebote, fetchAngebotDetail, updateAngebotStatus,
 } from '../api/client';
 
 // ── Constantes ──────────────────────────────────────────────────────────────────
@@ -337,6 +338,199 @@ function OrdersTab() {
   );
 }
 
+// ── Angebotsanfragen ────────────────────────────────────────────────────────────
+const ANGEBOT_STATUSES = {
+  new:     { label: 'Neu',          color: '#1D4ED8', bg: '#EFF6FF', border: '#BFDBFE' },
+  read:    { label: 'Gelesen',      color: '#5B21B6', bg: '#F5F3FF', border: '#DDD6FE' },
+  replied: { label: 'Beantwortet',  color: '#065F46', bg: '#ECFDF5', border: '#6EE7B7' },
+  closed:  { label: 'Geschlossen',  color: '#374151', bg: '#F3F4F6', border: '#E5E7EB' },
+};
+
+function AngebotBadge({ status }) {
+  const s = ANGEBOT_STATUSES[status] || { label: status, color: '#374151', bg: '#F3F4F6', border: '#E5E7EB' };
+  return (
+    <span style={{ fontSize: 11, fontWeight: 700, padding: '3px 9px', borderRadius: 4, background: s.bg, color: s.color, border: `1px solid ${s.border}`, whiteSpace: 'nowrap' }}>
+      {s.label}
+    </span>
+  );
+}
+
+function AngeboteTab() {
+  const [list, setList]         = useState([]);
+  const [total, setTotal]       = useState(0);
+  const [page, setPage]         = useState(1);
+  const [filter, setFilter]     = useState('');
+  const [selected, setSelected] = useState(null);
+  const [detail, setDetail]     = useState(null);
+  const [loading, setLoading]   = useState(false);
+  const LIMIT = 25;
+
+  const load = useCallback(async () => {
+    setLoading(true);
+    try {
+      const qs = `?page=${page}&limit=${LIMIT}${filter ? `&status=${filter}` : ''}`;
+      const data = await fetchAllAngebote(qs);
+      setList(data.angebote || []);
+      setTotal(data.total || 0);
+    } catch { setList([]); }
+    finally { setLoading(false); }
+  }, [page, filter]);
+
+  useEffect(() => { load(); }, [load]);
+
+  const loadDetail = async (id) => {
+    setSelected(id); setDetail(null);
+    try { setDetail(await fetchAngebotDetail(id)); } catch { setDetail(null); }
+    // refresh list so "new" → "read" is reflected
+    load();
+  };
+
+  const handleStatusChange = async (id, status) => {
+    try {
+      await updateAngebotStatus(id, status);
+      if (detail?.id === id) setDetail(d => ({ ...d, status }));
+      setList(l => l.map(a => a.id === id ? { ...a, status } : a));
+    } catch (err) { alert(err.message); }
+  };
+
+  return (
+    <div style={{ display: 'grid', gridTemplateColumns: selected ? 'minmax(0,1fr) minmax(0,420px)' : '1fr', gap: 24, alignItems: 'start' }}>
+
+      {/* Liste */}
+      <div>
+        <div style={{ display: 'flex', gap: 10, marginBottom: 16, flexWrap: 'wrap', alignItems: 'center' }}>
+          <h2 style={{ fontSize: 15, fontWeight: 800, color: 'var(--dark)', flex: 1 }}>Angebotsanfragen ({total})</h2>
+          <select className="input" value={filter} onChange={e => { setFilter(e.target.value); setPage(1); }} style={{ width: 180, fontSize: 13 }}>
+            <option value="">Alle Status</option>
+            {Object.entries(ANGEBOT_STATUSES).map(([k, v]) => <option key={k} value={k}>{v.label}</option>)}
+          </select>
+          <button className="btn btn-outline btn-sm" onClick={load}><i className="bi bi-arrow-clockwise" /></button>
+        </div>
+
+        <div style={{ background: 'white', border: '1px solid var(--border)', borderRadius: 'var(--r-lg)', overflow: 'hidden' }}>
+          {loading ? (
+            <div style={{ padding: 40, textAlign: 'center', color: 'var(--text-muted)' }}>Laden…</div>
+          ) : list.length === 0 ? (
+            <div style={{ padding: 40, textAlign: 'center', color: 'var(--text-muted)' }}>Keine Anfragen.</div>
+          ) : (
+            <div style={{ overflowX: 'auto' }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
+                <thead>
+                  <tr style={{ background: 'var(--bg)', borderBottom: '1px solid var(--border)' }}>
+                    {['#', 'Unternehmen', 'Kontakt', 'Produkt', 'Status', 'Datum'].map(h => (
+                      <th key={h} style={{ padding: '10px 14px', textAlign: 'left', fontSize: 11, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '.06em', whiteSpace: 'nowrap' }}>{h}</th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {list.map(a => (
+                    <tr key={a.id} onClick={() => loadDetail(a.id)}
+                      style={{ borderBottom: '1px solid var(--border)', cursor: 'pointer', background: selected === a.id ? 'var(--accent-light)' : a.status === 'new' ? '#FEFCE8' : 'white' }}
+                      onMouseEnter={e => { if (selected !== a.id) e.currentTarget.style.background = 'var(--bg)'; }}
+                      onMouseLeave={e => { if (selected !== a.id) e.currentTarget.style.background = a.status === 'new' ? '#FEFCE8' : 'white'; }}
+                    >
+                      <td style={{ padding: '12px 14px', fontWeight: 700, color: 'var(--text-muted)' }}>#{a.id}</td>
+                      <td style={{ padding: '12px 14px', fontWeight: 700, color: 'var(--dark)', whiteSpace: 'nowrap' }}>{a.company}</td>
+                      <td style={{ padding: '12px 14px', color: 'var(--text-muted)', whiteSpace: 'nowrap' }}>{a.name}</td>
+                      <td style={{ padding: '12px 14px', color: 'var(--dark)', maxWidth: 180, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{a.product_type}</td>
+                      <td style={{ padding: '12px 14px', whiteSpace: 'nowrap' }}><AngebotBadge status={a.status} /></td>
+                      <td style={{ padding: '12px 14px', color: 'var(--text-muted)', whiteSpace: 'nowrap' }}>{fmtDate(a.created_at)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+
+        {total > LIMIT && (
+          <div style={{ display: 'flex', justifyContent: 'center', gap: 8, marginTop: 16 }}>
+            <button className="btn btn-outline btn-sm" disabled={page === 1} onClick={() => setPage(p => p - 1)}><i className="bi bi-chevron-left" /></button>
+            <span style={{ fontSize: 13, color: 'var(--text-muted)', display: 'flex', alignItems: 'center', padding: '0 8px' }}>Seite {page} / {Math.ceil(total / LIMIT)}</span>
+            <button className="btn btn-outline btn-sm" disabled={page >= Math.ceil(total / LIMIT)} onClick={() => setPage(p => p + 1)}><i className="bi bi-chevron-right" /></button>
+          </div>
+        )}
+      </div>
+
+      {/* Détail */}
+      {selected && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 14, position: 'sticky', top: 16 }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <h2 style={{ fontSize: 14, fontWeight: 800, color: 'var(--dark)' }}>Anfrage #{selected}</h2>
+            <button onClick={() => { setSelected(null); setDetail(null); }} style={{ color: 'var(--text-muted)', padding: 6, background: 'none', border: 'none', cursor: 'pointer' }}>
+              <i className="bi bi-x-lg" />
+            </button>
+          </div>
+
+          {!detail ? (
+            <div style={{ background: 'white', border: '1px solid var(--border)', borderRadius: 'var(--r-lg)', padding: 32, textAlign: 'center', color: 'var(--text-muted)' }}>Laden…</div>
+          ) : (<>
+
+            {/* Unternehmen */}
+            <div style={{ background: 'white', border: '1px solid var(--border)', borderRadius: 'var(--r-lg)', padding: 18 }}>
+              <p style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '.07em', marginBottom: 10 }}>Unternehmen</p>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, fontSize: 12 }}>
+                {[
+                  ['Firma', detail.company],
+                  ['USt-IdNr.', detail.siret || '—'],
+                  ['Ansprechpartner', detail.name],
+                  ['E-Mail', detail.email],
+                  ['Telefon', detail.phone || '—'],
+                  ['Eingegangen', fmtDate(detail.created_at)],
+                ].map(([k, v]) => (
+                  <div key={k}>
+                    <span style={{ color: 'var(--text-muted)', fontSize: 11, fontWeight: 600 }}>{k}</span>
+                    <p style={{ color: 'var(--dark)', fontWeight: 600, marginTop: 1, wordBreak: 'break-all' }}>{v}</p>
+                  </div>
+                ))}
+              </div>
+              <a href={`mailto:${detail.email}`} className="btn btn-outline btn-sm" style={{ marginTop: 14, fontSize: 12, display: 'inline-flex' }}>
+                <i className="bi bi-envelope" /> Antworten
+              </a>
+            </div>
+
+            {/* Produkt */}
+            <div style={{ background: 'white', border: '1px solid var(--border)', borderRadius: 'var(--r-lg)', padding: 18 }}>
+              <p style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '.07em', marginBottom: 10 }}>Produktanfrage</p>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, fontSize: 12, marginBottom: 12 }}>
+                {[
+                  ['Kategorie', detail.product_type],
+                  ['Menge', detail.quantity || '—'],
+                  ['Budget', detail.budget || '—'],
+                ].map(([k, v]) => (
+                  <div key={k}>
+                    <span style={{ color: 'var(--text-muted)', fontSize: 11, fontWeight: 600 }}>{k}</span>
+                    <p style={{ color: 'var(--dark)', fontWeight: 600, marginTop: 1 }}>{v}</p>
+                  </div>
+                ))}
+              </div>
+              <div style={{ background: 'var(--bg)', borderRadius: 4, padding: '10px 12px', fontSize: 13, color: 'var(--dark)', lineHeight: 1.6, whiteSpace: 'pre-wrap' }}>
+                {detail.message}
+              </div>
+            </div>
+
+            {/* Status */}
+            <div style={{ background: 'white', border: '1px solid var(--border)', borderRadius: 'var(--r-lg)', padding: 18 }}>
+              <p style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '.07em', marginBottom: 10 }}>Status</p>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
+                <AngebotBadge status={detail.status} />
+              </div>
+              <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+                {Object.entries(ANGEBOT_STATUSES).filter(([k]) => k !== detail.status).map(([k, v]) => (
+                  <button key={k} className="btn btn-outline btn-sm" onClick={() => handleStatusChange(detail.id, k)} style={{ fontSize: 11 }}>
+                    → {v.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+          </>)}
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ── Bankverbindung ──────────────────────────────────────────────────────────────
 function SettingsTab() {
   const [form, setForm]       = useState({ beneficiaire: '', iban: '', bic: '', banque: '' });
@@ -446,8 +640,9 @@ export default function AdminPage() {
   if (!auth) return <LoginView onLogin={(u) => { setUser(u); setAuth(true); }} />;
 
   const TABS = [
-    { id: 'orders',   icon: 'bi-bag',  label: 'Bestellungen' },
-    { id: 'settings', icon: 'bi-bank', label: 'Bankverbindung' },
+    { id: 'orders',   icon: 'bi-bag',           label: 'Bestellungen' },
+    { id: 'angebote', icon: 'bi-file-earmark-text', label: 'Angebote' },
+    { id: 'settings', icon: 'bi-bank',           label: 'Bankverbindung' },
   ];
 
   return (
@@ -478,6 +673,7 @@ export default function AdminPage() {
 
       <div className="container" style={{ padding: '28px 24px 60px' }}>
         {tab === 'orders'   && <OrdersTab />}
+        {tab === 'angebote' && <AngeboteTab />}
         {tab === 'settings' && <SettingsTab />}
       </div>
     </main>

@@ -1,4 +1,6 @@
-﻿function Section({ title, children }) {
+﻿import { useBreakpoint } from '../hooks/useBreakpoint';
+
+function Section({ title, children }) {
   return (
     <div style={{ marginBottom: 40 }}>
       <h2 style={{ fontSize: 18, fontWeight: 800, color: 'var(--dark)', marginBottom: 14, paddingBottom: 10, borderBottom: '2px solid var(--accent)' }}>{title}</h2>
@@ -8,6 +10,7 @@
 }
 
 export default function PaiementPage() {
+  const isMobile = useBreakpoint(640);
   return (
     <main>
       <div style={{ background: 'var(--dark)', padding: '56px 0 48px' }}>
@@ -33,7 +36,7 @@ export default function PaiementPage() {
         </Section>
 
         <Section title="Zahlungsoptionen">
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 16 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: 16, marginBottom: 16 }}>
             {[
               { icon: 'bi-check-circle-fill', title: 'Vollständige Zahlung', desc: 'Überweisen Sie den Gesamtbetrag bei der Bestellung. Ihre Bestellung wird sofort nach Zahlungseingang bearbeitet.', color: 'var(--green)' },
               { icon: 'bi-percent',           title: '50 % Anzahlung',       desc: '50 % bei der Bestellung, der Restbetrag ist vor dem Versand Ihres Artikels fällig.', color: 'var(--accent)' },
@@ -48,21 +51,11 @@ export default function PaiementPage() {
         </Section>
 
         <Section title="Bankverbindung">
-          <p style={{ marginBottom: 14 }}>
-            Nach der Bestellbestätigung erhalten Sie auf der Bestätigungsseite unsere vollständigen Bankdaten. Hier die wichtigsten Informationen:
-          </p>
-          <div style={{ background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: 'var(--r-md)', padding: 20, display: 'flex', flexDirection: 'column', gap: 10 }}>
-            {[
-              { label: 'Empfänger',  val: 'NexusTrailer SAS' },
-              { label: 'Bank',       val: 'BNP Paribas' },
-              { label: 'IBAN',       val: 'Bitte mit Ihrer echten IBAN ergänzen' },
-              { label: 'BIC/SWIFT',  val: 'Bitte mit Ihrem echten BIC ergänzen' },
-            ].map(({ label, val }) => (
-              <div key={label} style={{ display: 'flex', gap: 12, fontSize: 14 }}>
-                <span style={{ color: 'var(--text-muted)', minWidth: 110, flexShrink: 0 }}>{label}:</span>
-                <span style={{ fontWeight: 600, color: 'var(--dark)' }}>{val}</span>
-              </div>
-            ))}
+          <div style={{ background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: 'var(--r-md)', padding: '20px 24px', display: 'flex', gap: 16, alignItems: 'flex-start' }}>
+            <i className="bi bi-lock-fill" style={{ fontSize: 22, color: 'var(--accent)', flexShrink: 0, marginTop: 2 }} />
+            <p style={{ fontSize: 14, lineHeight: 1.8 }}>
+              Unsere vollständigen Bankdaten (Empfänger, IBAN, BIC) werden Ihnen <strong>ausschließlich auf der Auftragsbestätigungsseite</strong> nach dem Abschluss Ihrer Bestellung mitgeteilt. Diese Information wird aus Sicherheitsgründen nicht öffentlich angezeigt.
+            </p>
           </div>
         </Section>
 

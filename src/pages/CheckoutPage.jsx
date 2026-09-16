@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { createOrder } from '../api/client';
+import { useBreakpoint } from '../hooks/useBreakpoint';
 
 const FIELDS = [
   { key: 'vorname',  label: 'Vorname',             span: 1, max: 40,  lettersOnly: true,  required: true },
@@ -65,6 +66,7 @@ export default function CheckoutPage() {
   const { items, total, clear } = useCart();
   const navigate = useNavigate();
   const location = useLocation();
+  const isMobile = useBreakpoint(768);
   const paymentType = location.state?.paymentType || 'full';
 
   const [form, setForm] = useState({ vorname: '', nachname: '', email: '', telefon: '', adresse: '', plz: '', stadt: '', land: 'Deutschland', hinweis: '' });
@@ -139,7 +141,9 @@ export default function CheckoutPage() {
         </div>
       </div>
 
-      <div className="container" style={{ padding: '48px 24px 80px' }}>
+      <div className="container" style={{ padding: isMobile ? '32px 16px 60px' : '48px 24px 80px' }}>
+
+        <div>
 
         {/* Erreurs de validation */}
         {triedSubmit && Object.keys(errors).length > 0 && (
@@ -160,23 +164,23 @@ export default function CheckoutPage() {
         )}
 
         <form onSubmit={handleSubmit} noValidate>
-          <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr) 360px', gap: 32, alignItems: 'start' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: isMobile ? 'minmax(0,1fr)' : 'minmax(0,1fr) 360px', gap: isMobile ? 24 : 32, alignItems: 'start' }}>
 
             {/* LEFT */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 24, minWidth: 0 }}>
 
               {/* Zahlungsart-Recap */}
               <div style={{ background: 'var(--accent-light)', border: '1.5px solid var(--accent)', borderRadius: 'var(--r-lg)', padding: '14px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                  <i className={`bi ${paymentType === 'full' ? 'bi-check-circle-fill' : 'bi-wallet2'}`} style={{ color: 'var(--accent)', fontSize: 18 }} />
-                  <div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10, minWidth: 0 }}>
+                  <i className={`bi ${paymentType === 'full' ? 'bi-check-circle-fill' : 'bi-wallet2'}`} style={{ color: 'var(--accent)', fontSize: 18, flexShrink: 0 }} />
+                  <div style={{ minWidth: 0 }}>
                     <p style={{ fontSize: 13, fontWeight: 800, color: 'var(--dark)' }}>
                       {paymentType === 'full' ? 'Vollständige Zahlung' : '50 % Anzahlung'}
                     </p>
-                    <p style={{ fontSize: 12, color: 'var(--text-muted)' }}>
+                    <p style={{ fontSize: 12, color: 'var(--text-muted)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                       {paymentType === 'full'
                         ? `Zu zahlender Betrag: ${fmt(grand)}`
-                        : `Anzahlung: ${fmt(grand * 0.5)} · Restbetrag: ${fmt(grand * 0.5)} vor dem Versand`}
+                        : `Anzahlung: ${fmt(grand * 0.5)} · Restbetrag: ${fmt(grand * 0.5)}`}
                     </p>
                   </div>
                 </div>
@@ -186,11 +190,11 @@ export default function CheckoutPage() {
               </div>
 
               {/* Lieferadresse */}
-              <div style={{ background: 'white', border: '1px solid var(--border)', borderRadius: 'var(--r-lg)', padding: 28 }}>
+              <div style={{ background: 'white', border: '1px solid var(--border)', borderRadius: 'var(--r-lg)', padding: isMobile ? 16 : 28 }}>
                 <h2 style={{ fontSize: 16, fontWeight: 800, color: 'var(--dark)', marginBottom: 20, display: 'flex', alignItems: 'center', gap: 8 }}>
                   <i className="bi bi-geo-alt" style={{ color: 'var(--accent)' }} /> Lieferadresse
                 </h2>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
+                <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: 14 }}>
                   {FIELDS.map(f => (
                     <Field key={f.key} field={f} value={form[f.key]} error={errors[f.key]} onChange={setField(f.key)} />
                   ))}
@@ -204,10 +208,10 @@ export default function CheckoutPage() {
               </div>
 
               {/* Hinweis */}
-              <div style={{ background: 'white', border: '1px solid var(--border)', borderRadius: 'var(--r-lg)', padding: 28 }}>
-                <h2 style={{ fontSize: 16, fontWeight: 800, color: 'var(--dark)', marginBottom: 14, display: 'flex', alignItems: 'center', gap: 8 }}>
+              <div style={{ background: 'white', border: '1px solid var(--border)', borderRadius: 'var(--r-lg)', padding: isMobile ? 16 : 28 }}>
+                <h2 style={{ fontSize: 16, fontWeight: 800, color: 'var(--dark)', marginBottom: 14, display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: 8 }}>
                   <i className="bi bi-chat-text" style={{ color: 'var(--accent)' }} /> Anmerkung zur Bestellung
-                  <span style={{ fontSize: 11, fontWeight: 400, color: 'var(--text-light)', marginLeft: 4 }}>(optional)</span>
+                  <span style={{ fontSize: 11, fontWeight: 400, color: 'var(--text-light)' }}>(optional)</span>
                 </h2>
                 <textarea
                   className="input" rows={3} maxLength={300}
@@ -220,8 +224,8 @@ export default function CheckoutPage() {
             </div>
 
             {/* RIGHT — sticky summary */}
-            <div style={{ position: 'sticky', top: 24, alignSelf: 'start', display: 'flex', flexDirection: 'column', gap: 16 }}>
-              <div style={{ background: 'white', border: '1px solid var(--border)', borderRadius: 'var(--r-lg)', padding: 24 }}>
+            <div style={{ position: isMobile ? 'static' : 'sticky', top: 24, alignSelf: 'start', display: 'flex', flexDirection: 'column', gap: 16, order: isMobile ? -1 : 0, minWidth: 0, width: '100%' }}>
+              <div style={{ background: 'white', border: '1px solid var(--border)', borderRadius: 'var(--r-lg)', padding: isMobile ? 16 : 24 }}>
                 <h2 style={{ fontSize: 15, fontWeight: 800, color: 'var(--dark)', marginBottom: 18 }}>Ihre Bestellung</h2>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 14, marginBottom: 18 }}>
                   {items.map(item => (
@@ -267,7 +271,7 @@ export default function CheckoutPage() {
               <button
                 type="submit"
                 className="btn btn-primary btn-lg btn-full"
-                style={{ fontSize: 15, opacity: submitting ? 0.7 : 1 }}
+                style={{ fontSize: 15, opacity: submitting ? 0.7 : 1, display: 'flex', boxSizing: 'border-box' }}
                 disabled={submitting}
               >
                 {submitting
@@ -283,6 +287,7 @@ export default function CheckoutPage() {
 
           </div>
         </form>
+        </div>
       </div>
     </main>
   );

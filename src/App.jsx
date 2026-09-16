@@ -9,13 +9,14 @@ import ScrollToTop from './components/ScrollToTop';
 
 // Pages critiques — chargées immédiatement
 import HomePage from './pages/HomePage';
-import ShopPage from './pages/ShopPage';
-import ProductPage from './pages/ProductPage';
-import CheckoutPage from './pages/CheckoutPage';
-import OrderConfirmationPage from './pages/OrderConfirmationPage';
 
-// Pages secondaires — chargées à la demande
-const AboutPage           = lazy(() => import('./pages/AboutPage'));
+// Pages chargées à la demande
+const ShopPage                = lazy(() => import('./pages/ShopPage'));
+const ProductPage             = lazy(() => import('./pages/ProductPage'));
+const CheckoutPage            = lazy(() => import('./pages/CheckoutPage'));
+const OrderConfirmationPage   = lazy(() => import('./pages/OrderConfirmationPage'));
+const AboutPage               = lazy(() => import('./pages/AboutPage'));
+const AngebotPage         = lazy(() => import('./pages/AngebotPage'));
 const ContactPage         = lazy(() => import('./pages/ContactPage'));
 const TrackingPage        = lazy(() => import('./pages/TrackingPage'));
 const WishlistPage        = lazy(() => import('./pages/WishlistPage'));
@@ -52,6 +53,7 @@ export default function App() {
                   <Route path="/shop" element={<ShopPage />} />
                   <Route path="/product/:slug" element={<ProductPage />} />
                   <Route path="/uber-uns" element={<AboutPage />} />
+                  <Route path="/angebot" element={<AngebotPage />} />
                   <Route path="/kontakt" element={<ContactPage />} />
                   <Route path="/auftragsverfolgung" element={<TrackingPage />} />
                   <Route path="/wishlist" element={<WishlistPage />} />

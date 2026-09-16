@@ -193,7 +193,7 @@ export default function ProductPage() {
             {product.specs && (
               <div>
                 <p style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 10 }}>Technische Daten</p>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px 10px' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: '6px 10px' }}>
                   {Object.entries(product.specs).map(([k, v]) => (
                     <div key={k} style={{ padding: '8px 12px', background: 'var(--bg)', borderRadius: 0 }}>
                       <p style={{ fontSize: 10, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: 2 }}>{k}</p>

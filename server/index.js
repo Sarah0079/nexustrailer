@@ -10,15 +10,17 @@ import cookieParser from 'cookie-parser';
 
 import { globalLimiter } from './middleware/rateLimiter.js';
 import { generateCsrfToken, setCsrfCookie } from './middleware/csrf.js';
-import authRoutes           from './routes/auth.js';
-import ordersRoutes         from './routes/orders.js';
-import contactRoutes        from './routes/contact.js';
-import adminOrdersRoutes    from './routes/admin/orders.js';
-import adminPaymentsRouter  from './routes/admin/payments.js';
-import adminCustomersRoutes from './routes/admin/customers.js';
-import adminSettingsRoutes  from './routes/admin/settings.js';
-import adminStatsRoutes     from './routes/admin/stats.js';
-import adminAdminsRoutes    from './routes/admin/admins.js';
+import authRoutes            from './routes/auth.js';
+import ordersRoutes          from './routes/orders.js';
+import contactRoutes         from './routes/contact.js';
+import angebotRoutes         from './routes/angebot.js';
+import adminOrdersRoutes     from './routes/admin/orders.js';
+import adminPaymentsRouter   from './routes/admin/payments.js';
+import adminCustomersRoutes  from './routes/admin/customers.js';
+import adminSettingsRoutes   from './routes/admin/settings.js';
+import adminStatsRoutes      from './routes/admin/stats.js';
+import adminAdminsRoutes     from './routes/admin/admins.js';
+import adminAngeboteRoutes   from './routes/admin/angebote.js';
 
 if (!process.env.JWT_SECRET || process.env.JWT_SECRET.length < 32) {
   console.error('FATAL: JWT_SECRET manquant ou trop court (< 32 caractères). Arrêt du serveur.');
@@ -69,15 +71,17 @@ app.get('/api/csrf', (req, res) => {
   res.json({ ok: true });
 });
 
-app.use('/api/auth',            authRoutes);
-app.use('/api/orders',          ordersRoutes);
-app.use('/api/contact',         contactRoutes);
-app.use('/api/admin/orders',    adminOrdersRoutes);
-app.use('/api/admin',           adminPaymentsRouter);
-app.use('/api/admin/customers', adminCustomersRoutes);
-app.use('/api/admin/settings',  adminSettingsRoutes);
-app.use('/api/admin/stats',     adminStatsRoutes);
-app.use('/api/admin/admins',    adminAdminsRoutes);
+app.use('/api/auth',              authRoutes);
+app.use('/api/orders',            ordersRoutes);
+app.use('/api/contact',           contactRoutes);
+app.use('/api/angebot',           angebotRoutes);
+app.use('/api/admin/orders',      adminOrdersRoutes);
+app.use('/api/admin',             adminPaymentsRouter);
+app.use('/api/admin/customers',   adminCustomersRoutes);
+app.use('/api/admin/settings',    adminSettingsRoutes);
+app.use('/api/admin/stats',       adminStatsRoutes);
+app.use('/api/admin/admins',      adminAdminsRoutes);
+app.use('/api/admin/angebote',    adminAngeboteRoutes);
 
 app.get('/api/health', (_, res) => res.json({ ok: true }));
 

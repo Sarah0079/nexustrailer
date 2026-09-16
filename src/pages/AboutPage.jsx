@@ -1,4 +1,5 @@
 ﻿import { Link } from 'react-router-dom';
+import { useBreakpoint } from '../hooks/useBreakpoint';
 
 const STATS = [
   { n: '1.000+', l: 'Kunden',   d: 'Zufriedene Kunden europaweit', icon: 'bi-people' },
@@ -8,6 +9,7 @@ const STATS = [
 ];
 
 export default function AboutPage() {
+  const isMobile = useBreakpoint(768);
   return (
     <main>
       <div style={{ background: 'var(--dark)', padding: '56px 0 48px' }}>
@@ -20,7 +22,7 @@ export default function AboutPage() {
       </div>
 
       <div className="container" style={{ padding: '56px 24px 80px', maxWidth: 900 }}>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 48, marginBottom: 56, alignItems: 'center' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: isMobile ? 32 : 48, marginBottom: 56, alignItems: 'center' }}>
           <div>
             <h2 style={{ fontSize: 28, fontWeight: 800, marginBottom: 20, color: 'var(--dark)' }}>Wer wir sind</h2>
             <p style={{ fontSize: 15, color: 'var(--text-muted)', lineHeight: 1.8, marginBottom: 16 }}>
@@ -35,7 +37,7 @@ export default function AboutPage() {
           </div>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 24, marginBottom: 56 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr 1fr' : 'repeat(4, 1fr)', gap: 24, marginBottom: 56 }}>
           {STATS.map(({ n, l, d, icon }) => (
             <div key={l} style={{ padding: '28px 24px', background: 'var(--bg)', borderRadius: 'var(--r-lg)', border: '1px solid var(--border)', textAlign: 'center' }}>
               <i className={`bi ${icon}`} style={{ fontSize: 28, color: 'var(--accent)', display: 'block', marginBottom: 10 }} />

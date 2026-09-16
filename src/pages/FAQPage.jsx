@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 const FAQS = [
   {
@@ -83,7 +84,7 @@ export default function FAQPage() {
             <h3 style={{ fontSize: 18, fontWeight: 800, color: 'white', marginBottom: 6 }}>Keine passende Antwort gefunden?</h3>
             <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.5)' }}>Unser Team antwortet innerhalb von 24 Stunden.</p>
           </div>
-          <a href="/kontakt" className="btn btn-accent"><i className="bi bi-chat-dots" /> Kontakt aufnehmen</a>
+          <Link to="/kontakt" className="btn btn-accent"><i className="bi bi-chat-dots" /> Kontakt aufnehmen</Link>
         </div>
       </div>
     </main>

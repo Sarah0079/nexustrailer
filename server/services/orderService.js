@@ -189,7 +189,16 @@ export async function createOrder({ form, items, paymentOption }) {
     // Fire-and-forget
     sendOrderConfirmation({
       orderRef,
-      customer: { email: form.email, vorname: form.vorname, nachname: form.nachname },
+      customer: {
+        email:    form.email,
+        vorname:  form.vorname,
+        nachname: form.nachname,
+        telefon:  form.telefon  || '',
+        adresse:  form.adresse  || '',
+        plz:      form.plz      || '',
+        stadt:    form.stadt    || '',
+        land:     form.land     || 'Deutschland',
+      },
       items: orderItems,
       total,
       amountDueNow,

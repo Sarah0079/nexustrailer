@@ -8,9 +8,10 @@ import { PRODUCTS } from '../data/products';
 const NAV = [
   { to: '/', label: 'Startseite' },
   { to: '/shop', label: 'Shop' },
-  { to: '/#uber-uns', label: 'Über uns' },
-  { to: '/auftragsverfolgung', label: 'Sendungsverfolgung' },
-  { to: '/#kontakt', label: 'Kontakt' },
+  { to: '/uber-uns', label: 'Über uns' },
+  { to: '/faq', label: 'FAQ' },
+  { to: '/angebot', label: 'Angebot anfragen' },
+  { to: '/kontakt', label: 'Kontakt' },
 ];
 
 const isActive = (to, pn) => {
@@ -58,28 +59,6 @@ export default function Header() {
 
   return (
     <>
-      {/* Top bar */}
-      <div style={{ background: 'var(--dark)', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
-        <div className="container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: 34 }}>
-          <div style={{ display: 'flex', gap: 20, alignItems: 'center' }}>
-            {[
-              ['bi-check-lg', 'Schnelle Lieferung'],
-              ['bi-award', '2 Jahre Garantie'],
-              ['bi-lock', 'Sicher bezahlen'],
-            ].map(([icon, text]) => (
-              <span key={text} style={{ fontSize: 11, color: 'rgba(255,255,255,0.5)', display: 'flex', alignItems: 'center', gap: 5, whiteSpace: 'nowrap' }}>
-                <i className={`bi ${icon}`} style={{ fontSize: 12 }} />
-                {text}
-              </span>
-            ))}
-          </div>
-          <Link to="/#kontakt" style={{ fontSize: 11, color: 'rgba(255,255,255,0.5)', display: 'flex', alignItems: 'center', gap: 5, whiteSpace: 'nowrap' }}>
-            <i className="bi bi-telephone" style={{ fontSize: 11 }} />
-            +33 7 56 83 64 79
-          </Link>
-        </div>
-      </div>
-
       {/* Main header */}
       <header style={{
         position: 'sticky', top: 0, zIndex: 100,
@@ -87,11 +66,11 @@ export default function Header() {
         boxShadow: scrolled ? 'var(--shadow-md)' : '0 1px 0 var(--border)',
         transition: 'box-shadow 0.2s',
       }}>
-        <div className="container" style={{ display: 'flex', alignItems: 'center', gap: 24, height: 64 }}>
+        <div className="container" style={{ display: 'flex', alignItems: 'center', gap: 24, height: 76 }}>
 
           {/* Logo */}
           <Link to="/" style={{ display: 'flex', alignItems: 'center', flexShrink: 0, textDecoration: 'none' }}>
-            <img src="/image/NexusTrailer.png" alt="NexusTrailer" style={{ height: 62, width: 'auto', objectFit: 'contain' }} />
+            <img src="/image/NexusTrailer.png" alt="NexusTrailer" style={{ height: 74, width: 'auto', objectFit: 'contain' }} />
           </Link>
 
           {/* Search */}

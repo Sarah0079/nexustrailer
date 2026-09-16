@@ -4,6 +4,7 @@ import { verifyCsrf } from '../../middleware/csrf.js';
 import { validateStatus, validateNotification } from '../../middleware/validate.js';
 import { canTransition, allowedNext } from '../../utils/statusMachine.js';
 import { ORDER_REF_REGEX } from '../../utils/orderRef.js';
+import { sendStatusEmail } from '../../services/mailService.js';
 import pool from '../../config/db.js';
 
 const router = Router();
@@ -127,7 +128,25 @@ router.put('/:ref/status', verifyCsrf, validateStatus, async (req, res) => {
       [order.id, order.status, newStatus, req.user.sub, reason?.trim() || null]
     );
 
+    // Fetch customer for status email
+    const [[customer]] = await pool.execute(
+      `SELECT c.email, c.first_name FROM orders o
+       JOIN customers c ON c.id = o.customer_id
+       WHERE o.id = ?`,
+      [order.id]
+    );
+
     res.json({ ok: true, status: newStatus });
+
+    if (customer?.email) {
+      sendStatusEmail({
+        to:       customer.email,
+        vorname:  customer.first_name,
+        orderRef: req.params.ref,
+        status:   newStatus,
+        reason:   reason?.trim() || null,
+      }).catch(err => console.error('[mail] sendStatusEmail:', err.message));
+    }
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Erreur serveur' });

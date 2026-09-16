@@ -23,7 +23,7 @@ const STATUS_TO_STEP = {
 };
 
 const NOTIF_STYLES = {
-  info:    { color: 'var(--accent)', bg: 'var(--accent-light)', border: 'rgba(249,115,22,0.25)', icon: 'bi-info-circle-fill' },
+  info:    { color: 'var(--accent)', bg: 'var(--accent-light)', border: 'rgba(224,38,26,0.25)', icon: 'bi-info-circle-fill' },
   success: { color: 'var(--green)',  bg: '#ECFDF5',             border: '#6EE7B7',              icon: 'bi-check-circle-fill' },
   warning: { color: '#D97706',       bg: '#FFFBEB',             border: '#FDE68A',              icon: 'bi-exclamation-triangle-fill' },
 };

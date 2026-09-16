@@ -1,11 +1,13 @@
 import { useState } from 'react';
 import { useCart } from '../context/CartContext';
 import { useNavigate } from 'react-router-dom';
+import { useBreakpoint } from '../hooks/useBreakpoint';
 
 export default function CartDrawer() {
   const { items, remove, update, total, count, open, setOpen } = useCart();
   const navigate = useNavigate();
   const [paymentType, setPaymentType] = useState('full');
+  const isSmall = useBreakpoint(400);
   const fmt = (n) => n.toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' €';
   const shipping = 0;
   const grand = total + shipping;
@@ -105,7 +107,7 @@ export default function CartDrawer() {
               <p style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: 8 }}>
                 Zahlungsart
               </p>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+              <div style={{ display: 'grid', gridTemplateColumns: isSmall ? '1fr' : '1fr 1fr', gap: 8 }}>
                 {[
                   { id: 'full', label: 'Vollständige Zahlung', sub: fmt(grand) },
                   { id: 'deposit', label: '50 % Anzahlung', sub: fmt(grand * 0.5) },

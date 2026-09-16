@@ -40,6 +40,24 @@ export function sendContact(payload) {
   return request('POST', '/contact', payload);
 }
 
+export function sendAngebot(payload) {
+  return request('POST', '/angebot', payload);
+}
+
+// ── Admin — angebote ──────────────────────────────────────────────────────────
+
+export function fetchAllAngebote(queryString = '') {
+  return request('GET', `/admin/angebote${queryString}`);
+}
+
+export function fetchAngebotDetail(id) {
+  return request('GET', `/admin/angebote/${id}`);
+}
+
+export function updateAngebotStatus(id, status) {
+  return request('PATCH', `/admin/angebote/${id}/status`, { status });
+}
+
 // ── Auth ──────────────────────────────────────────────────────────────────────
 
 export function login(username, password) {

@@ -1,3 +1,5 @@
+import { useBreakpoint } from '../hooks/useBreakpoint';
+
 function Section({ title, children }) {
   return (
     <div style={{ marginBottom: 40 }}>
@@ -29,6 +31,7 @@ const OPTIONEN = [
 ];
 
 export default function LivraisonPage() {
+  const isMobile = useBreakpoint(640);
   return (
     <main>
       <div style={{ background: 'var(--dark)', padding: '56px 0 48px' }}>
@@ -42,7 +45,7 @@ export default function LivraisonPage() {
       <div className="container" style={{ padding: '56px 24px 80px', maxWidth: 800 }}>
 
         <Section title="Lieferoptionen">
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20, marginBottom: 16 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: 20, marginBottom: 16 }}>
             {OPTIONEN.map(({ icon, title, delai, preis, desc, color, highlight }) => (
               <div key={title} style={{
                 background: highlight ? 'var(--accent-light)' : 'var(--bg)',
