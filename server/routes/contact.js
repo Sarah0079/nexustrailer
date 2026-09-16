@@ -13,22 +13,45 @@ const contactLimiter = rateLimit({
   message: { error: 'Zu viele Nachrichten gesendet. Bitte in einer Stunde erneut versuchen.' },
 });
 
+const NAME_RE  = /^[a-zA-ZÀ-ÖØ-öø-ÿäöüÄÖÜß\s'\-]{2,80}$/;
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+const PHONE_RE = /^[0-9+\-\s()]{6,30}$/;
+const HTML_RE  = /<[^>]*>/;
+
+const ALLOWED_SUBJECTS = new Set([
+  'Allgemeine Anfrage',
+  'Angebot anfordern',
+  'Lieferinformation',
+  'Nach dem Kauf',
+]);
+
 function validateContact(req, res, next) {
-  const { name, email, subject, message } = req.body;
+  const { name, email, subject, message, phone } = req.body;
 
-  if (!name?.trim())    return res.status(400).json({ error: 'Name ist erforderlich.' });
-  if (!email?.trim())   return res.status(400).json({ error: 'E-Mail ist erforderlich.' });
-  if (!subject?.trim()) return res.status(400).json({ error: 'Betreff ist erforderlich.' });
-  if (!message?.trim()) return res.status(400).json({ error: 'Nachricht ist erforderlich.' });
+  const n = name?.trim();
+  if (!n)               return res.status(400).json({ error: 'Name ist erforderlich.' });
+  if (n.length < 2)     return res.status(400).json({ error: 'Name zu kurz (min. 2 Zeichen).' });
+  if (!NAME_RE.test(n)) return res.status(400).json({ error: 'Name ungültig — nur Buchstaben erlaubt.' });
 
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-    return res.status(400).json({ error: 'E-Mail-Adresse ist ungültig.' });
+  const e = email?.trim();
+  if (!e)                return res.status(400).json({ error: 'E-Mail ist erforderlich.' });
+  if (!EMAIL_RE.test(e)) return res.status(400).json({ error: 'E-Mail-Adresse ist ungültig.' });
+  if (e.length > 254)    return res.status(400).json({ error: 'E-Mail zu lang.' });
+
+  if (phone?.trim() && !PHONE_RE.test(phone.trim())) {
+    return res.status(400).json({ error: 'Telefonnummer ungültig.' });
   }
 
-  if (name.trim().length    > 60)   return res.status(400).json({ error: 'Name zu lang (max. 60 Zeichen).' });
-  if (email.trim().length   > 254)  return res.status(400).json({ error: 'E-Mail zu lang.' });
-  if (subject.trim().length > 100)  return res.status(400).json({ error: 'Betreff zu lang (max. 100 Zeichen).' });
-  if (message.trim().length > 1000) return res.status(400).json({ error: 'Nachricht zu lang (max. 1000 Zeichen).' });
+  const s = subject?.trim();
+  if (!s || !ALLOWED_SUBJECTS.has(s)) {
+    return res.status(400).json({ error: 'Ungültiger Betreff.' });
+  }
+
+  const m = message?.trim();
+  if (!m)              return res.status(400).json({ error: 'Nachricht ist erforderlich.' });
+  if (m.length < 10)   return res.status(400).json({ error: 'Nachricht zu kurz (min. 10 Zeichen).' });
+  if (m.length > 1000) return res.status(400).json({ error: 'Nachricht zu lang (max. 1000 Zeichen).' });
+  if (HTML_RE.test(m)) return res.status(400).json({ error: 'HTML-Tags sind nicht erlaubt.' });
 
   next();
 }

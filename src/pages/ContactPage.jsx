@@ -10,29 +10,65 @@ const CONTACT_INFO = [
 ];
 
 const FIELDS_DEF = [
-  { key: 'name',    label: 'Name',     ph: 'Ihr Name',          required: true,  max: 80 },
+  { key: 'name',    label: 'Name',     ph: 'Ihr Name',          required: true,  max: 80,  blockDigits: true },
   { key: 'email',   label: 'E-Mail',   ph: 'ihre@email.de',     required: true,  max: 100, type: 'email' },
-  { key: 'phone',   label: 'Telefon',  ph: '+49 000 000 000',   required: false, max: 30 },
+  { key: 'phone',   label: 'Telefon',  ph: '+49 000 000 000',   required: false, max: 30,  inputMode: 'tel' },
 ];
+
+const NAME_RE    = /^[a-zA-ZÀ-ÖØ-öø-ÿäöüÄÖÜß\s'\-]{2,80}$/;
+const EMAIL_RE   = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+const PHONE_RE   = /^[0-9+\-\s()]{6,30}$/;
+const HTML_RE    = /<[^>]*>/;
 
 function validateContact(form) {
   const errors = {};
-  if (!form.name.trim()) errors.name = 'Name ist erforderlich';
-  if (!form.email.trim()) {
+
+  const name = form.name.trim();
+  if (!name) {
+    errors.name = 'Name ist erforderlich';
+  } else if (name.length < 2) {
+    errors.name = 'Mindestens 2 Zeichen';
+  } else if (!NAME_RE.test(name)) {
+    errors.name = 'Nur Buchstaben, Leerzeichen und Bindestriche erlaubt';
+  }
+
+  const email = form.email.trim();
+  if (!email) {
     errors.email = 'E-Mail ist erforderlich';
-  } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.trim())) {
+  } else if (!EMAIL_RE.test(email)) {
     errors.email = 'Ungültige E-Mail-Adresse';
   }
-  if (form.phone.trim() && !/^[0-9+\-\s()]{6,30}$/.test(form.phone.trim())) {
-    errors.phone = 'Ungültige Telefonnummer';
+
+  const phone = form.phone.trim();
+  if (phone && !PHONE_RE.test(phone)) {
+    errors.phone = 'Nur Ziffern, +, - und Klammern erlaubt';
   }
-  if (!form.message.trim()) errors.message = 'Nachricht ist erforderlich';
-  else if (form.message.trim().length < 10) errors.message = 'Mindestens 10 Zeichen';
+
+  const msg = form.message.trim();
+  if (!msg) {
+    errors.message = 'Nachricht ist erforderlich';
+  } else if (msg.length < 10) {
+    errors.message = 'Mindestens 10 Zeichen';
+  } else if (msg.length > 1000) {
+    errors.message = 'Maximal 1000 Zeichen';
+  } else if (HTML_RE.test(msg)) {
+    errors.message = 'HTML-Tags sind nicht erlaubt';
+  }
+
   return errors;
 }
 
 function FieldRow({ def, value, error, onChange, touched, onBlur }) {
   const showError = touched && error;
+
+  const handleChange = (raw) => {
+    if (def.blockDigits) {
+      onChange(raw.replace(/[0-9]/g, ''));
+    } else {
+      onChange(raw);
+    }
+  };
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
       <label style={{ fontSize: 13, fontWeight: 500, display: 'flex', justifyContent: 'space-between' }}>
@@ -42,10 +78,12 @@ function FieldRow({ def, value, error, onChange, touched, onBlur }) {
       <input
         className="input"
         type={def.type || 'text'}
+        inputMode={def.inputMode}
         placeholder={def.ph}
         value={value}
         maxLength={def.max}
-        onChange={e => onChange(e.target.value)}
+        autoComplete={def.key === 'name' ? 'name' : def.key === 'email' ? 'email' : def.key === 'phone' ? 'tel' : 'off'}
+        onChange={e => handleChange(e.target.value)}
         onBlur={onBlur}
         style={{ borderColor: showError ? 'var(--sale)' : undefined, outline: showError ? '2px solid rgba(220,38,38,0.15)' : undefined }}
       />
