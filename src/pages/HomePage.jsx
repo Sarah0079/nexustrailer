@@ -28,7 +28,12 @@ export default function HomePage() {
   const isMobile  = useBreakpoint(768);
   const featured  = PRODUCTS.filter(p => p.featured).slice(0, 4);
   const videoRef  = useRef(null);
-  useEffect(() => { if (videoRef.current) videoRef.current.muted = true; }, []);
+  useEffect(() => {
+    const v = videoRef.current;
+    if (!v) return;
+    v.muted = true;
+    v.play().catch(() => {});
+  }, []);
 
   const counts = useMemo(() => {
     const c = {};
