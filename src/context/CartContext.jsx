@@ -1,10 +1,20 @@
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useState, useEffect } from 'react';
 
 const CartContext = createContext(null);
 
+function loadCart() {
+  try { return JSON.parse(localStorage.getItem('nexus_cart')) || []; }
+  catch { return []; }
+}
+
 export function CartProvider({ children }) {
-  const [items, setItems] = useState([]);
+  const [items, setItems] = useState(loadCart);
   const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    try { localStorage.setItem('nexus_cart', JSON.stringify(items)); }
+    catch {}
+  }, [items]);
 
   const add = (product, qty = 1) => {
     setItems(prev => {
