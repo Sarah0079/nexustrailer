@@ -39,8 +39,8 @@ export async function sendOrderConfirmation({ orderRef, customer, items, total, 
 
   const bankRowHtml = (label, value, mono = false) => `
     <tr>
-      <td style="padding:6px 0;font-size:12px;color:#6B7280;vertical-align:top;">${label}</td>
-      <td style="padding:6px 0;font-size:13px;font-weight:600;color:#0F172A;word-break:break-all;${mono ? 'font-family:monospace;' : ''}">${value || '—'}</td>
+      <td style="padding:6px 16px 6px 0;font-size:12px;color:#6B7280;vertical-align:top;white-space:nowrap;width:1%;">${label}</td>
+      <td style="padding:6px 0;font-size:13px;font-weight:600;color:#0F172A;${mono ? 'font-family:monospace;white-space:nowrap;' : 'word-break:break-word;'}">${value || '—'}</td>
     </tr>`;
 
   const customerHtml = `<!DOCTYPE html>
