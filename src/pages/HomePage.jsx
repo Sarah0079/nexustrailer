@@ -40,7 +40,7 @@ export default function HomePage() {
       {/* ── Hero ── */}
       <section style={{ position: 'relative', overflow: 'hidden', minHeight: 560, display: 'flex', alignItems: 'center' }}>
         <video autoPlay muted loop playsInline style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', zIndex: 0 }}>
-          <source src="/image/hero.mp4" type="video/mp4" />
+          <source src="https://nexustrailer.de/image/hero.mp4" type="video/mp4" />
         </video>
         <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to right, rgba(15,23,42,0.90) 0%, rgba(15,23,42,0.58) 60%, rgba(15,23,42,0.20) 100%)', zIndex: 1 }} />
         <div style={{ position: 'relative', zIndex: 2, maxWidth: 1240, margin: '0 auto', padding: isMobile ? '7rem 1.5rem 5rem' : '7rem 2rem 5rem', width: '100%' }}>
