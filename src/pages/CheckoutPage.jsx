@@ -224,7 +224,7 @@ export default function CheckoutPage() {
             </div>
 
             {/* RIGHT — sticky summary */}
-            <div style={{ position: isMobile ? 'static' : 'sticky', top: 24, alignSelf: 'start', display: 'flex', flexDirection: 'column', gap: 16, order: isMobile ? -1 : 0, minWidth: 0, width: '100%' }}>
+            <div style={{ position: isMobile ? 'static' : 'sticky', top: 24, alignSelf: 'start', display: 'flex', flexDirection: 'column', gap: 16, order: isMobile ? 1 : 0, minWidth: 0, width: '100%' }}>
               <div style={{ background: 'white', border: '1px solid var(--border)', borderRadius: 'var(--r-lg)', padding: isMobile ? 16 : 24 }}>
                 <h2 style={{ fontSize: 15, fontWeight: 800, color: 'var(--dark)', marginBottom: 18 }}>Ihre Bestellung</h2>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 14, marginBottom: 18 }}>
