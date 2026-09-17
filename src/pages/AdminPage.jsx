@@ -25,7 +25,7 @@ const fmtDate = (iso) => iso ? new Date(iso).toLocaleString('de-DE', { day: '2-d
 function StatusBadge({ status }) {
   const s = STATUSES[status] || { label: status, color: '#374151', bg: '#F3F4F6', border: '#E5E7EB' };
   return (
-    <span style={{ fontSize: 11, fontWeight: 700, padding: '3px 9px', borderRadius: 4, background: s.bg, color: s.color, border: `1px solid ${s.border}`, whiteSpace: 'nowrap' }}>
+    <span style={{ fontSize: 11, fontWeight: 700, padding: '3px 9px', borderRadius: 0, background: s.bg, color: s.color, border: `1px solid ${s.border}`, whiteSpace: 'nowrap' }}>
       {s.label}
     </span>
   );
@@ -349,7 +349,7 @@ const ANGEBOT_STATUSES = {
 function AngebotBadge({ status }) {
   const s = ANGEBOT_STATUSES[status] || { label: status, color: '#374151', bg: '#F3F4F6', border: '#E5E7EB' };
   return (
-    <span style={{ fontSize: 11, fontWeight: 700, padding: '3px 9px', borderRadius: 4, background: s.bg, color: s.color, border: `1px solid ${s.border}`, whiteSpace: 'nowrap' }}>
+    <span style={{ fontSize: 11, fontWeight: 700, padding: '3px 9px', borderRadius: 0, background: s.bg, color: s.color, border: `1px solid ${s.border}`, whiteSpace: 'nowrap' }}>
       {s.label}
     </span>
   );

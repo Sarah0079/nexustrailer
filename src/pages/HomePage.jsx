@@ -62,7 +62,7 @@ export default function HomePage() {
             <p style={{ color: 'rgba(255,255,255,0.68)', fontSize: 'clamp(.9rem, 2vw, 1.075rem)', lineHeight: 1.72, maxWidth: 520, marginBottom: 24 }}>
               Kein Händler, kein Aufpreis. Wir liefern hochwertige Wohnwagen, Kipperanhänger und Nutzfahrzeuge direkt — COC-zertifiziert, versandfertig, kostenlos in ganz Europa.
             </p>
-            <div style={{ display: 'inline-flex', gap: '.625rem', alignItems: 'center', background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.14)', borderRadius: 4, padding: '.5rem .875rem', marginBottom: 32 }}>
+            <div style={{ display: 'inline-flex', gap: '.625rem', alignItems: 'center', background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.14)', borderRadius: 0, padding: '.5rem .875rem', marginBottom: 32 }}>
               <i className="bi bi-check2" style={{ color: 'var(--accent)', fontSize: 14 }} />
               <span style={{ color: 'rgba(255,255,255,0.82)', fontSize: '.82rem', fontWeight: 500 }}>COC-zertifiziert · 2 Jahre Garantie · 30 Tage Rückgabe</span>
             </div>
@@ -217,7 +217,7 @@ export default function HomePage() {
                 </div>
                 <p style={{ fontSize: 14, color: 'var(--text)', lineHeight: 1.8, flex: 1, fontStyle: 'italic' }}>„{text}"</p>
                 <div style={{ marginTop: 20, paddingTop: 16, borderTop: '1px solid var(--border)', display: 'flex', alignItems: 'center', gap: 10 }}>
-                  <div style={{ width: 34, height: 34, background: 'var(--accent-light)', border: '1px solid var(--border)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, fontSize: 13, fontWeight: 700, color: 'var(--accent)' }}>
+                  <div style={{ width: 34, height: 34, background: 'var(--dark)', border: 'none', borderRadius: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, fontSize: 13, fontWeight: 700, color: 'white' }}>
                     {name.charAt(0)}
                   </div>
                   <div>
@@ -276,7 +276,7 @@ export default function HomePage() {
               </div>
               <h3 style={{ fontSize: 18, fontWeight: 800, color: 'var(--dark)' }}>Eine Frage stellen</h3>
               <p style={{ fontSize: 14, color: 'var(--text-muted)', lineHeight: 1.75 }}>
-                Fragen zu einem Produkt, zur Lieferung oder zum Bestellprozess? Unser Team antwortet innerhalb von 24 Werktunden.
+                Fragen zu einem Produkt, zur Lieferung oder zum Bestellprozess? Unser Team antwortet innerhalb von 24 Stunden.
               </p>
               <div style={{ marginTop: 'auto', display: 'flex', flexDirection: 'column', gap: 8 }}>
                 <a href="mailto:info@nexustrailer.com" style={{ fontSize: 13.5, color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: 8 }}>

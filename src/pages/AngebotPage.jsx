@@ -153,19 +153,19 @@ export default function AngebotPage() {
                 <i className="bi bi-check-circle-fill" style={{ fontSize: 44, color: 'var(--accent)', display: 'block', marginBottom: 20 }} />
                 <h3 style={{ fontSize: 22, fontWeight: 800, color: 'var(--dark)', marginBottom: 10 }}>Anfrage eingegangen!</h3>
                 <p style={{ color: 'var(--text-muted)', fontSize: 15, lineHeight: 1.7, maxWidth: 400, margin: '0 auto' }}>
-                  Wir prüfen Ihre Anfrage und melden uns innerhalb von 24 Werktunden mit einem individuellen Angebot.
+                  Wir prüfen Ihre Anfrage und melden uns innerhalb von 24 Stunden mit einem individuellen Angebot.
                 </p>
               </div>
             ) : (
               <form onSubmit={handleSubmit} noValidate style={{ border: '1px solid var(--border)', background: 'white', padding: isMobile ? '28px 20px' : '40px 40px' }}>
 
                 {triedSubmit && Object.keys(errors).length > 0 && (
-                  <div style={{ background: '#FEF2F2', border: '1px solid #FECACA', borderRadius: 4, padding: '10px 14px', marginBottom: 20, fontSize: 13, color: '#991B1B', display: 'flex', gap: 8, alignItems: 'center' }}>
+                  <div style={{ background: '#FEF2F2', border: '1px solid #FECACA', borderRadius: 0, padding: '10px 14px', marginBottom: 20, fontSize: 13, color: '#991B1B', display: 'flex', gap: 8, alignItems: 'center' }}>
                     <i className="bi bi-exclamation-triangle-fill" /><span>Bitte korrigieren Sie die markierten Felder.</span>
                   </div>
                 )}
                 {serverError && (
-                  <div style={{ background: '#FEF2F2', border: '1px solid #FECACA', borderRadius: 4, padding: '10px 14px', marginBottom: 20, fontSize: 13, color: '#991B1B', display: 'flex', gap: 8, alignItems: 'center' }}>
+                  <div style={{ background: '#FEF2F2', border: '1px solid #FECACA', borderRadius: 0, padding: '10px 14px', marginBottom: 20, fontSize: 13, color: '#991B1B', display: 'flex', gap: 8, alignItems: 'center' }}>
                     <i className="bi bi-exclamation-circle" /><span>{serverError}</span>
                   </div>
                 )}
@@ -272,7 +272,7 @@ export default function AngebotPage() {
                   }
                 </button>
                 <p style={{ fontSize: 12, color: 'var(--text-light)', textAlign: 'center', marginTop: 12 }}>
-                  Antwort innerhalb von 24 Werktunden · Kostenlos & unverbindlich
+                  Antwort innerhalb von 24 Stunden · Kostenlos & unverbindlich
                 </p>
               </form>
             )}

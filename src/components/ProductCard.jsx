@@ -38,13 +38,13 @@ export default function ProductCard({ product }) {
       }}
     >
       {/* Image */}
-      <div style={{ position: 'relative', aspectRatio: '4/3', overflow: 'hidden', background: 'var(--bg)' }}>
+      <div style={{ position: 'relative', aspectRatio: '4/3', overflow: 'hidden', background: '#F0F0EE' }}>
         <img
           src={product.image} alt={product.name} loading="lazy"
           style={{
-            width: '100%', height: '100%', objectFit: 'cover',
+            width: '100%', height: '100%', objectFit: 'contain', padding: '8px',
             transition: 'transform 0.5s ease',
-            transform: hovered ? 'scale(1.06)' : 'scale(1)',
+            transform: hovered ? 'scale(1.04)' : 'scale(1)',
           }}
         />
 

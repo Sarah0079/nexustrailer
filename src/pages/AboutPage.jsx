@@ -243,7 +243,7 @@ export default function AboutPage() {
             <Link to="/shop" className="btn btn-accent btn-lg">
               <i className="bi bi-grid" /> Zum Shop
             </Link>
-            <Link to="/contact" className="btn btn-outline" style={{ background: 'transparent', color: 'rgba(255,255,255,0.7)', borderColor: 'rgba(255,255,255,0.2)' }}>
+            <Link to="/kontakt" className="btn btn-outline" style={{ background: 'transparent', color: 'rgba(255,255,255,0.7)', borderColor: 'rgba(255,255,255,0.2)' }}>
               Kontakt aufnehmen
             </Link>
           </div>

@@ -117,7 +117,7 @@ export default function ProductPage() {
                     border: `2px solid ${i === activeImg ? 'var(--accent)' : 'var(--border)'}`,
                     transition: 'border-color 0.15s',
                   }}>
-                    <img src={img} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    <img src={img} alt="" style={{ width: '100%', height: '100%', objectFit: 'contain', padding: '4px', background: '#F0F0EE' }} />
                   </button>
                 ))}
               </div>

@@ -53,8 +53,8 @@ export default function CartDrawer() {
             <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
               {items.map(item => (
                 <div key={item.id} style={{ display: 'flex', gap: 14, padding: '14px 0', borderBottom: '1px solid var(--border)' }}>
-                  <div style={{ width: 72, height: 56, borderRadius: 0, overflow: 'hidden', flexShrink: 0, background: 'var(--bg)' }}>
-                    <img src={item.image} alt={item.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  <div style={{ width: 72, height: 56, borderRadius: 0, overflow: 'hidden', flexShrink: 0, background: '#F0F0EE' }}>
+                    <img src={item.image} alt={item.name} style={{ width: '100%', height: '100%', objectFit: 'contain', padding: '4px' }} />
                   </div>
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <p style={{ fontSize: 13, fontWeight: 600, color: 'var(--dark)', lineHeight: 1.35, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{item.name}</p>
