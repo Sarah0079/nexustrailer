@@ -50,7 +50,7 @@ export default function HomePage() {
         <div className="container">
           <h1 style={{
             fontFamily: 'var(--font-display)',
-            fontSize: isMobile ? 'clamp(52px, 13vw, 72px)' : 'clamp(72px, 8vw, 118px)',
+            fontSize: isMobile ? 'clamp(26px, 10vw, 48px)' : 'clamp(72px, 8vw, 118px)',
             fontWeight: 900, color: 'white',
             lineHeight: 0.9, textTransform: 'uppercase', letterSpacing: '-0.01em',
             marginBottom: isMobile ? 28 : 44,
