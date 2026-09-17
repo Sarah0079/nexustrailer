@@ -80,17 +80,21 @@ export default function Footer() {
         <div className="container" style={{
           display: 'grid',
           gridTemplateColumns: isSmall ? '1fr 1fr' : 'repeat(4, 1fr)',
-          gap: 10,
+          gap: isSmall ? '12px 8px' : 10,
         }}>
           {TRUST.map(({ icon, label }) => (
             <span key={label} style={{
-              fontSize: 12, fontWeight: 600,
+              fontSize: isSmall ? 11 : 12, fontWeight: 600,
               color: 'rgba(255,255,255,0.6)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              gap: 7, padding: '4px 8px',
-              whiteSpace: 'nowrap',
+              display: 'flex',
+              flexDirection: isSmall ? 'column' : 'row',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: isSmall ? 5 : 7,
+              padding: isSmall ? '6px 4px' : '4px 8px',
+              textAlign: 'center',
             }}>
-              <i className={`bi ${icon}`} style={{ fontSize: 15, flexShrink: 0 }} />
+              <i className={`bi ${icon}`} style={{ fontSize: isSmall ? 18 : 15, flexShrink: 0 }} />
               {label}
             </span>
           ))}
