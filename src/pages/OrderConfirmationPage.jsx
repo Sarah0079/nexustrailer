@@ -5,12 +5,11 @@ import { fmtEur } from '../utils/fmt';
 export default function OrderConfirmationPage() {
   const location = useLocation();
   const state = location.state;
+  const isMobile = useBreakpoint(600);
 
   if (!state?.orderRef) {
     return <Navigate to="/" replace />;
   }
-
-  const isMobile = useBreakpoint(600);
   const { orderRef, bank, paymentType, total, amountDueNow: serverAmount } = state;
   const fmt = fmtEur;
 

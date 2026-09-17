@@ -180,6 +180,37 @@ export default function Header() {
         {/* Mobile menu */}
         {isMobile && menuOpen && (
           <div style={{ background: 'white', borderTop: '1px solid var(--border)', animation: 'slideUp 0.18s ease' }}>
+            {/* Recherche mobile */}
+            <div style={{ padding: '12px 16px', borderBottom: '1px solid var(--border)' }}>
+              <div style={{ position: 'relative' }}>
+                <i className="bi bi-search" style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: 'var(--text-light)', fontSize: 14, pointerEvents: 'none' }} />
+                <input
+                  className="input"
+                  placeholder="Produkte suchen..."
+                  value={search}
+                  onChange={e => handleSearch(e.target.value)}
+                  style={{ paddingLeft: 36, fontSize: 13 }}
+                />
+              </div>
+              {searchOpen && searchResults.length > 0 && (
+                <div style={{ marginTop: 6, border: '1px solid var(--border)', overflow: 'hidden' }}>
+                  {searchResults.map(p => (
+                    <div key={p.id}
+                      onClick={() => { goProduct(p.slug); setMenuOpen(false); }}
+                      style={{ display: 'flex', gap: 12, padding: '10px 14px', cursor: 'pointer', alignItems: 'center', borderBottom: '1px solid var(--border)', background: 'white' }}
+                      onMouseEnter={e => e.currentTarget.style.background = 'var(--bg)'}
+                      onMouseLeave={e => e.currentTarget.style.background = 'white'}
+                    >
+                      <img src={p.image} alt={p.name} style={{ width: 44, height: 36, objectFit: 'contain', padding: '3px', background: '#F0F0EE', flexShrink: 0 }} />
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <p style={{ fontSize: 13, fontWeight: 600, color: 'var(--text)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{p.name}</p>
+                        <p style={{ fontSize: 12, color: 'var(--accent)', fontWeight: 700 }}>{fmt(p.price)}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
             {NAV.map(({ to, label }) => (
               <Link key={to} to={to} onClick={() => setMenuOpen(false)} style={{
                 display: 'block', padding: '13px 20px',

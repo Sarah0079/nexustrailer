@@ -57,7 +57,7 @@ export default function ProductPage() {
         <div className="container" style={{ display: 'flex', gap: 6, alignItems: 'center', fontSize: 12, color: 'var(--text-muted)', flexWrap: 'wrap' }}>
           <Link to="/" style={{ color: 'var(--text-muted)' }}>Startseite</Link>
           <i className="bi bi-chevron-right" style={{ fontSize: 10 }} />
-          <Link to="/shop" style={{ color: 'var(--text-muted)' }}>Geschäft</Link>
+          <Link to="/shop" style={{ color: 'var(--text-muted)' }}>Shop</Link>
           <i className="bi bi-chevron-right" style={{ fontSize: 10 }} />
           <span style={{ color: 'var(--dark)', fontWeight: 500 }}>{product.name}</span>
         </div>
@@ -128,12 +128,12 @@ export default function ProductPage() {
 
             {/* Stock */}
             {product.stock !== undefined && (
-              <span style={product.stock > 0
+              <span style={(product.stock === 'instock' || product.stock > 0)
                 ? { background: '#ECFDF5', color: '#065F46', border: '1px solid #6EE7B7', borderRadius: 0, padding: '4px 12px', fontSize: 12, fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: 5, marginBottom: 16 }
                 : { background: '#FEF2F2', color: '#991B1B', border: '1px solid #FECACA', borderRadius: 0, padding: '4px 12px', fontSize: 12, fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: 5, marginBottom: 16 }
               }>
-                <i className={`bi ${product.stock > 0 ? 'bi-check-circle-fill' : 'bi-x-circle-fill'}`} style={{ fontSize: 10 }} />
-                {product.stock > 0 ? 'AUF LAGER' : 'NICHT VERFÜGBAR'}
+                <i className={`bi ${(product.stock === 'instock' || product.stock > 0) ? 'bi-check-circle-fill' : 'bi-x-circle-fill'}`} style={{ fontSize: 10 }} />
+                {(product.stock === 'instock' || product.stock > 0) ? 'AUF LAGER' : 'NICHT VERFÜGBAR'}
               </span>
             )}
 

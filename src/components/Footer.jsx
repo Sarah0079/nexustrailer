@@ -32,8 +32,8 @@ const BUSINESS = [
   { label: 'Website',         val: 'nexustrailer.com' },
   { label: 'SIREN',           val: '948418827' },
   { label: 'SIRET',           val: '94841882700010' },
-  { label: 'E-Mail',          val: 'info@nexustrailer.com' },
-  { label: 'Telefon',         val: '+33 7 56 83 64 79' },
+  { label: 'E-Mail',          val: 'info@nexustrailer.com', href: 'mailto:info@nexustrailer.com' },
+  { label: 'Telefon',         val: '+33 7 56 83 64 79',     href: 'tel:+33756836479' },
   { label: 'USt-ID',          val: 'FR16948418827' },
   { label: 'Handelsregister', val: '948 418 827 R.C.S. Clermont-Ferrand' },
   { label: 'Adresse',         val: '21 Rue du Bouchet, 63350 Maringues, Frankreich' },
@@ -119,10 +119,17 @@ export default function Footer() {
               Geschäftsinformationen
             </p>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 7 }}>
-              {BUSINESS.map(({ label, val }) => (
+              {BUSINESS.map(({ label, val, href }) => (
                 <div key={label} style={{ display: 'flex', gap: 6, fontSize: 12 }}>
                   <span style={{ color: 'rgba(255,255,255,0.35)', flexShrink: 0, minWidth: 100 }}>{label}:</span>
-                  <span style={{ color: 'rgba(255,255,255,0.6)', wordBreak: 'break-word' }}>{val}</span>
+                  {href ? (
+                    <a href={href} style={{ color: 'rgba(255,255,255,0.6)', wordBreak: 'break-word', textDecoration: 'none', transition: 'color 0.15s' }}
+                      onMouseEnter={e => e.currentTarget.style.color = 'white'}
+                      onMouseLeave={e => e.currentTarget.style.color = 'rgba(255,255,255,0.6)'}
+                    >{val}</a>
+                  ) : (
+                    <span style={{ color: 'rgba(255,255,255,0.6)', wordBreak: 'break-word' }}>{val}</span>
+                  )}
                 </div>
               ))}
             </div>

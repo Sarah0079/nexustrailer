@@ -149,7 +149,7 @@ function CategoryScrollBar({ categories, active, onSelect }) {
 
 export default function ShopPage() {
   const [params, setParams] = useSearchParams();
-  const [category, setCategory] = useState(params.get('category') || 'all');
+  const category = params.get('category') || 'all';
   const [sort, setSort] = useState('default');
   const [search, setSearch] = useState('');
   const isMobile = useBreakpoint(900);
@@ -186,7 +186,6 @@ export default function ShopPage() {
   const allCategories = [{ id: 'all', label: 'Alle Kategorien' }, ...CATEGORIES];
 
   const handleCategoryClick = (id) => {
-    setCategory(id);
     if (id !== 'all') setParams({ category: id });
     else setParams({});
   };

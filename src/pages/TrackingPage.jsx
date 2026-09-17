@@ -38,6 +38,7 @@ export default function TrackingPage() {
   useEffect(() => {
     const ref = location.state?.orderRef;
     if (ref) { setInput(ref); doTrack(ref); }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const doTrack = async (override) => {
