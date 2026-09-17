@@ -37,10 +37,9 @@ const ALLOWED_QUANTITIES = new Set([
 function validate(req, res, next) {
   const { company, name, email, product_type, message, phone, siret, quantity, budget } = req.body;
 
-  const co = company?.trim();
-  if (!co)               return res.status(400).json({ error: 'Firmenname ist erforderlich.' });
+  const co = company?.trim() || '';
   if (co.length > 100)   return res.status(400).json({ error: 'Firmenname zu lang (max. 100).' });
-  if (HTML_RE.test(co))  return res.status(400).json({ error: 'Firmenname enthält ungültige Zeichen.' });
+  if (co && HTML_RE.test(co)) return res.status(400).json({ error: 'Firmenname enthält ungültige Zeichen.' });
 
   const n = name?.trim();
   if (!n)                return res.status(400).json({ error: 'Ansprechpartner ist erforderlich.' });
@@ -90,7 +89,7 @@ router.post('/', angebotLimiter, verifyCsrf, validate, async (req, res) => {
       `INSERT INTO quote_requests (company, name, email, phone, siret, product_type, quantity, budget, message, ip_address)
        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
-        company.trim(), name.trim(), email.trim(),
+        company?.trim() || null, name.trim(), email.trim(),
         phone?.trim() || null, siret?.trim() || null,
         product_type.trim(), quantity?.trim() || null,
         budget?.trim() || null, message.trim(), ip,

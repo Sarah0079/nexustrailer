@@ -23,8 +23,7 @@ const HTML_RE  = /<[^>]*>/;
 
 function validateAngebot(form) {
   const errors = {};
-  if (!form.company.trim())                          errors.company     = 'Firmenname ist erforderlich';
-  else if (HTML_RE.test(form.company))               errors.company     = 'Ungültige Zeichen';
+  if (form.company.trim() && HTML_RE.test(form.company)) errors.company = 'Ungültige Zeichen';
 
   const n = form.name.trim();
   if (!n)                                            errors.name        = 'Ansprechpartner ist erforderlich';
@@ -181,7 +180,7 @@ export default function AngebotPage() {
                 {/* Unternehmen + SIRET */}
                 <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: 16, marginBottom: 16 }}>
                   <div>
-                    <label style={labelStyle}>Unternehmen *</label>
+                    <label style={labelStyle}>Unternehmen</label>
                     <input className="input" placeholder="Firmenname" value={form.company}
                       onChange={setField('company')} onBlur={() => touch('company')}
                       maxLength={100} style={inputStyle('company')} />
