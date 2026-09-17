@@ -1,4 +1,4 @@
-import { useMemo, useRef, useEffect } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { PRODUCTS, CATEGORIES } from '../data/products';
 import ProductCard from '../components/ProductCard';
@@ -11,265 +11,298 @@ const FEATURES = [
   { icon: 'bi-patch-check',   title: 'COC-zertifiziert',      desc: 'Alle Wohnwagen mit EU-Übereinstimmungszertifikat für die direkte Zulassung.' },
 ];
 
-
 const FAQ_PREVIEW = [
-  { q: 'Wie lange dauert die Lieferung?',   a: 'Standardlieferung in 5–7 Werktagen nach Zahlungsbestätigung. Express in 1–3 Werktagen auf Anfrage.' },
-  { q: 'Welche Zahlungsmethoden gibt es?',  a: 'Ausschließlich SEPA-Banküberweisung — 100 % im Voraus oder 50 % Anzahlung, Rest vor Versand.' },
-  { q: 'Kann ich den Wohnwagen zurückgeben?', a: 'Ja. 30 Tage Rückgaberecht ab Lieferung. Wir organisieren die Abholung kostenlos.' },
+  { q: 'Wie lange dauert die Lieferung?',      a: 'Standardlieferung in 5–7 Werktagen nach Zahlungsbestätigung. Express in 1–3 Werktagen auf Anfrage.' },
+  { q: 'Welche Zahlungsmethoden gibt es?',     a: 'Ausschließlich SEPA-Banküberweisung — 100 % im Voraus oder 50 % Anzahlung, Rest vor Versand.' },
+  { q: 'Kann ich den Wohnwagen zurückgeben?',  a: 'Ja. 30 Tage Rückgaberecht ab Lieferung. Wir organisieren die Abholung kostenlos.' },
+  { q: 'Sind die Wohnwagen COC-zertifiziert?', a: 'Ja. Alle Wohnwagen werden mit dem EU-Übereinstimmungszertifikat (COC) geliefert — direkte Zulassung in allen EU-Ländern.' },
+];
+
+// Positions éditoriales pour la grille desktop des catégories
+const CAT_DESKTOP_POS = {
+  wohnwagen: { gridColumn: '1/3', gridRow: '1/3' },
+  tinyhouse: { gridColumn: '3',   gridRow: '1'   },
+  bagger:    { gridColumn: '3',   gridRow: '2'   },
+  kipper:    { gridColumn: '1',   gridRow: '3'   },
+  pritsche:  { gridColumn: '2',   gridRow: '3'   },
+  food:      { gridColumn: '3',   gridRow: '3'   },
+  kuehl:     { gridColumn: '1/4', gridRow: '4'   },
+};
+
+const STATS = [
+  [PRODUCTS.length + '+', 'Produkte im Katalog'],
+  ['5–7',                 'Werktage Lieferzeit'],
+  ['30 Tage',             'Rückgaberecht'],
+  ['2 Jahre',             'Herstellergarantie'],
 ];
 
 export default function HomePage() {
-  const isMobile  = useBreakpoint(768);
-  const featured  = PRODUCTS.filter(p => p.featured).slice(0, 4);
-  const videoRef  = useRef(null);
-  useEffect(() => {
-    const v = videoRef.current;
-    if (!v) return;
-    v.muted = true;
-    v.loop = true;
-    v.play().catch(() => {});
-    const restart = () => { v.currentTime = 0; v.play().catch(() => {}); };
-    v.addEventListener('ended', restart);
-    return () => v.removeEventListener('ended', restart);
-  }, []);
-
-  const counts = useMemo(() => {
-    const c = {};
-    PRODUCTS.forEach(p => { c[p.category] = (c[p.category] || 0) + 1; });
-    return c;
-  }, []);
+  const isMobile = useBreakpoint(768);
+  const featured = PRODUCTS.filter(p => p.featured).slice(0, 4);
+  const [openFaq,     setOpenFaq]     = useState(null);
+  const [hoveredCat,  setHoveredCat]  = useState(null);
 
   return (
     <main>
 
       {/* ── Hero ── */}
-      <section style={{ position: 'relative', overflow: 'hidden', minHeight: 560, display: 'flex', alignItems: 'center' }}>
-        <video ref={videoRef} autoPlay loop playsInline style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', zIndex: 0 }}>
-          <source src="/image/hero.mp4" type="video/mp4" />
-        </video>
-        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to right, rgba(15,23,42,0.90) 0%, rgba(15,23,42,0.58) 60%, rgba(15,23,42,0.20) 100%)', zIndex: 1 }} />
-        <div style={{ position: 'relative', zIndex: 2, maxWidth: 1240, margin: '0 auto', padding: isMobile ? '7rem 1.5rem 5rem' : '7rem 2rem 5rem', width: '100%' }}>
-          <div style={{ maxWidth: 660 }}>
-            <h1 style={{ color: 'white', fontSize: 'clamp(1.75rem, 4vw, 3.25rem)', fontWeight: 900, lineHeight: 1.1, letterSpacing: '-0.03em', textWrap: 'balance', marginBottom: 20 }}>
-              Wohnwagen & Anhänger —<br />direkt, zertifiziert, bis zu 55&nbsp;% günstiger.
-            </h1>
-            <p style={{ color: 'rgba(255,255,255,0.68)', fontSize: 'clamp(.9rem, 2vw, 1.075rem)', lineHeight: 1.72, maxWidth: 520, marginBottom: 24 }}>
-              Kein Händler, kein Aufpreis. Wir liefern hochwertige Wohnwagen, Kipperanhänger und Nutzfahrzeuge direkt — COC-zertifiziert, versandfertig, kostenlos in ganz Europa.
+      <section style={{ background: 'var(--dark)', padding: isMobile ? '72px 0 56px' : '100px 0 84px' }}>
+        <div className="container">
+          <h1 style={{
+            fontFamily: 'var(--font-display)',
+            fontSize: isMobile ? 'clamp(52px, 13vw, 72px)' : 'clamp(72px, 8vw, 118px)',
+            fontWeight: 900, color: 'white',
+            lineHeight: 0.9, textTransform: 'uppercase', letterSpacing: '-0.01em',
+            marginBottom: isMobile ? 28 : 44,
+          }}>
+            Wohnwagen &<br />Anhänger direkt
+          </h1>
+
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: isMobile ? '1fr' : '1fr auto',
+            gap: isMobile ? 24 : 52,
+            alignItems: 'flex-end',
+            marginBottom: isMobile ? 28 : 36,
+          }}>
+            <p style={{ fontSize: isMobile ? 14 : 16, color: 'rgba(255,255,255,0.50)', lineHeight: 1.78, maxWidth: 460 }}>
+              Kein Händler, kein Aufpreis. COC-zertifizierte Wohnwagen und Anhänger direkt — versandkostenfrei in ganz Europa.
             </p>
-            <div style={{ display: 'inline-flex', gap: '.625rem', alignItems: 'center', background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.14)', borderRadius: 0, padding: '.5rem .875rem', marginBottom: 32 }}>
-              <i className="bi bi-check2" style={{ color: 'var(--accent)', fontSize: 14 }} />
-              <span style={{ color: 'rgba(255,255,255,0.82)', fontSize: '.82rem', fontWeight: 500 }}>COC-zertifiziert · 2 Jahre Garantie · 30 Tage Rückgabe</span>
-            </div>
-            <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap' }}>
-              <Link to="/shop" className="btn btn-accent btn-lg">Jetzt entdecken</Link>
-              <Link to="/kontakt" className="btn btn-lg" style={{ background: 'rgba(255,255,255,0.10)', color: 'white', border: '1px solid rgba(255,255,255,0.20)' }}>
+            <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+              <Link to="/shop"
+                style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'var(--accent)', color: 'white', padding: isMobile ? '13px 22px' : '15px 30px', fontWeight: 700, fontSize: 14, textDecoration: 'none', transition: 'background 0.15s' }}
+                onMouseEnter={e => e.currentTarget.style.background = 'var(--accent-hover)'}
+                onMouseLeave={e => e.currentTarget.style.background = 'var(--accent)'}
+              >
+                Katalog ansehen →
+              </Link>
+              <Link to="/kontakt"
+                style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'transparent', color: 'rgba(255,255,255,0.70)', padding: isMobile ? '13px 22px' : '15px 30px', fontWeight: 600, fontSize: 14, border: '1.5px solid rgba(255,255,255,0.22)', textDecoration: 'none', transition: 'border-color 0.15s, color 0.15s' }}
+                onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.55)'; e.currentTarget.style.color = 'white'; }}
+                onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.22)'; e.currentTarget.style.color = 'rgba(255,255,255,0.70)'; }}
+              >
                 Experten kontaktieren
               </Link>
             </div>
           </div>
+
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px 0', borderTop: '1px solid rgba(255,255,255,0.09)', paddingTop: 20 }}>
+            {['Wohnwagen', 'Tiny House', 'Kipper', 'Baumaschinen', 'Food-Trucks'].map((type, i, arr) => (
+              <span key={type} style={{ fontSize: 11, fontWeight: 600, color: 'rgba(255,255,255,0.30)', textTransform: 'uppercase', letterSpacing: '0.09em', paddingRight: 14, marginRight: 14, borderRight: i < arr.length - 1 ? '1px solid rgba(255,255,255,0.10)' : 'none' }}>
+                {type}
+              </span>
+            ))}
+          </div>
         </div>
       </section>
 
-      {/* ── Kategorien ── */}
-      <section className="section-sm" style={{ background: 'var(--bg)' }}>
+      {/* ── Réassurance ── */}
+      <div style={{ background: 'white', borderBottom: '1px solid var(--border)' }}>
         <div className="container">
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
-            <h2 style={{ fontSize: 19, fontWeight: 800, color: 'var(--dark)', letterSpacing: '-0.02em' }}>Kategorien</h2>
-            <Link to="/shop" style={{ fontSize: 12.5, color: 'var(--accent)', fontWeight: 600 }}>Alle ansehen</Link>
-          </div>
-          <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr 1fr' : 'repeat(4, 1fr)', gap: 10 }}>
-            {CATEGORIES.map((cat, i) => (
-              <Link
-                key={cat.id}
-                to={`/shop?category=${cat.id}`}
-                className="cat-tile"
-                style={{
-                  position: 'relative', display: 'block', overflow: 'hidden',
-                  textDecoration: 'none',
-                  height: isMobile ? 110 : 160,
-                  gridColumn: (!isMobile && i === 0) ? 'span 2' : undefined,
-                  backgroundImage: `url(${cat.image})`,
-                  backgroundSize: 'cover', backgroundPosition: 'center',
-                }}
-              >
-                <div style={{
-                  position: 'absolute', inset: 0,
-                  background: 'linear-gradient(to top, rgba(15,23,42,0.88) 0%, rgba(15,23,42,0.15) 70%)',
-                }} />
-                <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '12px 16px' }}>
-                  <span style={{ fontSize: !isMobile && i === 0 ? 15 : 13, fontWeight: 700, color: 'white', display: 'block', lineHeight: 1.3 }}>
-                    {cat.label}
-                  </span>
-                  <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.5)', display: 'block', marginTop: 2 }}>
-                    {counts[cat.id] || 0} Produkte
-                  </span>
-                </div>
-              </Link>
+          <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr 1fr' : 'repeat(4, 1fr)' }}>
+            {[
+              { icon: 'bi-truck',        label: 'Kostenloser Versand' },
+              { icon: 'bi-shield-check', label: '2 Jahre Garantie' },
+              { icon: 'bi-arrow-repeat', label: '30 Tage Rückgabe' },
+              { icon: 'bi-lock',         label: 'Sicheres Bezahlen' },
+            ].map(({ icon, label }, i) => (
+              <div key={label} style={{
+                display: 'flex', alignItems: 'center', gap: 10,
+                padding: isMobile ? '14px 12px' : '16px 20px',
+                borderLeft: i > 0 && !(isMobile && i === 2) ? '1px solid var(--border)' : 'none',
+                borderTop: isMobile && i >= 2 ? '1px solid var(--border)' : 'none',
+              }}>
+                <i className={`bi ${icon}`} style={{ fontSize: 16, color: 'var(--accent)', flexShrink: 0 }} />
+                <span style={{ fontSize: 12.5, fontWeight: 600, color: 'var(--dark)', lineHeight: 1.3 }}>{label}</span>
+              </div>
             ))}
+          </div>
+        </div>
+      </div>
+
+      {/* ── Kategorien ── */}
+      <section style={{ padding: isMobile ? '48px 0' : '72px 0', background: 'var(--bg)' }}>
+        <div className="container">
+          <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', marginBottom: 24 }}>
+            <h2 style={{ fontFamily: 'var(--font-display)', fontSize: isMobile ? 22 : 28, fontWeight: 800, color: 'var(--dark)', textTransform: 'uppercase', letterSpacing: '0.02em' }}>
+              Kategorien
+            </h2>
+            <Link to="/shop" style={{ fontSize: 12.5, color: 'var(--accent)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: 4 }}>
+              Alle ansehen <i className="bi bi-arrow-right" style={{ fontSize: 12 }} />
+            </Link>
+          </div>
+
+          <div style={isMobile
+            ? { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 3 }
+            : { display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gridTemplateRows: '220px 190px 170px 96px', gap: 3 }
+          }>
+            {CATEGORIES.map((cat, idx) => {
+              const pos = isMobile ? (idx === CATEGORIES.length - 1 ? { gridColumn: 'span 2' } : {}) : (CAT_DESKTOP_POS[cat.id] || {});
+              const isHovered = hoveredCat === cat.id;
+              return (
+                <Link
+                  key={cat.id}
+                  to={`/shop?category=${cat.id}`}
+                  style={{ position: 'relative', overflow: 'hidden', textDecoration: 'none', display: 'block', ...(isMobile ? { aspectRatio: '4/3', ...pos } : pos) }}
+                  onMouseEnter={() => setHoveredCat(cat.id)}
+                  onMouseLeave={() => setHoveredCat(null)}
+                >
+                  <div style={{ position: 'absolute', inset: 0, background: '#E8EAEC' }} />
+                  <img
+                    src={cat.image}
+                    alt={cat.label}
+                    loading="lazy"
+                    style={{
+                      position: 'absolute', inset: 0, width: '100%', height: '100%',
+                      objectFit: 'cover', display: 'block',
+                      transform: isHovered ? 'scale(1.05)' : 'scale(1)',
+                      transition: 'transform 0.55s ease',
+                    }}
+                  />
+                  <div style={{
+                    position: 'absolute', inset: 0,
+                    background: isHovered
+                      ? 'linear-gradient(to top, rgba(0,0,0,0.82) 0%, rgba(0,0,0,0.25) 55%, rgba(0,0,0,0.05) 100%)'
+                      : 'linear-gradient(to top, rgba(0,0,0,0.68) 0%, rgba(0,0,0,0.14) 55%, rgba(0,0,0,0) 100%)',
+                    transition: 'background 0.3s',
+                  }} />
+                  <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: isMobile ? '12px 14px' : '16px 18px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
+                    <p style={{ fontSize: isMobile ? 13 : 15, fontWeight: 700, color: 'white', lineHeight: 1.2 }}>{cat.label}</p>
+                    <i className="bi bi-arrow-right" style={{ fontSize: 14, color: 'rgba(255,255,255,0.6)', transform: isHovered ? 'translateX(3px)' : 'translateX(0)', transition: 'transform 0.2s', flexShrink: 0 }} />
+                  </div>
+                </Link>
+              );
+            })}
           </div>
         </div>
       </section>
 
       {/* ── Empfohlene Produkte ── */}
-      <section className="section">
+      <section style={{ padding: isMobile ? '48px 0' : '72px 0', background: 'white' }}>
         <div className="container">
-          <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', marginBottom: 28, flexWrap: 'wrap', gap: 12 }}>
+          <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', marginBottom: 32, flexWrap: 'wrap', gap: 12 }}>
             <div>
-              <h2 style={{ fontSize: 26, fontWeight: 900, color: 'var(--dark)', letterSpacing: '-0.025em' }}>Empfohlene Produkte</h2>
+              <p style={{ fontSize: 11, fontWeight: 700, color: 'var(--accent)', textTransform: 'uppercase', letterSpacing: '0.15em', marginBottom: 8 }}>Auswahl</p>
+              <h2 style={{ fontFamily: 'var(--font-display)', fontSize: isMobile ? 22 : 28, fontWeight: 800, color: 'var(--dark)', textTransform: 'uppercase', letterSpacing: '0.02em' }}>
+                Empfohlene Produkte
+              </h2>
             </div>
-            <Link to="/shop" className="btn btn-outline btn-sm">Alle ansehen <i className="bi bi-arrow-right" /></Link>
+            <Link to="/shop" className="btn btn-outline btn-sm">
+              Alle ansehen <i className="bi bi-arrow-right" />
+            </Link>
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 20 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: 20 }}>
             {featured.map(p => <ProductCard key={p.id} product={p} />)}
           </div>
         </div>
       </section>
 
-      {/* ── Warum NexusTrailer ── */}
-      <section className="section" style={{ background: 'var(--bg)' }}>
+      {/* ── Über uns ── */}
+      <section style={{ background: 'var(--dark)', padding: isMobile ? '56px 0' : '80px 0' }}>
         <div className="container">
-          <h2 style={{ fontSize: 20, fontWeight: 800, color: 'var(--dark)', letterSpacing: '-0.02em', marginBottom: 24 }}>Warum NexusTrailer?</h2>
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr',
-            border: '1px solid var(--border)',
-            background: 'white',
-          }}>
-            {FEATURES.map(({ icon, title, desc }, i) => (
-              <div key={title} style={{
-                padding: '26px 28px',
-                borderRight: (!isMobile && i % 2 === 0) ? '1px solid var(--border)' : 'none',
-                borderBottom: (isMobile ? i < FEATURES.length - 1 : i < FEATURES.length - 2) ? '1px solid var(--border)' : 'none',
-              }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 9, marginBottom: 10 }}>
-                  <i className={`bi ${icon}`} style={{ fontSize: 15, color: 'var(--accent)', flexShrink: 0 }} />
-                  <h3 style={{ fontSize: 14, fontWeight: 700, color: 'var(--dark)' }}>{title}</h3>
+          <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: isMobile ? 40 : 80, alignItems: 'center' }}>
+
+            <div>
+              <p style={{ fontSize: 11, fontWeight: 700, color: 'var(--accent)', textTransform: 'uppercase', letterSpacing: '0.15em', marginBottom: 16 }}>
+                Über NexusTrailer
+              </p>
+              <h2 style={{ fontFamily: 'var(--font-display)', fontSize: isMobile ? 'clamp(26px, 7vw, 36px)' : 'clamp(30px, 3vw, 42px)', fontWeight: 800, color: 'white', textTransform: 'uppercase', letterSpacing: '0.01em', lineHeight: 1.05, marginBottom: 22 }}>
+                Ihr Spezialist für Wohnwagen & Anhänger
+              </h2>
+              <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.54)', lineHeight: 1.82, marginBottom: 36, maxWidth: 480 }}>
+                NexusTrailer liefert COC-zertifizierte Wohnwagen und Anhänger direkt vom Hersteller — ohne Zwischenhändler, mit persönlichem Service und kostenlosem Versand in ganz Europa.
+              </p>
+              <Link to="/uber-uns"
+                style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'var(--accent)', color: 'white', padding: '13px 26px', fontWeight: 700, fontSize: 14, textDecoration: 'none', transition: 'background 0.15s' }}
+                onMouseEnter={e => e.currentTarget.style.background = 'var(--accent-hover)'}
+                onMouseLeave={e => e.currentTarget.style.background = 'var(--accent)'}
+              >
+                Mehr über uns →
+              </Link>
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 0 }}>
+              {STATS.map(([num, label], i) => (
+                <div key={label} style={{
+                  padding: '28px 24px',
+                  borderTop: i < 2 ? 'none' : '1px solid rgba(255,255,255,0.09)',
+                  borderLeft: i % 2 !== 0 ? '1px solid rgba(255,255,255,0.09)' : 'none',
+                }}>
+                  <p style={{ fontFamily: 'var(--font-display)', fontSize: isMobile ? 28 : 34, fontWeight: 900, color: 'white', lineHeight: 1, marginBottom: 8 }}>{num}</p>
+                  <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.38)', textTransform: 'uppercase', letterSpacing: '0.1em', lineHeight: 1.5 }}>{label}</p>
                 </div>
-                <p style={{ fontSize: 13, color: 'var(--text-muted)', lineHeight: 1.72, paddingLeft: 24 }}>{desc}</p>
+              ))}
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      {/* ── Warum NexusTrailer ── */}
+      <section style={{ padding: isMobile ? '48px 0' : '72px 0', background: 'var(--bg)' }}>
+        <div className="container">
+          <div style={{ marginBottom: 36 }}>
+            <p style={{ fontSize: 11, fontWeight: 700, color: 'var(--accent)', textTransform: 'uppercase', letterSpacing: '0.15em', marginBottom: 10 }}>Unsere Stärken</p>
+            <h2 style={{ fontFamily: 'var(--font-display)', fontSize: isMobile ? 22 : 28, fontWeight: 800, color: 'var(--dark)', textTransform: 'uppercase', letterSpacing: '0.02em' }}>
+              Warum NexusTrailer?
+            </h2>
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: '0 72px' }}>
+            {FEATURES.map(({ icon, title, desc }) => (
+              <div key={title} style={{ display: 'flex', gap: 18, padding: '24px 0', borderTop: '1px solid var(--border)' }}>
+                <div style={{ flexShrink: 0, paddingTop: 2 }}>
+                  <i className={`bi ${icon}`} style={{ fontSize: 18, color: 'var(--accent)', lineHeight: 1 }} />
+                </div>
+                <div>
+                  <h3 style={{ fontSize: 15, fontWeight: 700, color: 'var(--dark)', marginBottom: 6 }}>{title}</h3>
+                  <p style={{ fontSize: 13.5, color: 'var(--text-muted)', lineHeight: 1.75 }}>{desc}</p>
+                </div>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ── Über uns teaser ── */}
-      <section className="section">
-        <div className="container">
-          <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '55% 45%', gap: isMobile ? 40 : 80, alignItems: 'center' }}>
-            <div>
-              <h2 style={{ fontSize: 'clamp(22px, 2.8vw, 36px)', fontWeight: 900, color: 'var(--dark)', letterSpacing: '-0.025em', marginBottom: 20, lineHeight: 1.1 }}>
-                Ihr Spezialist für Wohnwagen & Anhänger
-              </h2>
-              <p style={{ fontSize: 15, color: 'var(--text-muted)', lineHeight: 1.82, marginBottom: 16 }}>
-                NexusTrailer wurde mit einem klaren Ziel gegründet: Hochwertige Wohnwagen und Anhänger für Privatpersonen und Unternehmen in ganz Europa zugänglich zu machen – zu fairen Preisen, mit transparentem Service.
-              </p>
-              <p style={{ fontSize: 15, color: 'var(--text-muted)', lineHeight: 1.82, marginBottom: 32 }}>
-                Wir arbeiten direkt mit Herstellern wie Sterckeman, ERIBA und Caravelair zusammen – kostenloser Versand und COC-Zertifikat inklusive.
-              </p>
-              <Link to="/uber-uns" className="btn btn-outline">
-                Mehr über uns <i className="bi bi-arrow-right" />
-              </Link>
-            </div>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', overflow: 'hidden', border: '1px solid var(--border)' }}>
-              {[
-                [PRODUCTS.length + '+', 'Produkte im Katalog'],
-                ['5–7',                 'Werktage Lieferzeit'],
-                ['30 Tage',             'Rückgaberecht'],
-                ['2 Jahre',             'Herstellergarantie'],
-              ].map(([n, l], i) => (
-                <div key={l} style={{
-                  padding: '32px 20px', textAlign: 'center',
-                  background: i % 2 === 0 ? 'white' : 'var(--bg)',
-                  borderRight: i % 2 === 0 ? '1px solid var(--border)' : 'none',
-                  borderBottom: i < 2 ? '1px solid var(--border)' : 'none',
-                }}>
-                  <div style={{ fontSize: 30, fontWeight: 900, color: 'var(--dark)', letterSpacing: '-0.03em' }}>{n}</div>
-                  <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 6, lineHeight: 1.45 }}>{l}</div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ── FAQ teaser ── */}
-      <section className="section">
+      {/* ── FAQ ── */}
+      <section style={{ padding: isMobile ? '48px 0' : '72px 0', background: 'white' }}>
         <div className="container">
           <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: isMobile ? 40 : 80, alignItems: 'start' }}>
+
             <div>
-              <h2 style={{ fontSize: 'clamp(22px, 2.8vw, 34px)', fontWeight: 900, color: 'var(--dark)', letterSpacing: '-0.025em', lineHeight: 1.1, marginBottom: 20 }}>
+              <p style={{ fontSize: 11, fontWeight: 700, color: 'var(--accent)', textTransform: 'uppercase', letterSpacing: '0.15em', marginBottom: 14 }}>Support</p>
+              <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(22px, 3vw, 32px)', fontWeight: 800, color: 'var(--dark)', textTransform: 'uppercase', letterSpacing: '0.02em', lineHeight: 1.05, marginBottom: 20 }}>
                 Häufige Fragen
               </h2>
-              <p style={{ fontSize: 14.5, color: 'var(--text-muted)', lineHeight: 1.8, marginBottom: 28 }}>
+              <p style={{ fontSize: 14, color: 'var(--text-muted)', lineHeight: 1.8, marginBottom: 28 }}>
                 Lieferung, Zahlung, Rückgabe und Garantie — die wichtigsten Antworten.
               </p>
-              <Link to="/faq" className="btn btn-outline">
-                Alle Fragen ansehen <i className="bi bi-arrow-right" />
-              </Link>
-            </div>
-            <div>
-              {FAQ_PREVIEW.map(({ q, a }, i) => (
-                <div key={q} style={{ borderTop: '1px solid var(--border)', padding: '18px 0' }}>
-                  <p style={{ fontSize: 14.5, fontWeight: 700, color: 'var(--dark)', marginBottom: 8 }}>{q}</p>
-                  <p style={{ fontSize: 13.5, color: 'var(--text-muted)', lineHeight: 1.72 }}>{a}</p>
-                </div>
-              ))}
-              <div style={{ borderTop: '1px solid var(--border)' }} />
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ── Kontakt & Angebot ── */}
-      <section className="section" style={{ background: 'var(--bg)' }}>
-        <div className="container">
-          <div style={{ marginBottom: 32, textAlign: 'center' }}>
-            <h2 style={{ fontSize: 26, fontWeight: 900, color: 'var(--dark)', letterSpacing: '-0.025em' }}>Wir sind für Sie da</h2>
-            <p style={{ fontSize: 15, color: 'var(--text-muted)', marginTop: 8 }}>Privatpersonen oder Unternehmen — wir haben die passende Lösung.</p>
-          </div>
-          <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: 20 }}>
-
-            {/* Kontakt */}
-            <div style={{ background: 'white', border: '1px solid var(--border)', padding: '36px 32px', display: 'flex', flexDirection: 'column', gap: 16 }}>
-              <div style={{ width: 48, height: 48, background: 'var(--bg)', border: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <i className="bi bi-chat-dots" style={{ fontSize: 22, color: 'var(--accent)' }} />
-              </div>
-              <h3 style={{ fontSize: 18, fontWeight: 800, color: 'var(--dark)' }}>Eine Frage stellen</h3>
-              <p style={{ fontSize: 14, color: 'var(--text-muted)', lineHeight: 1.75 }}>
-                Fragen zu einem Produkt, zur Lieferung oder zum Bestellprozess? Unser Team antwortet innerhalb von 24 Stunden.
-              </p>
-              <div style={{ marginTop: 'auto', display: 'flex', flexDirection: 'column', gap: 8 }}>
-                <a href="mailto:info@nexustrailer.com" style={{ fontSize: 13.5, color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: 8 }}>
-                  <i className="bi bi-envelope" style={{ color: 'var(--accent)' }} /> info@nexustrailer.com
-                </a>
-                <a href="tel:+33756836479" style={{ fontSize: 13.5, color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: 8 }}>
-                  <i className="bi bi-telephone" style={{ color: 'var(--accent)' }} /> +33 7 56 83 64 79
-                </a>
-              </div>
-              <Link to="/kontakt" className="btn btn-accent" style={{ marginTop: 8, justifyContent: 'center' }}>
+              <Link to="/kontakt" className="btn btn-outline">
                 Kontakt aufnehmen
               </Link>
             </div>
 
-            {/* Angebot */}
-            <div style={{ background: 'var(--dark)', border: '1px solid var(--dark)', padding: '36px 32px', display: 'flex', flexDirection: 'column', gap: 16 }}>
-              <div style={{ width: 48, height: 48, background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.12)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <i className="bi bi-briefcase" style={{ fontSize: 22, color: 'var(--accent)' }} />
+            <div>
+              {FAQ_PREVIEW.map(({ q, a }, i) => (
+                <div key={q} style={{ borderTop: '1px solid var(--border)' }}>
+                  <button
+                    onClick={() => setOpenFaq(openFaq === i ? null : i)}
+                    style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '18px 0', background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left', gap: 16 }}
+                  >
+                    <span style={{ fontSize: 14.5, fontWeight: 600, color: 'var(--dark)' }}>{q}</span>
+                    <i className={`bi bi-${openFaq === i ? 'dash' : 'plus'}`} style={{ fontSize: 18, color: 'var(--text-muted)', flexShrink: 0 }} />
+                  </button>
+                  {openFaq === i && (
+                    <div style={{ paddingBottom: 18, fontSize: 14, color: 'var(--text-muted)', lineHeight: 1.8 }}>{a}</div>
+                  )}
+                </div>
+              ))}
+              <div style={{ borderTop: '1px solid var(--border)' }} />
+              <div style={{ marginTop: 20 }}>
+                <Link to="/faq" style={{ fontSize: 13, color: 'var(--accent)', fontWeight: 600 }}>
+                  Alle Fragen ansehen →
+                </Link>
               </div>
-              <h3 style={{ fontSize: 18, fontWeight: 800, color: 'white' }}>Angebot anfragen</h3>
-              <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.55)', lineHeight: 1.75 }}>
-                Für Unternehmen, Fuhrparkbetreiber und Wiederverkäufer. Individuelle Preise, Mengenrabatte und persönlicher Ansprechpartner ab 2 Einheiten.
-              </p>
-              <ul style={{ margin: 0, padding: 0, listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 6, marginTop: 4 }}>
-                {['Mengenrabatte ab 2 Einheiten', 'Prioritätslieferung', 'Monatsrechnung möglich'].map(t => (
-                  <li key={t} style={{ fontSize: 13, color: 'rgba(255,255,255,0.55)', display: 'flex', alignItems: 'center', gap: 8 }}>
-                    <i className="bi bi-check2" style={{ color: 'var(--accent)', fontSize: 14 }} /> {t}
-                  </li>
-                ))}
-              </ul>
-              <Link to="/angebot" className="btn btn-accent btn-lg" style={{ marginTop: 'auto', justifyContent: 'center' }}>
-                Angebot anfragen <i className="bi bi-arrow-right" />
-              </Link>
             </div>
 
           </div>
@@ -277,23 +310,27 @@ export default function HomePage() {
       </section>
 
       {/* ── CTA final ── */}
-      <section style={{ background: 'var(--dark)', padding: '52px 0', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+      <section style={{ background: 'var(--dark)', padding: isMobile ? '56px 0' : '80px 0' }}>
         <div className="container">
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 28 }}>
-            <div>
-              <h2 style={{ fontSize: 'clamp(20px, 2.4vw, 28px)', fontWeight: 800, color: 'white', letterSpacing: '-0.02em', marginBottom: 6, lineHeight: 1.15 }}>
+          <div style={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', alignItems: isMobile ? 'flex-start' : 'center', justifyContent: 'space-between', gap: isMobile ? 28 : 64 }}>
+            <div style={{ flex: 1 }}>
+              <p style={{ fontSize: 11, fontWeight: 700, color: 'var(--accent)', textTransform: 'uppercase', letterSpacing: '0.15em', marginBottom: 14 }}>
+                Jetzt entdecken
+              </p>
+              <h2 style={{ fontFamily: 'var(--font-display)', fontSize: isMobile ? 'clamp(26px, 8vw, 36px)' : 'clamp(30px, 3vw, 42px)', fontWeight: 800, color: 'white', textTransform: 'uppercase', letterSpacing: '0.01em', lineHeight: 1.05, marginBottom: 12 }}>
                 Bereit für Ihren neuen Wohnwagen?
               </h2>
-              <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.42)' }}>
+              <p style={{ fontSize: 14.5, color: 'rgba(255,255,255,0.45)', lineHeight: 1.75 }}>
                 Kostenloser Versand · 2 Jahre Garantie · 30 Tage Rückgabe
               </p>
             </div>
-            <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10, flexShrink: 0 }}>
               <Link to="/shop" className="btn btn-accent btn-lg">
-                <i className="bi bi-grid" /> Zum Katalog
+                Zum Katalog <i className="bi bi-arrow-right" />
               </Link>
-              <Link to="/angebot" className="btn btn-lg" style={{ background: 'transparent', border: '1.5px solid rgba(255,255,255,0.22)', color: 'white' }}
-                onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.55)'; e.currentTarget.style.background = 'rgba(255,255,255,0.07)'; }}
+              <Link to="/angebot" className="btn btn-lg"
+                style={{ background: 'transparent', border: '1.5px solid rgba(255,255,255,0.22)', color: 'white' }}
+                onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.55)'; e.currentTarget.style.background = 'rgba(255,255,255,0.06)'; }}
                 onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.22)'; e.currentTarget.style.background = 'transparent'; }}
               >
                 Angebot anfragen
