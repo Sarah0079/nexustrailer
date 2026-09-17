@@ -49,12 +49,12 @@ const linkStyle = {
   textDecoration: 'none',
 };
 
-function ColLink({ item }) {
+function ColLink({ item, small }) {
   const hover = (e) => { e.currentTarget.style.color = 'white'; };
   const leave = (e) => { e.currentTarget.style.color = 'rgba(255,255,255,0.55)'; };
   return (
-    <Link to={item.to} style={linkStyle} onMouseEnter={hover} onMouseLeave={leave}>
-      <i className="bi bi-chevron-right" style={{ fontSize: 10, opacity: 0.5 }} />
+    <Link to={item.to} style={{ ...linkStyle, fontSize: small ? 11.5 : 13 }} onMouseEnter={hover} onMouseLeave={leave}>
+      <i className="bi bi-chevron-right" style={{ fontSize: 9, opacity: 0.5 }} />
       {item.label}
     </Link>
   );
@@ -102,37 +102,41 @@ export default function Footer() {
       </div>
 
       {/* ── Main grid ── */}
-      <div className="container" style={{ padding: isMobile ? '40px 20px 32px' : '56px 24px 40px' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: gridCols, gap: isMobile ? 32 : isTablet ? 32 : 40, marginBottom: 40 }}>
+      <div className="container" style={{ padding: isMobile ? '24px 16px 16px' : '56px 24px 40px' }}>
+        <div style={{
+          display: 'grid', gridTemplateColumns: gridCols,
+          gap: isMobile ? '20px 14px' : isTablet ? 32 : 40,
+          marginBottom: isMobile ? 24 : 40,
+        }}>
 
           {/* Brand */}
           <div>
-            <Link to="/" style={{ display: 'inline-flex', marginBottom: 16, textDecoration: 'none' }}>
-              <div style={{ background: 'white', padding: '4px 10px' }}>
-                <img src="/image/NexusTrailer.png" alt="NexusTrailer" style={{ height: 56, width: 'auto', objectFit: 'contain', display: 'block' }} />
+            <Link to="/" style={{ display: 'inline-flex', marginBottom: isMobile ? 10 : 16, textDecoration: 'none' }}>
+              <div style={{ background: 'white', padding: isMobile ? '3px 8px' : '4px 10px' }}>
+                <img src="/image/NexusTrailer.png" alt="NexusTrailer" style={{ height: isMobile ? 36 : 56, width: 'auto', objectFit: 'contain', display: 'block' }} />
               </div>
             </Link>
-            <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.42)', lineHeight: 1.8 }}>
+            <p style={{ fontSize: isMobile ? 11 : 13, color: 'rgba(255,255,255,0.42)', lineHeight: isMobile ? 1.65 : 1.8 }}>
               Ihr Partner für hochwertige Transportlösungen in ganz Europa. Robuste, sichere und langlebige Anhänger für Privatpersonen, Handwerker und Unternehmen.
             </p>
           </div>
 
           {/* Geschäftsinformationen */}
           <div>
-            <p style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'rgba(255,255,255,0.35)', marginBottom: 14 }}>
-              Geschäftsinformationen
+            <p style={{ fontSize: isMobile ? 9.5 : 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'rgba(255,255,255,0.35)', marginBottom: isMobile ? 8 : 14 }}>
+              {isMobile ? 'Unternehmen' : 'Geschäftsinformationen'}
             </p>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 7 }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: isMobile ? 4 : 7 }}>
               {BUSINESS.map(({ label, val, href }) => (
-                <div key={label} style={{ display: 'flex', gap: 6, fontSize: 12 }}>
-                  <span style={{ color: 'rgba(255,255,255,0.35)', flexShrink: 0, minWidth: 100 }}>{label}:</span>
+                <div key={label} style={{ display: 'flex', gap: 5, fontSize: isMobile ? 10.5 : 12 }}>
+                  <span style={{ color: 'rgba(255,255,255,0.35)', flexShrink: 0, minWidth: isMobile ? 62 : 100 }}>{label}:</span>
                   {href ? (
-                    <a href={href} style={{ color: 'rgba(255,255,255,0.6)', wordBreak: 'break-word', textDecoration: 'none', transition: 'color 0.15s' }}
+                    <a href={href} style={{ color: 'rgba(255,255,255,0.6)', wordBreak: 'break-all', textDecoration: 'none', transition: 'color 0.15s' }}
                       onMouseEnter={e => e.currentTarget.style.color = 'white'}
                       onMouseLeave={e => e.currentTarget.style.color = 'rgba(255,255,255,0.6)'}
                     >{val}</a>
                   ) : (
-                    <span style={{ color: 'rgba(255,255,255,0.6)', wordBreak: 'break-word' }}>{val}</span>
+                    <span style={{ color: 'rgba(255,255,255,0.6)', wordBreak: 'break-all' }}>{val}</span>
                   )}
                 </div>
               ))}
@@ -141,24 +145,24 @@ export default function Footer() {
 
           {/* Rechtliches */}
           <div>
-            <p style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'rgba(255,255,255,0.35)', marginBottom: 16 }}>
+            <p style={{ fontSize: isMobile ? 9.5 : 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'rgba(255,255,255,0.35)', marginBottom: isMobile ? 8 : 16 }}>
               Rechtliches
             </p>
-            <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 10 }}>
+            <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: isMobile ? 6 : 10 }}>
               {RICHTLINIEN.map(item => (
-                <li key={item.label}><ColLink item={item} /></li>
+                <li key={item.label}><ColLink item={item} small={isMobile} /></li>
               ))}
             </ul>
           </div>
 
           {/* Hilfe & Support */}
           <div>
-            <p style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'rgba(255,255,255,0.35)', marginBottom: 16 }}>
+            <p style={{ fontSize: isMobile ? 9.5 : 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'rgba(255,255,255,0.35)', marginBottom: isMobile ? 8 : 16 }}>
               Hilfe & Support
             </p>
-            <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 10 }}>
+            <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: isMobile ? 6 : 10 }}>
               {SUPPORT.map(item => (
-                <li key={item.label}><ColLink item={item} /></li>
+                <li key={item.label}><ColLink item={item} small={isMobile} /></li>
               ))}
             </ul>
           </div>
@@ -167,15 +171,15 @@ export default function Footer() {
 
         {/* Bottom bar */}
         <div style={{
-          borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: 20,
+          borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: isMobile ? 14 : 20,
           display: 'flex', flexDirection: isMobile ? 'column' : 'row',
           justifyContent: 'space-between', alignItems: isMobile ? 'flex-start' : 'center',
-          gap: 8,
+          gap: isMobile ? 4 : 8,
         }}>
-          <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.3)' }}>
+          <span style={{ fontSize: isMobile ? 10.5 : 12, color: 'rgba(255,255,255,0.3)' }}>
             © {new Date().getFullYear()} NexusTrailer — Alle Rechte vorbehalten.
           </span>
-          <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.3)' }}>
+          <span style={{ fontSize: isMobile ? 10.5 : 12, color: 'rgba(255,255,255,0.3)' }}>
             Ihr Lieferant für Nutzfahrzeuganhänger und Industriemaschinen
           </span>
         </div>
