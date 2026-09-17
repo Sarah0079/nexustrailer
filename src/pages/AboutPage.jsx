@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useBreakpoint } from '../hooks/useBreakpoint';
+import { PRODUCTS } from '../data/products';
 
 const STATS = [
   { n: '5–7',     l: 'Werktage Lieferzeit (DE)' },
@@ -27,7 +28,7 @@ const VALUES = [
   {
     icon: 'bi-truck',
     title: 'Lieferung',
-    text: 'Deutschlandweite Lieferung in 2–3 Werktagen. Wir koordinieren alles intern — Sie müssen sich um nichts kümmern.',
+    text: 'Lieferung in 5–7 Werktagen (kostenlos). Wir koordinieren alles intern — Sie müssen sich um nichts kümmern.',
   },
   {
     icon: 'bi-currency-euro',
@@ -236,7 +237,7 @@ export default function AboutPage() {
               Bereit einzukaufen?
             </h3>
             <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.45)' }}>
-              Entdecken Sie unser gesamtes Sortiment — über 200 Produkte sofort verfügbar.
+              Entdecken Sie unser gesamtes Sortiment — {PRODUCTS.length}+ Produkte verfügbar.
             </p>
           </div>
           <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
