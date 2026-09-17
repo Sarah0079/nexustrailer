@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { PRODUCTS, CATEGORIES } from '../data/products';
 import ProductCard from '../components/ProductCard';
@@ -41,6 +41,15 @@ export default function HomePage() {
   const featured = PRODUCTS.filter(p => p.featured).slice(0, 4);
   const [openFaq,     setOpenFaq]     = useState(null);
   const [hoveredCat,  setHoveredCat]  = useState(null);
+
+  const catImage = useMemo(() => {
+    const map = {};
+    for (const cat of CATEGORIES) {
+      const first = PRODUCTS.find(p => p.category === cat.id);
+      map[cat.id] = first ? first.image : cat.image;
+    }
+    return map;
+  }, []);
 
   return (
     <main>
@@ -149,7 +158,7 @@ export default function HomePage() {
                 >
                   <div style={{ position: 'absolute', inset: 0, background: '#E8EAEC' }} />
                   <img
-                    src={cat.image}
+                    src={catImage[cat.id]}
                     alt={cat.label}
                     loading="lazy"
                     style={{
