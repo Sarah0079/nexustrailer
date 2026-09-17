@@ -70,26 +70,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── Trust Strip ── */}
-      <div style={{ borderTop: '1px solid var(--border)', borderBottom: '1px solid var(--border)', background: 'white', padding: '14px 0' }}>
-        <div className="container">
-          <div style={{ display: 'grid', gridTemplateColumns: isMobile ? 'repeat(2, 1fr)' : 'repeat(5, 1fr)', gap: 0 }}>
-            {[
-              { icon: 'bi-lock',         label: 'Sicheres Zahlen' },
-              { icon: 'bi-truck',        label: 'Kostenloser Versand' },
-              { icon: 'bi-shield-check', label: '2 Jahre Garantie' },
-              { icon: 'bi-arrow-repeat', label: '30 Tage Rückgabe' },
-              { icon: 'bi-headset',      label: 'Persönlicher Support' },
-            ].map(({ icon, label }, i) => (
-              <div key={label} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, padding: '10px 16px', borderLeft: (!isMobile && i > 0) ? '1px solid var(--border)' : 'none', borderTop: (isMobile && i >= 2) ? '1px solid var(--border)' : 'none' }}>
-                <i className={`bi ${icon}`} style={{ fontSize: 14, color: 'var(--accent)', flexShrink: 0 }} />
-                <span style={{ fontSize: 12.5, fontWeight: 500, color: 'var(--text-muted)' }}>{label}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
       {/* ── Kategorien ── */}
       <section className="section-sm" style={{ background: 'var(--bg)' }}>
         <div className="container">
@@ -121,7 +101,6 @@ export default function HomePage() {
         <div className="container">
           <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', marginBottom: 28, flexWrap: 'wrap', gap: 12 }}>
             <div>
-              <p style={{ fontSize: 11.5, fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.12em', marginBottom: 6 }}>Auswahl</p>
               <h2 style={{ fontSize: 26, fontWeight: 900, color: 'var(--dark)', letterSpacing: '-0.025em' }}>Empfohlene Produkte</h2>
             </div>
             <Link to="/shop" className="btn btn-outline btn-sm">Alle ansehen <i className="bi bi-arrow-right" /></Link>
@@ -136,7 +115,6 @@ export default function HomePage() {
       <section className="section" style={{ background: 'var(--bg)' }}>
         <div className="container">
           <div style={{ marginBottom: 32 }}>
-            <p style={{ fontSize: 11.5, fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.12em', marginBottom: 8 }}>Unsere Garantien</p>
             <h2 style={{ fontSize: 26, fontWeight: 900, color: 'var(--dark)', letterSpacing: '-0.025em' }}>Warum NexusTrailer?</h2>
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: 12 }}>
