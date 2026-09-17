@@ -19,6 +19,8 @@ const FAQ_PREVIEW = [
 ];
 
 // Positions éditoriales pour la grille desktop des catégories
+// Sur desktop : 6 catégories en grille éditoriale 3-col × 3-row
+// (kuehl reste accessible depuis /shop via "Alle ansehen")
 const CAT_DESKTOP_POS = {
   wohnwagen: { gridColumn: '1/3', gridRow: '1/3' },
   tinyhouse: { gridColumn: '3',   gridRow: '1'   },
@@ -26,8 +28,8 @@ const CAT_DESKTOP_POS = {
   kipper:    { gridColumn: '1',   gridRow: '3'   },
   pritsche:  { gridColumn: '2',   gridRow: '3'   },
   food:      { gridColumn: '3',   gridRow: '3'   },
-  kuehl:     { gridColumn: '1/4', gridRow: '4'   },
 };
+const CAT_DESKTOP_IDS = Object.keys(CAT_DESKTOP_POS);
 
 const STATS = [
   [PRODUCTS.length + '+', 'Produkte im Katalog'],
@@ -143,10 +145,10 @@ export default function HomePage() {
 
           <div style={isMobile
             ? { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 3 }
-            : { display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gridTemplateRows: '220px 190px 170px 96px', gap: 3 }
+            : { display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gridTemplateRows: '260px 240px 210px', gap: 3 }
           }>
-            {CATEGORIES.map((cat, idx) => {
-              const pos = isMobile ? (idx === CATEGORIES.length - 1 ? { gridColumn: 'span 2' } : {}) : (CAT_DESKTOP_POS[cat.id] || {});
+            {(isMobile ? CATEGORIES : CATEGORIES.filter(c => CAT_DESKTOP_IDS.includes(c.id))).map((cat, idx, arr) => {
+              const pos = isMobile ? (idx === arr.length - 1 ? { gridColumn: 'span 2' } : {}) : (CAT_DESKTOP_POS[cat.id] || {});
               const isHovered = hoveredCat === cat.id;
               return (
                 <Link
