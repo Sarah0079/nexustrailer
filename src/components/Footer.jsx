@@ -67,7 +67,7 @@ export default function Footer() {
 
   // Colonnes de la grille principale
   const gridCols = isMobile
-    ? '1fr'
+    ? '1fr 1fr'
     : isTablet
       ? '1fr 1fr'
       : 'repeat(4, 1fr)';
