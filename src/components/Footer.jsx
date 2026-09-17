@@ -13,11 +13,11 @@ const RICHTLINIEN = [
 ];
 
 const SUPPORT = [
-  { label: 'Über uns',              to: '/uber-uns' },
-  { label: 'Kontakt',               to: '/kontakt' },
-  { label: 'Auftragsverfolgung',    to: '/auftragsverfolgung' },
-  { label: 'FAQ',                   to: '/faq' },
-  { label: 'Garantie',              to: '/garantie' },
+  { label: 'Über uns',           to: '/uber-uns' },
+  { label: 'Kontakt',            to: '/kontakt' },
+  { label: 'Auftragsverfolgung', to: '/auftragsverfolgung' },
+  { label: 'FAQ',                to: '/faq' },
+  { label: 'Garantie',           to: '/garantie' },
 ];
 
 const TRUST = [
@@ -39,152 +39,239 @@ const BUSINESS = [
   { label: 'Adresse',         val: '21 Rue du Bouchet, 63350 Maringues, Frankreich' },
 ];
 
-const linkStyle = {
-  fontSize: 13,
-  color: 'rgba(255,255,255,0.55)',
-  transition: 'color 0.15s',
-  display: 'flex',
-  alignItems: 'center',
-  gap: 6,
-  textDecoration: 'none',
+const colLinkStyle = {
+  fontSize: 13, color: 'rgba(255,255,255,0.55)',
+  transition: 'color 0.15s', display: 'flex',
+  alignItems: 'center', gap: 6, textDecoration: 'none',
 };
 
-function ColLink({ item, small }) {
-  const hover = (e) => { e.currentTarget.style.color = 'white'; };
-  const leave = (e) => { e.currentTarget.style.color = 'rgba(255,255,255,0.55)'; };
+function ColLink({ item }) {
   return (
-    <Link to={item.to} style={{ ...linkStyle, fontSize: small ? 11.5 : 13 }} onMouseEnter={hover} onMouseLeave={leave}>
-      <i className="bi bi-chevron-right" style={{ fontSize: 9, opacity: 0.5 }} />
+    <Link to={item.to} style={colLinkStyle}
+      onMouseEnter={e => e.currentTarget.style.color = 'white'}
+      onMouseLeave={e => e.currentTarget.style.color = 'rgba(255,255,255,0.55)'}
+    >
+      <i className="bi bi-chevron-right" style={{ fontSize: 10, opacity: 0.5 }} />
       {item.label}
     </Link>
   );
 }
 
-export default function Footer() {
-  const isSmall  = useBreakpoint(576);   // < 576px  → 1 colonne
-  const isMobile = useBreakpoint(768);   // < 768px  → 1 colonne (inclut isSmall)
-  const isTablet = useBreakpoint(1024);  // < 1024px → 2 colonnes
+const CAP = { fontSize: 9.5, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.10em', color: 'rgba(255,255,255,0.30)', marginBottom: 12 };
 
-  // Colonnes de la grille principale
-  const gridCols = isMobile
-    ? '1fr 1fr'
-    : isTablet
-      ? '1fr 1fr'
-      : 'repeat(4, 1fr)';
+export default function Footer() {
+  const isSmall  = useBreakpoint(576);
+  const isMobile = useBreakpoint(768);
+  const isTablet = useBreakpoint(1024);
 
   return (
     <footer style={{ background: 'var(--dark)', color: 'white' }}>
 
       {/* ── Trust strip ── */}
-      <div style={{ background: 'var(--dark-2)', borderBottom: '1px solid rgba(255,255,255,0.06)', padding: '14px 0' }}>
+      <div style={{ background: 'var(--dark-2)', borderBottom: '1px solid rgba(255,255,255,0.06)', padding: isMobile ? '12px 0' : '14px 0' }}>
         <div className="container" style={{
           display: 'grid',
           gridTemplateColumns: isSmall ? '1fr 1fr' : 'repeat(4, 1fr)',
-          gap: isSmall ? '12px 8px' : 10,
+          gap: isSmall ? '10px 8px' : 10,
         }}>
           {TRUST.map(({ icon, label }) => (
             <span key={label} style={{
               fontSize: isSmall ? 11 : 12, fontWeight: 600,
               color: 'rgba(255,255,255,0.6)',
-              display: 'flex',
-              flexDirection: isSmall ? 'column' : 'row',
-              alignItems: 'center',
-              justifyContent: 'center',
+              display: 'flex', flexDirection: isSmall ? 'column' : 'row',
+              alignItems: 'center', justifyContent: 'center',
               gap: isSmall ? 5 : 7,
-              padding: isSmall ? '6px 4px' : '4px 8px',
+              padding: isSmall ? '4px 0' : '4px 8px',
               textAlign: 'center',
             }}>
-              <i className={`bi ${icon}`} style={{ fontSize: isSmall ? 18 : 15, flexShrink: 0 }} />
+              <i className={`bi ${icon}`} style={{ fontSize: isSmall ? 17 : 15, color: 'var(--accent)', flexShrink: 0 }} />
               {label}
             </span>
           ))}
         </div>
       </div>
 
-      {/* ── Main grid ── */}
-      <div className="container" style={{ padding: isMobile ? '24px 16px 16px' : '56px 24px 40px' }}>
-        <div style={{
-          display: 'grid', gridTemplateColumns: gridCols,
-          gap: isMobile ? '20px 14px' : isTablet ? 32 : 40,
-          marginBottom: isMobile ? 24 : 40,
-        }}>
+      {isMobile ? (
+
+        /* ════════════════════════════════
+           MOBILE — layout repensé
+           ════════════════════════════════ */
+        <div style={{ padding: '28px 20px 24px' }}>
 
           {/* Brand */}
-          <div>
-            <Link to="/" style={{ display: 'inline-flex', marginBottom: isMobile ? 10 : 16, textDecoration: 'none' }}>
-              <div style={{ background: 'white', padding: isMobile ? '3px 8px' : '4px 10px' }}>
-                <img src="/image/NexusTrailer.png" alt="NexusTrailer" style={{ height: isMobile ? 36 : 56, width: 'auto', objectFit: 'contain', display: 'block' }} />
+          <div style={{ marginBottom: 24 }}>
+            <Link to="/" style={{ display: 'inline-flex', marginBottom: 12, textDecoration: 'none' }}>
+              <div style={{ background: 'white', padding: '3px 10px' }}>
+                <img src="/image/NexusTrailer.png" alt="NexusTrailer"
+                  style={{ height: 38, width: 'auto', objectFit: 'contain', display: 'block' }} />
               </div>
             </Link>
-            <p style={{ fontSize: isMobile ? 11 : 13, color: 'rgba(255,255,255,0.42)', lineHeight: isMobile ? 1.65 : 1.8 }}>
-              Ihr Partner für hochwertige Transportlösungen in ganz Europa. Robuste, sichere und langlebige Anhänger für Privatpersonen, Handwerker und Unternehmen.
+            <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.38)', lineHeight: 1.7, maxWidth: 300 }}>
+              COC-zertifizierte Wohnwagen und Anhänger direkt vom Hersteller — versandkostenfrei in ganz Europa.
             </p>
           </div>
 
-          {/* Geschäftsinformationen */}
-          <div>
-            <p style={{ fontSize: isMobile ? 9.5 : 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'rgba(255,255,255,0.35)', marginBottom: isMobile ? 8 : 14 }}>
-              {isMobile ? 'Unternehmen' : 'Geschäftsinformationen'}
-            </p>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: isMobile ? 4 : 7 }}>
-              {BUSINESS.map(({ label, val, href }) => (
-                <div key={label} style={{ display: 'flex', gap: 5, fontSize: isMobile ? 10.5 : 12 }}>
-                  <span style={{ color: 'rgba(255,255,255,0.35)', flexShrink: 0, minWidth: isMobile ? 62 : 100 }}>{label}:</span>
-                  {href ? (
-                    <a href={href} style={{ color: 'rgba(255,255,255,0.6)', wordBreak: 'break-all', textDecoration: 'none', transition: 'color 0.15s' }}
-                      onMouseEnter={e => e.currentTarget.style.color = 'white'}
-                      onMouseLeave={e => e.currentTarget.style.color = 'rgba(255,255,255,0.6)'}
-                    >{val}</a>
-                  ) : (
-                    <span style={{ color: 'rgba(255,255,255,0.6)', wordBreak: 'break-all' }}>{val}</span>
-                  )}
-                </div>
-              ))}
+          {/* Contact rapide */}
+          <div style={{ borderTop: '1px solid rgba(255,255,255,0.07)', paddingTop: 20, marginBottom: 20 }}>
+            <p style={CAP}>Kontakt</p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+              <a href="mailto:info@nexustrailer.com"
+                style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 13, color: 'rgba(255,255,255,0.65)', textDecoration: 'none' }}
+                onMouseEnter={e => e.currentTarget.style.color = 'white'}
+                onMouseLeave={e => e.currentTarget.style.color = 'rgba(255,255,255,0.65)'}
+              >
+                <i className="bi bi-envelope" style={{ fontSize: 13, color: 'var(--accent)', flexShrink: 0 }} />
+                info@nexustrailer.com
+              </a>
+              <a href="tel:+33756836479"
+                style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 13, color: 'rgba(255,255,255,0.65)', textDecoration: 'none' }}
+                onMouseEnter={e => e.currentTarget.style.color = 'white'}
+                onMouseLeave={e => e.currentTarget.style.color = 'rgba(255,255,255,0.65)'}
+              >
+                <i className="bi bi-telephone" style={{ fontSize: 13, color: 'var(--accent)', flexShrink: 0 }} />
+                +33 7 56 83 64 79
+              </a>
+              <span style={{ display: 'flex', alignItems: 'flex-start', gap: 10, fontSize: 12, color: 'rgba(255,255,255,0.38)' }}>
+                <i className="bi bi-geo-alt" style={{ fontSize: 13, color: 'rgba(255,255,255,0.25)', flexShrink: 0, marginTop: 1 }} />
+                21 Rue du Bouchet, 63350 Maringues
+              </span>
             </div>
           </div>
 
-          {/* Rechtliches */}
-          <div>
-            <p style={{ fontSize: isMobile ? 9.5 : 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'rgba(255,255,255,0.35)', marginBottom: isMobile ? 8 : 16 }}>
-              Rechtliches
-            </p>
-            <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: isMobile ? 6 : 10 }}>
-              {RICHTLINIEN.map(item => (
-                <li key={item.label}><ColLink item={item} small={isMobile} /></li>
-              ))}
-            </ul>
+          {/* Navigation — 2 colonnes */}
+          <div style={{ borderTop: '1px solid rgba(255,255,255,0.07)', paddingTop: 20, marginBottom: 20 }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0 20px' }}>
+
+              <div>
+                <p style={CAP}>Rechtliches</p>
+                <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 9 }}>
+                  {RICHTLINIEN.map(item => (
+                    <li key={item.label}>
+                      <Link to={item.to}
+                        style={{ fontSize: 12.5, color: 'rgba(255,255,255,0.52)', textDecoration: 'none', lineHeight: 1.3, display: 'block' }}
+                        onMouseEnter={e => e.currentTarget.style.color = 'white'}
+                        onMouseLeave={e => e.currentTarget.style.color = 'rgba(255,255,255,0.52)'}
+                      >{item.label}</Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div>
+                <p style={CAP}>Support</p>
+                <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 9 }}>
+                  {SUPPORT.map(item => (
+                    <li key={item.label}>
+                      <Link to={item.to}
+                        style={{ fontSize: 12.5, color: 'rgba(255,255,255,0.52)', textDecoration: 'none', lineHeight: 1.3, display: 'block' }}
+                        onMouseEnter={e => e.currentTarget.style.color = 'white'}
+                        onMouseLeave={e => e.currentTarget.style.color = 'rgba(255,255,255,0.52)'}
+                      >{item.label}</Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+            </div>
           </div>
 
-          {/* Hilfe & Support */}
-          <div>
-            <p style={{ fontSize: isMobile ? 9.5 : 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'rgba(255,255,255,0.35)', marginBottom: isMobile ? 8 : 16 }}>
-              Hilfe & Support
+          {/* Mentions légales compactes */}
+          <div style={{ borderTop: '1px solid rgba(255,255,255,0.07)', paddingTop: 16 }}>
+            <p style={{ fontSize: 10, color: 'rgba(255,255,255,0.20)', lineHeight: 1.8 }}>
+              LA REMORQUE M · SIREN 948 418 827 · SIRET 94841882700010 · USt-ID FR16948418827 · RCS Clermont-Ferrand
             </p>
-            <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: isMobile ? 6 : 10 }}>
-              {SUPPORT.map(item => (
-                <li key={item.label}><ColLink item={item} small={isMobile} /></li>
-              ))}
-            </ul>
+            <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.22)', marginTop: 10 }}>
+              © {new Date().getFullYear()} NexusTrailer — Alle Rechte vorbehalten.
+            </p>
           </div>
 
         </div>
 
-        {/* Bottom bar */}
-        <div style={{
-          borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: isMobile ? 14 : 20,
-          display: 'flex', flexDirection: isMobile ? 'column' : 'row',
-          justifyContent: 'space-between', alignItems: isMobile ? 'flex-start' : 'center',
-          gap: isMobile ? 4 : 8,
-        }}>
-          <span style={{ fontSize: isMobile ? 10.5 : 12, color: 'rgba(255,255,255,0.3)' }}>
-            © {new Date().getFullYear()} NexusTrailer — Alle Rechte vorbehalten.
-          </span>
-          <span style={{ fontSize: isMobile ? 10.5 : 12, color: 'rgba(255,255,255,0.3)' }}>
-            Ihr Lieferant für Nutzfahrzeuganhänger und Industriemaschinen
-          </span>
-        </div>
-      </div>
+      ) : (
 
+        /* ════════════════════════════════
+           DESKTOP / TABLETTE
+           ════════════════════════════════ */
+        <div className="container" style={{ padding: isTablet ? '40px 24px 32px' : '56px 24px 40px' }}>
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: isTablet ? '1fr 1fr' : 'repeat(4, 1fr)',
+            gap: isTablet ? 32 : 40,
+            marginBottom: 40,
+          }}>
+
+            {/* Brand */}
+            <div>
+              <Link to="/" style={{ display: 'inline-flex', marginBottom: 16, textDecoration: 'none' }}>
+                <div style={{ background: 'white', padding: '4px 10px' }}>
+                  <img src="/image/NexusTrailer.png" alt="NexusTrailer"
+                    style={{ height: 56, width: 'auto', objectFit: 'contain', display: 'block' }} />
+                </div>
+              </Link>
+              <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.42)', lineHeight: 1.8 }}>
+                Ihr Partner für hochwertige Transportlösungen in ganz Europa. Robuste, sichere und langlebige Anhänger für Privatpersonen, Handwerker und Unternehmen.
+              </p>
+            </div>
+
+            {/* Geschäftsinformationen */}
+            <div>
+              <p style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'rgba(255,255,255,0.35)', marginBottom: 14 }}>
+                Geschäftsinformationen
+              </p>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 7 }}>
+                {BUSINESS.map(({ label, val, href }) => (
+                  <div key={label} style={{ display: 'flex', gap: 6, fontSize: 12 }}>
+                    <span style={{ color: 'rgba(255,255,255,0.35)', flexShrink: 0, minWidth: 100 }}>{label}:</span>
+                    {href ? (
+                      <a href={href} style={{ color: 'rgba(255,255,255,0.6)', wordBreak: 'break-word', textDecoration: 'none', transition: 'color 0.15s' }}
+                        onMouseEnter={e => e.currentTarget.style.color = 'white'}
+                        onMouseLeave={e => e.currentTarget.style.color = 'rgba(255,255,255,0.6)'}
+                      >{val}</a>
+                    ) : (
+                      <span style={{ color: 'rgba(255,255,255,0.6)', wordBreak: 'break-word' }}>{val}</span>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Rechtliches */}
+            <div>
+              <p style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'rgba(255,255,255,0.35)', marginBottom: 16 }}>
+                Rechtliches
+              </p>
+              <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 10 }}>
+                {RICHTLINIEN.map(item => <li key={item.label}><ColLink item={item} /></li>)}
+              </ul>
+            </div>
+
+            {/* Hilfe & Support */}
+            <div>
+              <p style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'rgba(255,255,255,0.35)', marginBottom: 16 }}>
+                Hilfe & Support
+              </p>
+              <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 10 }}>
+                {SUPPORT.map(item => <li key={item.label}><ColLink item={item} /></li>)}
+              </ul>
+            </div>
+
+          </div>
+
+          {/* Bottom bar */}
+          <div style={{
+            borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: 20,
+            display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8,
+          }}>
+            <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.3)' }}>
+              © {new Date().getFullYear()} NexusTrailer — Alle Rechte vorbehalten.
+            </span>
+            <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.3)' }}>
+              Ihr Lieferant für Nutzfahrzeuganhänger und Industriemaschinen
+            </span>
+          </div>
+        </div>
+
+      )}
     </footer>
   );
 }
