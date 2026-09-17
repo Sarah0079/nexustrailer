@@ -212,10 +212,10 @@ export default function ContactPage() {
                     <label style={{ fontSize: 13, fontWeight: 500 }}>Betreff</label>
                     <select value={form.subject} onChange={e => update('subject', e.target.value)}
                       style={{ padding: '10px 14px', border: '1.5px solid var(--border)', borderRadius: 'var(--r-sm)', fontSize: 13, background: 'white' }}>
-                      <option>Allgemeine Anfrage</option>
-                      <option>Angebot anfordern</option>
-                      <option>Lieferinformation</option>
-                      <option>Nach dem Kauf</option>
+                      <option value="Allgemeine Anfrage">Allgemeine Anfrage</option>
+                      <option value="Angebot anfordern">Angebot anfordern</option>
+                      <option value="Lieferinformation">Lieferinformation</option>
+                      <option value="Nach dem Kauf">Nach dem Kauf</option>
                     </select>
                   </div>
                 </div>
