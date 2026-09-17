@@ -32,7 +32,8 @@ function validateAngebot(form) {
   if (!form.email.trim())                            errors.email       = 'E-Mail ist erforderlich';
   else if (!EMAIL_RE.test(form.email.trim()))        errors.email       = 'Ungültige E-Mail-Adresse';
 
-  if (form.phone.trim() && !PHONE_RE.test(form.phone.trim())) errors.phone = 'Nur Ziffern, +, - und Klammern erlaubt';
+  if (!form.phone.trim())                                      errors.phone = 'Telefon ist erforderlich';
+  else if (!PHONE_RE.test(form.phone.trim()))                  errors.phone = 'Nur Ziffern, +, - und Klammern erlaubt';
 
   if (!form.productType)                             errors.productType = 'Produktkategorie ist erforderlich';
 
@@ -213,7 +214,7 @@ export default function AngebotPage() {
 
                 {/* Telefon */}
                 <div style={{ marginBottom: 16 }}>
-                  <label style={labelStyle}>Telefon</label>
+                  <label style={labelStyle}>Telefon *</label>
                   <input className="input" placeholder="+49 000 000 000" value={form.phone}
                     onChange={setField('phone', 'phone')} onBlur={() => touch('phone')}
                     maxLength={30} inputMode="tel" autoComplete="tel" style={inputStyle('phone')} />
