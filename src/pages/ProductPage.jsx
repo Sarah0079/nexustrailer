@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { fmtEur } from '../utils/fmt';
 import { PRODUCTS } from '../data/products';
@@ -6,6 +6,7 @@ import { useCart } from '../context/CartContext';
 import { useWishlist } from '../context/WishlistContext';
 import ProductCard from '../components/ProductCard';
 import { useBreakpoint } from '../hooks/useBreakpoint';
+import { fetchReviews, submitReview } from '../api/client';
 
 const TRUST_ITEMS = [
   { icon: 'bi-clock', text: 'Bearbeitungszeit: 1-2 Werktage (Mo–Fr) · Lieferzeit: 2-3 Werktage (Mo–Fr)' },
@@ -14,6 +15,248 @@ const TRUST_ITEMS = [
   { icon: 'bi-shield-lock', text: 'Garantiert sicherer Checkout.' },
 ];
 
+
+// ── Étoiles ───────────────────────────────────────────────────────────────────
+function Stars({ value, max = 5, size = 16, interactive = false, onChange }) {
+  const [hovered, setHovered] = useState(0);
+  const display = interactive ? (hovered || value) : value;
+  return (
+    <span style={{ display: 'inline-flex', gap: 2 }}>
+      {Array.from({ length: max }, (_, i) => {
+        const filled = i < display;
+        return (
+          <i
+            key={i}
+            className={`bi bi-star${filled ? '-fill' : ''}`}
+            style={{
+              fontSize: size,
+              color: filled ? '#F59E0B' : 'var(--border-strong)',
+              cursor: interactive ? 'pointer' : 'default',
+              transition: 'color 0.1s',
+            }}
+            onClick={() => interactive && onChange && onChange(i + 1)}
+            onMouseEnter={() => interactive && setHovered(i + 1)}
+            onMouseLeave={() => interactive && setHovered(0)}
+          />
+        );
+      })}
+    </span>
+  );
+}
+
+function fmtReviewDate(iso) {
+  if (!iso) return '';
+  return new Date(iso).toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' });
+}
+
+// ── Système d'avis ────────────────────────────────────────────────────────────
+function ReviewsSection({ product }) {
+  const isMobile = useBreakpoint(768);
+  const formRef  = useRef(null);
+
+  const [reviews,    setReviews]    = useState([]);
+  const [avgRating,  setAvgRating]  = useState(null);
+  const [totalCount, setTotalCount] = useState(0);
+  const [loading,    setLoading]    = useState(true);
+  const [showForm,   setShowForm]   = useState(false);
+
+  const [form,    setForm]    = useState({ author_name: '', author_email: '', rating: 0, comment: '' });
+  const [error,   setError]   = useState('');
+  const [success, setSuccess] = useState(false);
+  const [sending, setSending] = useState(false);
+
+  const load = async () => {
+    try {
+      setLoading(true);
+      const data = await fetchReviews(product.slug);
+      setReviews(data.reviews || []);
+      setAvgRating(data.avg_rating);
+      setTotalCount(data.total || 0);
+    } catch {
+      setReviews([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => { load(); }, [product.slug]);
+
+  const handleShowForm = () => {
+    setShowForm(true);
+    setTimeout(() => formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
+    if (!form.author_name.trim()) return setError('Name ist erforderlich.');
+    if (!form.author_email.trim()) return setError('E-Mail ist erforderlich.');
+    if (form.rating < 1) return setError('Bitte wählen Sie eine Bewertung (1–5 Sterne).');
+    if (!form.comment.trim()) return setError('Kommentar ist erforderlich.');
+    if (form.comment.trim().length < 10) return setError('Kommentar zu kurz (min. 10 Zeichen).');
+    setSending(true);
+    try {
+      await submitReview({
+        product_slug: product.slug,
+        product_name: product.name,
+        author_name:  form.author_name.trim(),
+        author_email: form.author_email.trim(),
+        rating:       form.rating,
+        comment:      form.comment.trim(),
+      });
+      setSuccess(true);
+      setShowForm(false);
+      setForm({ author_name: '', author_email: '', rating: 0, comment: '' });
+    } catch (err) {
+      setError(err.message || 'Fehler beim Senden. Bitte erneut versuchen.');
+    } finally {
+      setSending(false);
+    }
+  };
+
+  const inputStyle = { width: '100%', padding: '10px 14px', border: '1.5px solid var(--border)', fontSize: 14, color: 'var(--dark)', background: 'white', outline: 'none', borderRadius: 0, fontFamily: 'inherit' };
+
+  return (
+    <div style={{ borderTop: '1px solid var(--border)', paddingTop: 48, marginBottom: 48 }}>
+
+      {/* En-tête */}
+      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 16, flexWrap: 'wrap', marginBottom: 32 }}>
+        <div>
+          <p style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.12em', color: 'var(--accent)', marginBottom: 6 }}>KUNDENSTIMMEN</p>
+          <h2 style={{ fontSize: 22, fontWeight: 900, color: 'var(--dark)', letterSpacing: '-0.02em', marginBottom: 8 }}>Kundenbewertungen</h2>
+          {totalCount > 0 ? (
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+              <Stars value={Math.round(avgRating || 0)} size={18} />
+              <span style={{ fontSize: 16, fontWeight: 800, color: 'var(--dark)' }}>{Number(avgRating).toFixed(1).replace('.', ',')} / 5</span>
+              <span style={{ fontSize: 13, color: 'var(--text-muted)' }}>· {totalCount} {totalCount === 1 ? 'Bewertung' : 'Bewertungen'}</span>
+            </div>
+          ) : (
+            <p style={{ fontSize: 14, color: 'var(--text-muted)' }}>Noch keine Bewertungen für dieses Produkt.</p>
+          )}
+        </div>
+        {!showForm && !success && (
+          <button
+            onClick={handleShowForm}
+            className="btn btn-accent btn-sm"
+            style={{ flexShrink: 0, marginTop: 4 }}
+          >
+            <i className="bi bi-pencil-square" /> Bewertung schreiben
+          </button>
+        )}
+      </div>
+
+      {/* Message succès */}
+      {success && (
+        <div style={{ background: 'var(--green-light)', border: '1px solid rgba(26,120,64,0.25)', padding: '14px 18px', marginBottom: 28, display: 'flex', gap: 10, alignItems: 'center', fontSize: 14, color: 'var(--green)' }}>
+          <i className="bi bi-check-circle-fill" style={{ fontSize: 17, flexShrink: 0 }} />
+          <div>
+            <strong>Vielen Dank für Ihre Bewertung!</strong>
+            <p style={{ marginTop: 2, fontSize: 13, opacity: 0.85 }}>Ihre Bewertung wird nach Prüfung veröffentlicht.</p>
+          </div>
+        </div>
+      )}
+
+      {/* Formulaire */}
+      {showForm && (
+        <div ref={formRef} style={{ background: 'var(--bg)', border: '1px solid var(--border)', padding: isMobile ? '20px 16px' : '28px 28px', marginBottom: 36 }}>
+          <h3 style={{ fontSize: 16, fontWeight: 800, color: 'var(--dark)', marginBottom: 20 }}>Ihre Bewertung abgeben</h3>
+          {error && (
+            <div style={{ background: 'var(--sale-light)', border: '1px solid rgba(193,33,25,0.25)', padding: '10px 14px', marginBottom: 16, fontSize: 13, color: 'var(--sale)', display: 'flex', gap: 8, alignItems: 'center' }}>
+              <i className="bi bi-exclamation-circle" style={{ flexShrink: 0 }} />{error}
+            </div>
+          )}
+          <form onSubmit={handleSubmit} noValidate>
+            <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: 14, marginBottom: 14 }}>
+              <div>
+                <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: 'var(--text-muted)', marginBottom: 5, textTransform: 'uppercase', letterSpacing: '0.06em' }}>Name *</label>
+                <input
+                  style={inputStyle}
+                  placeholder="Max Mustermann"
+                  value={form.author_name}
+                  onChange={e => setForm(f => ({ ...f, author_name: e.target.value }))}
+                  maxLength={150}
+                />
+              </div>
+              <div>
+                <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: 'var(--text-muted)', marginBottom: 5, textTransform: 'uppercase', letterSpacing: '0.06em' }}>E-Mail *</label>
+                <input
+                  style={inputStyle}
+                  type="email"
+                  placeholder="max@example.com"
+                  value={form.author_email}
+                  onChange={e => setForm(f => ({ ...f, author_email: e.target.value }))}
+                  maxLength={254}
+                />
+              </div>
+            </div>
+            <div style={{ marginBottom: 14 }}>
+              <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: 'var(--text-muted)', marginBottom: 8, textTransform: 'uppercase', letterSpacing: '0.06em' }}>Bewertung *</label>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                <Stars value={form.rating} size={28} interactive onChange={v => setForm(f => ({ ...f, rating: v }))} />
+                {form.rating > 0 && (
+                  <span style={{ fontSize: 13, color: 'var(--text-muted)' }}>
+                    {['', 'Sehr schlecht', 'Schlecht', 'Gut', 'Sehr gut', 'Ausgezeichnet'][form.rating]}
+                  </span>
+                )}
+              </div>
+            </div>
+            <div style={{ marginBottom: 20 }}>
+              <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: 'var(--text-muted)', marginBottom: 5, textTransform: 'uppercase', letterSpacing: '0.06em' }}>Kommentar *</label>
+              <textarea
+                style={{ ...inputStyle, minHeight: 110, resize: 'vertical', lineHeight: 1.6 }}
+                placeholder="Teilen Sie Ihre Erfahrung mit diesem Produkt…"
+                value={form.comment}
+                onChange={e => setForm(f => ({ ...f, comment: e.target.value }))}
+                maxLength={2000}
+              />
+              <p style={{ fontSize: 11, color: 'var(--text-light)', marginTop: 4, textAlign: 'right' }}>{form.comment.length} / 2000</p>
+            </div>
+            <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end', flexWrap: 'wrap' }}>
+              <button type="button" className="btn btn-outline btn-sm" onClick={() => setShowForm(false)} disabled={sending}>
+                Abbrechen
+              </button>
+              <button type="submit" className="btn btn-accent" disabled={sending} style={{ minWidth: 160 }}>
+                {sending ? <><i className="bi bi-hourglass-split" /> Wird gesendet…</> : <><i className="bi bi-send" /> Bewertung abgeben</>}
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
+
+      {/* Liste des avis */}
+      {loading ? (
+        <div style={{ textAlign: 'center', padding: '32px 0', color: 'var(--text-muted)', fontSize: 14 }}>
+          <i className="bi bi-hourglass-split" style={{ marginRight: 8 }} />Bewertungen werden geladen…
+        </div>
+      ) : reviews.length === 0 ? (
+        !success && (
+          <div style={{ textAlign: 'center', padding: '32px 0', color: 'var(--text-muted)', fontSize: 14 }}>
+            <i className="bi bi-chat-square-text" style={{ fontSize: 32, display: 'block', marginBottom: 12, opacity: 0.4 }} />
+            Seien Sie der Erste, der eine Bewertung hinterlässt.
+          </div>
+        )
+      ) : (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
+          {reviews.map((r, idx) => (
+            <div key={r.id} style={{ padding: '22px 0', borderTop: idx === 0 ? 'none' : '1px solid var(--border)' }}>
+              <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 12, marginBottom: 8, flexWrap: 'wrap' }}>
+                <div>
+                  <Stars value={r.rating} size={14} />
+                  <p style={{ fontSize: 14, fontWeight: 700, color: 'var(--dark)', marginTop: 5 }}>{r.author_name}</p>
+                  <p style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 1 }}>{r.author_email}</p>
+                </div>
+                <span style={{ fontSize: 12, color: 'var(--text-light)', whiteSpace: 'nowrap', marginTop: 2 }}>{fmtReviewDate(r.created_at)}</span>
+              </div>
+              <p style={{ fontSize: 14, color: 'var(--text-muted)', lineHeight: 1.7, fontStyle: 'italic' }}>
+                &ldquo;{r.comment}&rdquo;
+              </p>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
 
 export default function ProductPage() {
   const { slug } = useParams();
@@ -249,6 +492,9 @@ export default function ProductPage() {
             </div>
           </div>
         )}
+
+        {/* ── Kundenbewertungen ── */}
+        <ReviewsSection product={product} />
 
         {/* ── Produits similaires ── */}
         {related.length > 0 && (

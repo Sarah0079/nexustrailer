@@ -44,6 +44,30 @@ export function sendAngebot(payload) {
   return request('POST', '/angebot', payload);
 }
 
+// ── Bewertungen (public) ──────────────────────────────────────────────────────
+
+export function fetchReviews(slug) {
+  return request('GET', `/reviews?slug=${encodeURIComponent(slug)}`);
+}
+
+export function submitReview(payload) {
+  return request('POST', '/reviews', payload);
+}
+
+// ── Admin — Bewertungen ───────────────────────────────────────────────────────
+
+export function fetchAllReviews(queryString = '') {
+  return request('GET', `/admin/reviews${queryString}`);
+}
+
+export function updateReviewStatus(id, status) {
+  return request('PATCH', `/admin/reviews/${id}/status`, { status });
+}
+
+export function deleteReview(id) {
+  return request('DELETE', `/admin/reviews/${id}`);
+}
+
 // ── Admin — angebote ──────────────────────────────────────────────────────────
 
 export function fetchAllAngebote(queryString = '') {

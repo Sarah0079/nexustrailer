@@ -21,6 +21,8 @@ import adminSettingsRoutes   from './routes/admin/settings.js';
 import adminStatsRoutes      from './routes/admin/stats.js';
 import adminAdminsRoutes     from './routes/admin/admins.js';
 import adminAngeboteRoutes   from './routes/admin/angebote.js';
+import reviewsRoutes          from './routes/reviews.js';
+import adminReviewsRoutes     from './routes/admin/reviews.js';
 
 if (!process.env.JWT_SECRET || process.env.JWT_SECRET.length < 32) {
   console.error('FATAL: JWT_SECRET manquant ou trop court (< 32 caractères). Arrêt du serveur.');
@@ -82,6 +84,8 @@ app.use('/api/admin/settings',    adminSettingsRoutes);
 app.use('/api/admin/stats',       adminStatsRoutes);
 app.use('/api/admin/admins',      adminAdminsRoutes);
 app.use('/api/admin/angebote',    adminAngeboteRoutes);
+app.use('/api/reviews',           reviewsRoutes);
+app.use('/api/admin/reviews',     adminReviewsRoutes);
 
 app.get('/api/health', (_, res) => res.json({ ok: true }));
 

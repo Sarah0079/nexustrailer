@@ -5,6 +5,7 @@ import {
   addNotification, deleteNotification, updatePaymentStatus,
   fetchBankSettings, updateBankSettings,
   fetchAllAngebote, fetchAngebotDetail, updateAngebotStatus,
+  fetchAllReviews, updateReviewStatus, deleteReview,
 } from '../api/client';
 
 // ── Constantes ──────────────────────────────────────────────────────────────────
@@ -531,6 +532,179 @@ function AngeboteTab() {
   );
 }
 
+// ── Bewertungen ─────────────────────────────────────────────────────────────────
+const REVIEW_STATUS_LABELS = {
+  pending:  { label: 'Ausstehend', color: '#92400E', bg: '#FEF3C7', border: '#FDE68A' },
+  approved: { label: 'Genehmigt',  color: '#065F46', bg: '#ECFDF5', border: '#6EE7B7' },
+  rejected: { label: 'Abgelehnt',  color: '#991B1B', bg: '#FEF2F2', border: '#FECACA' },
+};
+
+function ReviewBadge({ status }) {
+  const s = REVIEW_STATUS_LABELS[status] || { label: status, color: '#374151', bg: '#F3F4F6', border: '#E5E7EB' };
+  return (
+    <span style={{ fontSize: 11, fontWeight: 700, padding: '3px 9px', background: s.bg, color: s.color, border: `1px solid ${s.border}`, whiteSpace: 'nowrap' }}>
+      {s.label}
+    </span>
+  );
+}
+
+function ReviewStars({ value }) {
+  return (
+    <span style={{ display: 'inline-flex', gap: 1 }}>
+      {Array.from({ length: 5 }, (_, i) => (
+        <i key={i} className={`bi bi-star${i < value ? '-fill' : ''}`}
+          style={{ fontSize: 11, color: i < value ? '#F59E0B' : '#D1D5DB' }} />
+      ))}
+    </span>
+  );
+}
+
+function ReviewsTab() {
+  const [reviews,  setReviews]  = useState([]);
+  const [total,    setTotal]    = useState(0);
+  const [page,     setPage]     = useState(1);
+  const [filter,   setFilter]   = useState('pending');
+  const [loading,  setLoading]  = useState(false);
+  const [expanded, setExpanded] = useState(null);
+  const LIMIT = 25;
+
+  const load = useCallback(async () => {
+    setLoading(true);
+    try {
+      const qs = `?page=${page}&limit=${LIMIT}${filter ? `&status=${filter}` : ''}`;
+      const data = await fetchAllReviews(qs);
+      setReviews(data.reviews || []);
+      setTotal(data.total || 0);
+    } catch { setReviews([]); }
+    finally { setLoading(false); }
+  }, [page, filter]);
+
+  useEffect(() => { load(); }, [load]);
+
+  const handleStatus = async (id, status) => {
+    try {
+      await updateReviewStatus(id, status);
+      await load();
+      if (expanded === id) setExpanded(null);
+    } catch (err) { alert(err.message); }
+  };
+
+  const handleDelete = async (id) => {
+    if (!confirm('Diese Bewertung endgültig löschen?')) return;
+    try {
+      await deleteReview(id);
+      await load();
+      if (expanded === id) setExpanded(null);
+    } catch (err) { alert(err.message); }
+  };
+
+  const pending  = reviews.filter(r => r.status === 'pending').length;
+
+  return (
+    <div>
+      <div style={{ display: 'flex', gap: 10, marginBottom: 16, flexWrap: 'wrap', alignItems: 'center' }}>
+        <h2 style={{ fontSize: 15, fontWeight: 800, color: 'var(--dark)', flex: 1 }}>
+          Kundenbewertungen ({total}){pending > 0 && filter !== 'pending' && (
+            <span style={{ marginLeft: 8, fontSize: 11, fontWeight: 700, padding: '2px 8px', background: '#FEF3C7', color: '#92400E', border: '1px solid #FDE68A' }}>{pending} ausstehend</span>
+          )}
+        </h2>
+        <select className="input" value={filter} onChange={e => { setFilter(e.target.value); setPage(1); }} style={{ width: 170, fontSize: 13 }}>
+          <option value="">Alle Status</option>
+          <option value="pending">Ausstehend</option>
+          <option value="approved">Genehmigt</option>
+          <option value="rejected">Abgelehnt</option>
+        </select>
+        <button className="btn btn-outline btn-sm" onClick={load}><i className="bi bi-arrow-clockwise" /></button>
+      </div>
+
+      <div style={{ background: 'white', border: '1px solid var(--border)', overflow: 'hidden' }}>
+        {loading ? (
+          <div style={{ padding: 40, textAlign: 'center', color: 'var(--text-muted)' }}>Laden…</div>
+        ) : reviews.length === 0 ? (
+          <div style={{ padding: 40, textAlign: 'center', color: 'var(--text-muted)' }}>Keine Bewertungen gefunden.</div>
+        ) : (
+          <div style={{ overflowX: 'auto' }}>
+            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
+              <thead>
+                <tr style={{ background: 'var(--bg)', borderBottom: '1px solid var(--border)' }}>
+                  {['Produkt', 'Name / E-Mail', 'Bewertung', 'Datum', 'Status', 'Aktionen'].map(h => (
+                    <th key={h} style={{ padding: '10px 14px', textAlign: 'left', fontSize: 11, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '.06em', whiteSpace: 'nowrap' }}>{h}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {reviews.map(r => (
+                  <>
+                    <tr key={r.id}
+                      style={{ borderBottom: '1px solid var(--border)', cursor: 'pointer', background: expanded === r.id ? 'var(--accent-light)' : 'white' }}
+                      onClick={() => setExpanded(expanded === r.id ? null : r.id)}
+                      onMouseEnter={e => { if (expanded !== r.id) e.currentTarget.style.background = 'var(--bg)'; }}
+                      onMouseLeave={e => { if (expanded !== r.id) e.currentTarget.style.background = 'white'; }}
+                    >
+                      <td style={{ padding: '11px 14px', maxWidth: 200 }}>
+                        <span style={{ fontSize: 12, color: 'var(--dark)', fontWeight: 600, display: 'block', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{r.product_name}</span>
+                        <span style={{ fontSize: 10, color: 'var(--text-light)', fontFamily: 'monospace' }}>{r.product_slug}</span>
+                      </td>
+                      <td style={{ padding: '11px 14px', whiteSpace: 'nowrap' }}>
+                        <span style={{ display: 'block', fontWeight: 600, color: 'var(--dark)' }}>{r.author_name}</span>
+                        <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>{r.author_email}</span>
+                      </td>
+                      <td style={{ padding: '11px 14px', whiteSpace: 'nowrap' }}>
+                        <ReviewStars value={r.rating} />
+                        <span style={{ fontSize: 11, color: 'var(--text-muted)', marginLeft: 4 }}>{r.rating}/5</span>
+                      </td>
+                      <td style={{ padding: '11px 14px', color: 'var(--text-muted)', whiteSpace: 'nowrap', fontSize: 12 }}>{fmtDate(r.created_at)}</td>
+                      <td style={{ padding: '11px 14px', whiteSpace: 'nowrap' }}><ReviewBadge status={r.status} /></td>
+                      <td style={{ padding: '11px 14px', whiteSpace: 'nowrap' }}>
+                        <div style={{ display: 'flex', gap: 5 }} onClick={e => e.stopPropagation()}>
+                          {r.status !== 'approved' && (
+                            <button className="btn btn-sm" onClick={() => handleStatus(r.id, 'approved')}
+                              style={{ fontSize: 11, background: '#ECFDF5', color: '#065F46', border: '1px solid #6EE7B7', padding: '4px 10px' }}>
+                              <i className="bi bi-check-lg" /> Genehmigen
+                            </button>
+                          )}
+                          {r.status !== 'rejected' && (
+                            <button className="btn btn-sm" onClick={() => handleStatus(r.id, 'rejected')}
+                              style={{ fontSize: 11, background: '#FEF2F2', color: '#991B1B', border: '1px solid #FECACA', padding: '4px 10px' }}>
+                              <i className="bi bi-x-lg" /> Ablehnen
+                            </button>
+                          )}
+                          <button className="btn btn-sm" onClick={() => handleDelete(r.id)}
+                            style={{ fontSize: 11, background: 'white', color: 'var(--text-muted)', border: '1px solid var(--border)', padding: '4px 10px' }}>
+                            <i className="bi bi-trash3" />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                    {expanded === r.id && (
+                      <tr key={`${r.id}-exp`} style={{ borderBottom: '1px solid var(--border)', background: 'var(--accent-light)' }}>
+                        <td colSpan={6} style={{ padding: '14px 18px' }}>
+                          <p style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', color: 'var(--text-muted)', letterSpacing: '.06em', marginBottom: 6 }}>Kommentar</p>
+                          <p style={{ fontSize: 13, color: 'var(--dark)', lineHeight: 1.7, fontStyle: 'italic', background: 'white', padding: '10px 14px', border: '1px solid var(--border)' }}>
+                            &ldquo;{r.comment}&rdquo;
+                          </p>
+                        </td>
+                      </tr>
+                    )}
+                  </>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+
+      {total > LIMIT && (
+        <div style={{ display: 'flex', justifyContent: 'center', gap: 8, marginTop: 16 }}>
+          <button className="btn btn-outline btn-sm" disabled={page === 1} onClick={() => setPage(p => p - 1)}><i className="bi bi-chevron-left" /></button>
+          <span style={{ fontSize: 13, color: 'var(--text-muted)', display: 'flex', alignItems: 'center', padding: '0 8px' }}>Seite {page} / {Math.ceil(total / LIMIT)}</span>
+          <button className="btn btn-outline btn-sm" disabled={page >= Math.ceil(total / LIMIT)} onClick={() => setPage(p => p + 1)}><i className="bi bi-chevron-right" /></button>
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ── Bankverbindung ──────────────────────────────────────────────────────────────
 function SettingsTab() {
   const [form, setForm]       = useState({ beneficiaire: '', iban: '', bic: '', banque: '' });
@@ -640,9 +814,10 @@ export default function AdminPage() {
   if (!auth) return <LoginView onLogin={(u) => { setUser(u); setAuth(true); }} />;
 
   const TABS = [
-    { id: 'orders',   icon: 'bi-bag',           label: 'Bestellungen' },
-    { id: 'angebote', icon: 'bi-file-earmark-text', label: 'Angebote' },
-    { id: 'settings', icon: 'bi-bank',           label: 'Bankverbindung' },
+    { id: 'orders',    icon: 'bi-bag',              label: 'Bestellungen' },
+    { id: 'angebote',  icon: 'bi-file-earmark-text', label: 'Angebote' },
+    { id: 'reviews',   icon: 'bi-star',             label: 'Bewertungen' },
+    { id: 'settings',  icon: 'bi-bank',             label: 'Bankverbindung' },
   ];
 
   return (
@@ -674,6 +849,7 @@ export default function AdminPage() {
       <div className="container" style={{ padding: '28px 24px 60px' }}>
         {tab === 'orders'   && <OrdersTab />}
         {tab === 'angebote' && <AngeboteTab />}
+        {tab === 'reviews'  && <ReviewsTab />}
         {tab === 'settings' && <SettingsTab />}
       </div>
     </main>
