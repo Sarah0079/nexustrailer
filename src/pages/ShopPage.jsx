@@ -9,7 +9,6 @@ const SORTS = [
   { value: 'price-asc',  label: 'Preis: aufsteigend' },
   { value: 'price-desc', label: 'Preis: absteigend' },
   { value: 'discount',   label: 'Größter Rabatt' },
-  { value: 'rating',     label: 'Beste Bewertung' },
 ];
 
 const CARD_WIDTH = 272; // px — must match ProductCard width
@@ -173,7 +172,6 @@ export default function ShopPage() {
     if (sort === 'price-asc')  list.sort((a, b) => a.price - b.price);
     else if (sort === 'price-desc') list.sort((a, b) => b.price - a.price);
     else if (sort === 'discount')   list.sort((a, b) => (b.discount || 0) - (a.discount || 0));
-    else if (sort === 'rating')     list.sort((a, b) => b.rating - a.rating);
     return list;
   }, [category, sort, search]);
 
@@ -196,21 +194,19 @@ export default function ShopPage() {
   return (
     <main>
       {/* Hero */}
-      <div style={{ background: 'var(--dark)', padding: isMobile ? '32px 0 28px' : '48px 0 40px' }}>
+      <div style={{ background: 'var(--dark)', padding: isMobile ? '32px 0 28px' : '48px 0 40px', borderBottom: '3px solid var(--accent)' }}>
         <div className="container">
-          <p style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--accent)', marginBottom: 8 }}>
+          <p style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.12em', color: 'var(--accent)', marginBottom: 8 }}>
             UNSER SORTIMENT
           </p>
           <h1 style={{ fontSize: 'clamp(26px, 4vw, 44px)', fontWeight: 900, color: 'white', letterSpacing: '-0.02em', marginBottom: 10 }}>
             Anhänger kaufen – direkt vom Importeur
           </h1>
-          <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.5)', display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
+          <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.55)', display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
             <i className="bi bi-box-seam" />
             {PRODUCTS.length} Produkte verfügbar
             <i className="bi bi-truck" style={{ marginLeft: 8 }} />
             Kostenloser Versand
-            <i className="bi bi-lightning" style={{ marginLeft: 8 }} />
-            Sofort lieferbar
           </p>
         </div>
       </div>

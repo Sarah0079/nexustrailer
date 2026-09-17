@@ -33,9 +33,8 @@ export default function ProductCard({ product }) {
       style={{
         background: 'white', borderRadius: 'var(--r-lg)', overflow: 'hidden',
         cursor: 'pointer', display: 'flex', flexDirection: 'column',
-        boxShadow: hovered ? '0 8px 32px rgba(0,0,0,0.10)' : '0 1px 4px rgba(0,0,0,0.06)',
-        transition: 'box-shadow 0.25s, transform 0.25s',
-        transform: hovered ? 'translateY(-3px)' : 'translateY(0)',
+        border: `1px solid ${hovered ? 'var(--border-strong)' : 'var(--border)'}`,
+        transition: 'border-color 0.2s',
       }}
     >
       {/* Image */}
@@ -121,14 +120,13 @@ export default function ProductCard({ product }) {
             onClick={handleAdd}
             style={{
               width: 38, height: 38, borderRadius: 0, flexShrink: 0,
-              background: added ? 'var(--green)' : 'var(--accent)',
+              background: added ? 'var(--green)' : 'var(--dark)',
               border: 'none', cursor: 'pointer',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
-              color: 'white', fontSize: 16, transition: 'background 0.2s, transform 0.15s',
-              transform: added ? 'scale(1.1)' : 'scale(1)',
+              color: 'white', fontSize: 16, transition: 'background 0.2s',
             }}
-            onMouseEnter={e => !added && (e.currentTarget.style.background = 'var(--accent-hover)')}
-            onMouseLeave={e => !added && (e.currentTarget.style.background = 'var(--accent)')}
+            onMouseEnter={e => !added && (e.currentTarget.style.background = 'var(--dark-2)')}
+            onMouseLeave={e => !added && (e.currentTarget.style.background = 'var(--dark)')}
           >
             <i className={`bi bi-${added ? 'check-lg' : 'cart-plus'}`} />
           </button>

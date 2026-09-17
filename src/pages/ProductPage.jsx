@@ -66,7 +66,7 @@ export default function ProductPage() {
       <div className="container" style={{ padding: '32px 24px 72px' }}>
 
         {/* Title — full width */}
-        <h1 style={{ fontSize: 'clamp(18px, 2.2vw, 28px)', fontWeight: 800, color: 'var(--dark)', lineHeight: 1.3, marginBottom: 28, letterSpacing: '-0.01em' }}>
+        <h1 style={{ fontSize: 'clamp(22px, 2.8vw, 36px)', fontWeight: 900, color: 'var(--dark)', lineHeight: 1.25, marginBottom: 28, letterSpacing: '-0.02em' }}>
           {product.name}
         </h1>
 
@@ -199,18 +199,17 @@ export default function ProductPage() {
           {/* ── Col 3 : Trust (desktop only) ── */}
           {!isNarrow && (
             <div style={{ minWidth: 0 }}>
-              <div style={{ background: 'var(--accent-light)', border: '1px solid var(--accent)', borderRadius: 'var(--r-md)', padding: '16px 18px', marginBottom: 20, textAlign: 'center' }}>
-                <p style={{ fontSize: 13, fontWeight: 600, color: 'var(--accent)', lineHeight: 1.6 }}>
-                  Kraft, Stabilität und Leistung —<br />entscheiden Sie sich für NexusTrailer
+              <div style={{ borderLeft: '3px solid var(--accent)', paddingLeft: 16, marginBottom: 24 }}>
+                <p style={{ fontSize: 12, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)', marginBottom: 4 }}>NexusTrailer</p>
+                <p style={{ fontSize: 14, fontWeight: 600, color: 'var(--dark)', lineHeight: 1.5 }}>
+                  Kraft, Stabilität und Leistung — direkt vom Importeur.
                 </p>
               </div>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
+              <div style={{ display: 'flex', flexDirection: 'column' }}>
                 {TRUST_ITEMS.map((item, i) => (
-                  <div key={i} style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
-                    <div style={{ width: 38, height: 38, borderRadius: 0, background: 'var(--bg)', border: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                      <i className={`bi ${item.icon}`} style={{ fontSize: 17, color: 'var(--text-muted)' }} />
-                    </div>
-                    <p style={{ fontSize: 12, color: 'var(--text-muted)', lineHeight: 1.55, paddingTop: 3 }}>{item.text}</p>
+                  <div key={i} style={{ display: 'flex', gap: 14, alignItems: 'flex-start', padding: '16px 0', borderTop: '1px solid var(--border)' }}>
+                    <i className={`bi ${item.icon}`} style={{ fontSize: 18, color: 'var(--dark)', flexShrink: 0, marginTop: 1 }} />
+                    <p style={{ fontSize: 12, color: 'var(--text-muted)', lineHeight: 1.6 }}>{item.text}</p>
                   </div>
                 ))}
               </div>
@@ -250,8 +249,9 @@ export default function ProductPage() {
         {/* ── Produits similaires ── */}
         {related.length > 0 && (
           <div>
-            <h2 style={{ fontSize: 20, fontWeight: 800, color: 'var(--dark)', marginBottom: 24, display: 'flex', alignItems: 'center', gap: 10 }}>
-              <i className="bi bi-grid" style={{ color: 'var(--accent)', fontSize: 18 }} /> Ähnliche Produkte
+            <p style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.12em', color: 'var(--accent)', marginBottom: 8 }}>ÄHNLICHE PRODUKTE</p>
+            <h2 style={{ fontSize: 22, fontWeight: 900, color: 'var(--dark)', marginBottom: 24, letterSpacing: '-0.02em' }}>
+              Das könnte Sie auch interessieren
             </h2>
             <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(auto-fill, minmax(260px, 1fr))', gap: 24 }}>
               {related.map(p => <ProductCard key={p.id} product={p} />)}
