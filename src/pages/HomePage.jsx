@@ -102,8 +102,22 @@ export default function HomePage() {
           Layout : texte sur la moitié gauche, image produit occupe toute
           la moitié droite jusqu'au bord du viewport — sans container.
       ─────────────────────────────────────────────────────────────────────── */}
-      <section style={{ background: 'var(--dark)', overflow: 'hidden' }}>
-        <div className="container">
+      <section style={{ background: 'var(--dark)', overflow: 'hidden', position: 'relative' }}>
+        {/* Vidéo d'arrière-plan */}
+        <video
+          autoPlay muted loop playsInline
+          style={{
+            position: 'absolute', inset: 0,
+            width: '100%', height: '100%',
+            objectFit: 'cover', objectPosition: 'center',
+            opacity: 0.28,
+            pointerEvents: 'none',
+          }}
+        >
+          <source src="/image/hero.mp4" type="video/mp4" />
+        </video>
+
+        <div className="container" style={{ position: 'relative', zIndex: 1 }}>
           <div style={{
             display: 'flex', alignItems: 'center',
             padding: isMobile ? '72px 0 52px' : '96px 0 80px',
@@ -150,7 +164,6 @@ export default function HomePage() {
               </div>
             </div>
           </div>
-
         </div>
       </section>
 
