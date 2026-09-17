@@ -109,7 +109,7 @@ export default function AngebotPage() {
 
   const showErr = k => (touched[k] || triedSubmit) && errors[k];
   const errStyle = { fontSize: 11, color: 'var(--sale)', marginTop: 4, display: 'flex', alignItems: 'center', gap: 4 };
-  const inputStyle = k => ({ borderColor: showErr(k) ? 'var(--sale)' : undefined, outline: showErr(k) ? '2px solid rgba(220,38,38,.15)' : undefined });
+  const inputStyle = k => ({ borderColor: showErr(k) ? 'var(--sale)' : undefined, outline: showErr(k) ? '2px solid rgba(193,33,25,.15)' : undefined });
 
   return (
     <main>
@@ -164,12 +164,12 @@ export default function AngebotPage() {
               <form onSubmit={handleSubmit} noValidate style={{ border: '1px solid var(--border)', background: 'white', padding: isMobile ? '28px 20px' : '40px 40px' }}>
 
                 {triedSubmit && Object.keys(errors).length > 0 && (
-                  <div style={{ background: '#FEF2F2', border: '1px solid #FECACA', borderRadius: 0, padding: '10px 14px', marginBottom: 20, fontSize: 13, color: '#991B1B', display: 'flex', gap: 8, alignItems: 'center' }}>
+                  <div style={{ background: 'var(--sale-light)', border: '1px solid rgba(193,33,25,0.3)', borderRadius: 0, padding: '10px 14px', marginBottom: 20, fontSize: 13, color: 'var(--sale)', display: 'flex', gap: 8, alignItems: 'center' }}>
                     <i className="bi bi-exclamation-triangle-fill" /><span>Bitte korrigieren Sie die markierten Felder.</span>
                   </div>
                 )}
                 {serverError && (
-                  <div style={{ background: '#FEF2F2', border: '1px solid #FECACA', borderRadius: 0, padding: '10px 14px', marginBottom: 20, fontSize: 13, color: '#991B1B', display: 'flex', gap: 8, alignItems: 'center' }}>
+                  <div style={{ background: 'var(--sale-light)', border: '1px solid rgba(193,33,25,0.3)', borderRadius: 0, padding: '10px 14px', marginBottom: 20, fontSize: 13, color: 'var(--sale)', display: 'flex', gap: 8, alignItems: 'center' }}>
                     <i className="bi bi-exclamation-circle" /><span>{serverError}</span>
                   </div>
                 )}

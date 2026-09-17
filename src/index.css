@@ -1,24 +1,24 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --dark: #1C2B3A;
-  --dark-2: #243444;
-  --dark-3: #3A4F62;
-  --accent: #E0261A;
-  --accent-hover: #C41E13;
-  --accent-light: #FEF2F2;
-  --text: #0F1A24;
-  --text-muted: #5A6B78;
-  --text-light: #8FA0AE;
-  --border: #E2E8ED;
-  --border-strong: #C8D4DC;
-  --bg: #F6F8FA;
-  --bg-2: #EEF2F5;
+  --dark: #1E1E1E;
+  --dark-2: #2C2C2C;
+  --dark-3: #404040;
+  --accent: #C12119;
+  --accent-hover: #A51C14;
+  --accent-light: #FCECEA;
+  --text: #141414;
+  --text-muted: #5C5C5C;
+  --text-light: #959595;
+  --border: #DCDCDA;
+  --border-strong: #C3C3C1;
+  --bg: #F4F3F1;
+  --bg-2: #EAEAE7;
   --white: #FFFFFF;
-  --green: #16A34A;
-  --green-light: #DCFCE7;
-  --sale: #DC2626;
-  --sale-light: #FEF2F2;
+  --green: #1A7840;
+  --green-light: #D2EDDB;
+  --sale: #C12119;
+  --sale-light: #FCECEA;
   --shadow-sm: 0 1px 3px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.04);
   --shadow-md: 0 4px 16px rgba(0,0,0,.10);
   --shadow-lg: 0 12px 40px rgba(0,0,0,.14);
@@ -90,7 +90,7 @@ img { max-width: 100%; display: block; }
   font-size: 14px; color: var(--dark); background: white; outline: none;
   transition: border-color 0.15s, box-shadow 0.15s;
 }
-.input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(224,38,26,.1); }
+.input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(193,33,25,.1); }
 .input::placeholder { color: var(--text-light); }
 
 /* ── Badges ──────────────────────────────── */

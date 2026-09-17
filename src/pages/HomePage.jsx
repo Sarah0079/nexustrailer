@@ -212,7 +212,7 @@ export default function HomePage() {
                   onMouseEnter={() => setHoveredCat(cat.id)}
                   onMouseLeave={() => setHoveredCat(null)}
                 >
-                  <div style={{ position: 'absolute', inset: 0, background: '#c0c8d0' }} />
+                  <div style={{ position: 'absolute', inset: 0, background: 'var(--bg-2)' }} />
                   <img
                     src={catImage[cat.id]}
                     alt={cat.label}
@@ -305,7 +305,7 @@ export default function HomePage() {
                   onMouseEnter={() => setHoveredCat('f0')}
                   onMouseLeave={() => setHoveredCat(null)}
                 >
-                  <div style={{ position: 'absolute', inset: 0, background: '#bec8d0' }} />
+                  <div style={{ position: 'absolute', inset: 0, background: 'var(--bg-2)' }} />
                   <img
                     src={featured[0].image}
                     alt={featured[0].name}
@@ -380,7 +380,7 @@ export default function HomePage() {
                     {/* Vignette image */}
                     <div style={{
                       width: 160, flexShrink: 0,
-                      position: 'relative', overflow: 'hidden', background: '#e4ecf2',
+                      position: 'relative', overflow: 'hidden', background: 'var(--bg-2)',
                     }}>
                       <img
                         src={p.image}

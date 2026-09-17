@@ -105,7 +105,7 @@ export default function ProductPage() {
                     border: `2px solid ${i === activeImg ? 'var(--accent)' : 'var(--border)'}`,
                     transition: 'border-color 0.15s',
                   }}>
-                    <img src={img} alt="" style={{ width: '100%', height: '100%', objectFit: 'contain', padding: '4px', background: '#F0F0EE' }} />
+                    <img src={img} alt="" style={{ width: '100%', height: '100%', objectFit: 'contain', padding: '4px', background: '#EDECE9' }} />
                   </button>
                 ))}
               </div>
@@ -129,8 +129,8 @@ export default function ProductPage() {
             {/* Stock */}
             {product.stock !== undefined && (
               <span style={(product.stock === 'instock' || product.stock > 0)
-                ? { background: '#ECFDF5', color: '#065F46', border: '1px solid #6EE7B7', borderRadius: 0, padding: '4px 12px', fontSize: 12, fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: 5, marginBottom: 16 }
-                : { background: '#FEF2F2', color: '#991B1B', border: '1px solid #FECACA', borderRadius: 0, padding: '4px 12px', fontSize: 12, fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: 5, marginBottom: 16 }
+                ? { background: 'var(--green-light)', color: 'var(--green)', border: '1px solid rgba(26,120,64,0.3)', borderRadius: 0, padding: '4px 12px', fontSize: 12, fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: 5, marginBottom: 16 }
+                : { background: 'var(--sale-light)', color: 'var(--sale)', border: '1px solid rgba(193,33,25,0.3)', borderRadius: 0, padding: '4px 12px', fontSize: 12, fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: 5, marginBottom: 16 }
               }>
                 <i className={`bi ${(product.stock === 'instock' || product.stock > 0) ? 'bi-check-circle-fill' : 'bi-x-circle-fill'}`} style={{ fontSize: 10 }} />
                 {(product.stock === 'instock' || product.stock > 0) ? 'AUF LAGER' : 'NICHT VERFÜGBAR'}

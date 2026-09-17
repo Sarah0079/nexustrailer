@@ -23,9 +23,9 @@ const STATUS_TO_STEP = {
 };
 
 const NOTIF_STYLES = {
-  info:    { color: 'var(--accent)', bg: 'var(--accent-light)', border: 'rgba(224,38,26,0.25)', icon: 'bi-info-circle-fill' },
-  success: { color: 'var(--green)',  bg: '#ECFDF5',             border: '#6EE7B7',              icon: 'bi-check-circle-fill' },
-  warning: { color: '#D97706',       bg: '#FFFBEB',             border: '#FDE68A',              icon: 'bi-exclamation-triangle-fill' },
+  info:    { color: 'var(--accent)', bg: 'var(--accent-light)', border: 'rgba(193,33,25,0.25)',  icon: 'bi-info-circle-fill' },
+  success: { color: 'var(--green)',  bg: 'var(--green-light)',  border: 'rgba(26,120,64,0.3)',   icon: 'bi-check-circle-fill' },
+  warning: { color: '#D97706',       bg: '#FFFBEB',             border: '#FDE68A',               icon: 'bi-exclamation-triangle-fill' },
 };
 
 export default function TrackingPage() {
@@ -154,17 +154,17 @@ export default function TrackingPage() {
               {isTerminal ? (
                 <div style={{
                   padding: '18px 22px', borderRadius: 'var(--r-md)', marginBottom: 8,
-                  background: isCancelled ? '#FEF2F2' : '#F3F4F6',
-                  border: `1px solid ${isCancelled ? '#FECACA' : '#E5E7EB'}`,
+                  background: isCancelled ? 'var(--sale-light)' : 'var(--bg-2)',
+                  border: `1px solid ${isCancelled ? 'rgba(193,33,25,0.3)' : 'var(--border)'}`,
                   display: 'flex', gap: 12, alignItems: 'center',
                 }}>
                   <i className={`bi ${isCancelled ? 'bi-x-circle-fill' : 'bi-arrow-counterclockwise'}`}
-                     style={{ fontSize: 22, color: isCancelled ? '#DC2626' : '#6B7280', flexShrink: 0 }} />
+                     style={{ fontSize: 22, color: isCancelled ? 'var(--sale)' : 'var(--text-muted)', flexShrink: 0 }} />
                   <div>
-                    <p style={{ fontWeight: 800, color: isCancelled ? '#991B1B' : '#374151', fontSize: 14 }}>
+                    <p style={{ fontWeight: 800, color: isCancelled ? 'var(--sale)' : 'var(--text)', fontSize: 14 }}>
                       {isCancelled ? 'Bestellung storniert' : 'Bestellung rückerstattet'}
                     </p>
-                    <p style={{ fontSize: 12, color: isCancelled ? '#B91C1C' : '#6B7280', marginTop: 3 }}>
+                    <p style={{ fontSize: 12, color: isCancelled ? 'var(--accent-hover)' : 'var(--text-muted)', marginTop: 3 }}>
                       {isCancelled
                         ? 'Diese Bestellung wurde storniert. Bitte kontaktieren Sie uns bei Fragen.'
                         : 'Die Rückerstattung wurde veranlasst. Kontaktieren Sie uns bei Fragen.'}

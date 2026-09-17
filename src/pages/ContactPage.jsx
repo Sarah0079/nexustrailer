@@ -86,7 +86,7 @@ function FieldRow({ def, value, error, onChange, touched, onBlur }) {
         autoComplete={def.key === 'name' ? 'name' : def.key === 'email' ? 'email' : def.key === 'phone' ? 'tel' : 'off'}
         onChange={e => handleChange(e.target.value)}
         onBlur={onBlur}
-        style={{ borderColor: showError ? 'var(--sale)' : undefined, outline: showError ? '2px solid rgba(220,38,38,0.15)' : undefined }}
+        style={{ borderColor: showError ? 'var(--sale)' : undefined, outline: showError ? '2px solid rgba(193,33,25,0.15)' : undefined }}
       />
       {showError && (
         <p style={{ fontSize: 11, color: 'var(--sale)', display: 'flex', alignItems: 'center', gap: 4 }}>
@@ -190,7 +190,7 @@ export default function ContactPage() {
                 </h3>
 
                 {triedSubmit && Object.keys(validateContact(form)).length > 0 && (
-                  <div style={{ marginBottom: 20, padding: '12px 16px', background: '#FEF2F2', border: '1px solid #FECACA', borderRadius: 'var(--r-md)', display: 'flex', gap: 10, alignItems: 'center' }}>
+                  <div style={{ marginBottom: 20, padding: '12px 16px', background: 'var(--sale-light)', border: '1px solid rgba(193,33,25,0.3)', borderRadius: 'var(--r-md)', display: 'flex', gap: 10, alignItems: 'center' }}>
                     <i className="bi bi-exclamation-triangle-fill" style={{ color: 'var(--sale)', fontSize: 15 }} />
                     <span style={{ fontSize: 13, color: 'var(--sale)', fontWeight: 600 }}>Bitte korrigieren Sie die markierten Felder.</span>
                   </div>
@@ -234,7 +234,7 @@ export default function ContactPage() {
                     style={{
                       resize: 'vertical',
                       borderColor: (touched.message || triedSubmit) && errors.message ? 'var(--sale)' : undefined,
-                      outline: (touched.message || triedSubmit) && errors.message ? '2px solid rgba(220,38,38,0.15)' : undefined,
+                      outline: (touched.message || triedSubmit) && errors.message ? '2px solid rgba(193,33,25,0.15)' : undefined,
                     }}
                   />
                   {(touched.message || triedSubmit) && errors.message && (
@@ -245,7 +245,7 @@ export default function ContactPage() {
                 </div>
 
                 {serverError && (
-                  <div style={{ marginTop: 14, padding: '12px 16px', background: '#FEF2F2', border: '1px solid #FECACA', borderRadius: 'var(--r-md)', display: 'flex', gap: 10, alignItems: 'center' }}>
+                  <div style={{ marginTop: 14, padding: '12px 16px', background: 'var(--sale-light)', border: '1px solid rgba(193,33,25,0.3)', borderRadius: 'var(--r-md)', display: 'flex', gap: 10, alignItems: 'center' }}>
                     <i className="bi bi-exclamation-triangle-fill" style={{ color: 'var(--sale)', fontSize: 15 }} />
                     <span style={{ fontSize: 13, color: 'var(--sale)', fontWeight: 600 }}>{serverError}</span>
                   </div>

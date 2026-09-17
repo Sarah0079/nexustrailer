@@ -39,7 +39,7 @@ function Field({ field, value, error, onChange }) {
           if (field.phoneOnly)   val = val.replace(/[^0-9+\-\s()]/g, '');
           onChange(val);
         }}
-        style={{ borderColor: showError ? 'var(--sale)' : undefined, outline: showError ? '2px solid rgba(220,38,38,0.15)' : undefined }}
+        style={{ borderColor: showError ? 'var(--sale)' : undefined, outline: showError ? '2px solid rgba(193,33,25,0.15)' : undefined }}
       />
       {showError && (
         <p style={{ fontSize: 11, color: 'var(--sale)', marginTop: 4, display: 'flex', alignItems: 'center', gap: 4 }}>
@@ -161,7 +161,7 @@ export default function CheckoutPage() {
 
         {/* Erreurs de validation */}
         {triedSubmit && Object.keys(errors).length > 0 && (
-          <div style={{ marginBottom: 24, padding: '14px 18px', background: '#FEF2F2', border: '1px solid #FECACA', borderRadius: 'var(--r-md)', display: 'flex', alignItems: 'center', gap: 10 }}>
+          <div style={{ marginBottom: 24, padding: '14px 18px', background: 'var(--sale-light)', border: '1px solid rgba(193,33,25,0.3)', borderRadius: 'var(--r-md)', display: 'flex', alignItems: 'center', gap: 10 }}>
             <i className="bi bi-exclamation-triangle-fill" style={{ color: 'var(--sale)', fontSize: 16 }} />
             <span style={{ fontSize: 13, color: 'var(--sale)', fontWeight: 600 }}>
               Bitte korrigieren Sie die markierten Felder vor dem Absenden.
@@ -171,7 +171,7 @@ export default function CheckoutPage() {
 
         {/* Erreur serveur */}
         {serverError && (
-          <div style={{ marginBottom: 24, padding: '14px 18px', background: '#FEF2F2', border: '1px solid #FECACA', borderRadius: 'var(--r-md)', display: 'flex', alignItems: 'center', gap: 10 }}>
+          <div style={{ marginBottom: 24, padding: '14px 18px', background: 'var(--sale-light)', border: '1px solid rgba(193,33,25,0.3)', borderRadius: 'var(--r-md)', display: 'flex', alignItems: 'center', gap: 10 }}>
             <i className="bi bi-wifi-off" style={{ color: 'var(--sale)', fontSize: 16 }} />
             <span style={{ fontSize: 13, color: 'var(--sale)', fontWeight: 600 }}>{serverError}</span>
           </div>
@@ -252,7 +252,7 @@ export default function CheckoutPage() {
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 14, marginBottom: 18 }}>
                   {items.map(item => (
                     <div key={item.id} style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
-                      <img src={item.image} alt={item.name} style={{ width: 52, height: 52, objectFit: 'contain', padding: '4px', background: '#F0F0EE', borderRadius: 0, flexShrink: 0 }} />
+                      <img src={item.image} alt={item.name} style={{ width: 52, height: 52, objectFit: 'contain', padding: '4px', background: '#EDECE9', borderRadius: 0, flexShrink: 0 }} />
                       <div style={{ flex: 1, minWidth: 0 }}>
                         <p style={{ fontSize: 13, fontWeight: 700, color: 'var(--dark)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{item.name}</p>
                         <p style={{ fontSize: 12, color: 'var(--text-muted)' }}>× {item.qty}</p>

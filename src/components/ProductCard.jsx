@@ -38,7 +38,7 @@ export default function ProductCard({ product }) {
       }}
     >
       {/* Image */}
-      <div style={{ position: 'relative', aspectRatio: '4/3', overflow: 'hidden', background: '#F0F0EE' }}>
+      <div style={{ position: 'relative', aspectRatio: '4/3', overflow: 'hidden', background: '#EDECE9' }}>
         <img
           src={product.image} alt={product.name} loading="lazy"
           style={{
@@ -73,14 +73,14 @@ export default function ProductCard({ product }) {
           }}
         >
           <i className={`bi bi-heart${isWished ? '-fill' : ''}`}
-            style={{ fontSize: 14, color: isWished ? '#E63946' : '#94A3B8' }} />
+            style={{ fontSize: 14, color: isWished ? 'var(--accent)' : '#9A9A9A' }} />
         </button>
 
         {/* hover overlay CTA */}
         <div style={{
           position: 'absolute', bottom: 0, left: 0, right: 0,
           padding: '28px 16px 14px',
-          background: 'linear-gradient(to top, rgba(15,23,42,0.7) 0%, transparent 100%)',
+          background: 'linear-gradient(to top, rgba(0,0,0,0.65) 0%, transparent 100%)',
           opacity: hovered ? 1 : 0, transition: 'opacity 0.3s',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
         }}>
