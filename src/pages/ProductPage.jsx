@@ -13,19 +13,6 @@ const TRUST_ITEMS = [
   { icon: 'bi-shield-lock', text: 'Garantiert sicherer Checkout.' },
 ];
 
-function Stars({ rating, reviews }) {
-  return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-      <span style={{ display: 'flex', gap: 2 }}>
-        {[1,2,3,4,5].map(i => (
-          <i key={i} className={`bi bi-star${i <= Math.round(rating) ? '-fill' : ''}`}
-             style={{ color: i <= Math.round(rating) ? '#F59E0B' : '#E2E8F0', fontSize: 15 }} />
-        ))}
-      </span>
-      <span style={{ fontSize: 12, color: 'var(--text-muted)' }}>({reviews} Bewertungen)</span>
-    </div>
-  );
-}
 
 export default function ProductPage() {
   const { slug } = useParams();
@@ -139,17 +126,20 @@ export default function ProductPage() {
             </div>
 
             {/* Stock */}
-            <span style={{ background: '#ECFDF5', color: '#065F46', border: '1px solid #6EE7B7', borderRadius: 0, padding: '4px 12px', fontSize: 12, fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: 5, marginBottom: 16 }}>
-              <i className="bi bi-check-circle-fill" style={{ fontSize: 10 }} /> AUF LAGER
-            </span>
+            {product.stock !== undefined && (
+              <span style={product.stock > 0
+                ? { background: '#ECFDF5', color: '#065F46', border: '1px solid #6EE7B7', borderRadius: 0, padding: '4px 12px', fontSize: 12, fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: 5, marginBottom: 16 }
+                : { background: '#FEF2F2', color: '#991B1B', border: '1px solid #FECACA', borderRadius: 0, padding: '4px 12px', fontSize: 12, fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: 5, marginBottom: 16 }
+              }>
+                <i className={`bi ${product.stock > 0 ? 'bi-check-circle-fill' : 'bi-x-circle-fill'}`} style={{ fontSize: 10 }} />
+                {product.stock > 0 ? 'AUF LAGER' : 'NICHT VERFÜGBAR'}
+              </span>
+            )}
 
             {/* Short description */}
             <p style={{ fontSize: 14, color: 'var(--text-muted)', lineHeight: 1.7, marginBottom: 16 }}>
               {product.description}
             </p>
-
-            {/* Stars */}
-            {product.reviews > 0 && <div style={{ marginBottom: 20 }}><Stars rating={product.rating} reviews={product.reviews} /></div>}
 
             {/* Qty + Cart */}
             <div style={{ display: 'flex', gap: 10, marginBottom: 12, alignItems: 'center' }}>

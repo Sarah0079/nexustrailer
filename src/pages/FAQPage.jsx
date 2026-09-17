@@ -16,13 +16,13 @@ const FAQS = [
     items: [
       { q: 'Welche Zahlungsmethoden akzeptieren Sie?', a: 'Wir akzeptieren ausschließlich SEPA-Banküberweisung und SEPA-Echtzeitüberweisung. Sie können die gesamte Summe oder eine Anzahlung von 50 % leisten – der Restbetrag ist vor dem Versand fällig.' },
       { q: 'Kann ich in zwei Raten zahlen?', a: 'Ja, wir bieten eine Zahlung in zwei Raten an: 50 % Anzahlung bei Bestellung, der Restbetrag vor dem Versand Ihres Artikels.' },
-      { q: 'Wozu dient meine Zahlungsreferenz?', a: 'Die Bestellreferenz (Format ALT-JJJJ-XXXXXX) muss zwingend als Verwendungszweck Ihrer Überweisung angegeben werden. So können wir Ihre Zahlung schnell zuordnen und Ihre Bestellung ohne Verzögerung bearbeiten.' },
+      { q: 'Wozu dient meine Zahlungsreferenz?', a: 'Die Bestellreferenz (Format NXT-JJJJ-XXXXXX) muss zwingend als Verwendungszweck Ihrer Überweisung angegeben werden. So können wir Ihre Zahlung schnell zuordnen und Ihre Bestellung ohne Verzögerung bearbeiten.' },
     ],
   },
   {
     cat: 'Bestellung & Verfolgung',
     items: [
-      { q: 'Wie verfolge ich meine Bestellung?', a: 'Gehen Sie zur Seite „Auftragsverfolgung" und geben Sie Ihre Bestellnummer (Format ALT-JJJJ-XXXXXX) ein, um den aktuellen Status einzusehen.' },
+      { q: 'Wie verfolge ich meine Bestellung?', a: 'Gehen Sie zur Seite „Auftragsverfolgung" und geben Sie Ihre Bestellnummer (Format NXT-JJJJ-XXXXXX) ein, um den aktuellen Status einzusehen.' },
       { q: 'Kann ich meine Bestellung ändern oder stornieren?', a: 'Sie können Ihre Bestellung ändern oder stornieren, solange sie noch nicht versandt wurde. Kontaktieren Sie uns schnellstmöglich per E-Mail oder Telefon.' },
       { q: 'Was tun, wenn meine Bestellung nicht ankommt?', a: 'Prüfen Sie zunächst den Bestellstatus auf unserer Website. Falls sich der Status seit mehr als 5 Werktagen nicht verändert hat, kontaktieren Sie unseren Kundendienst mit Ihrer Bestellnummer.' },
     ],

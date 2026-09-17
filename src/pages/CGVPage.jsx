@@ -40,7 +40,7 @@ export default function CGVPage() {
 
         <Section title="Bestellung">
           <p>
-            Die Bestellung gilt als bestätigt, sobald die Zahlung (Anzahlung oder Gesamtbetrag) eingegangen ist. Der Kunde erhält eine eindeutige Bestellnummer (Format ALT-JJJJ-XXXXXX) zur Zahlungsreferenz und Sendungsverfolgung.
+            Die Bestellung gilt als bestätigt, sobald die Zahlung (Anzahlung oder Gesamtbetrag) eingegangen ist. Der Kunde erhält eine eindeutige Bestellnummer (Format NXT-JJJJ-XXXXXX) zur Zahlungsreferenz und Sendungsverfolgung.
           </p>
         </Section>
 

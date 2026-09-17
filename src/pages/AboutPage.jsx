@@ -2,10 +2,10 @@ import { Link } from 'react-router-dom';
 import { useBreakpoint } from '../hooks/useBreakpoint';
 
 const STATS = [
-  { n: '1.000+', l: 'Kunden europaweit' },
-  { n: '200+',   l: 'Produkte auf Lager' },
-  { n: '2–3',    l: 'Tage Lieferzeit (DE)' },
-  { n: '100%',   l: 'TÜV-geprüft' },
+  { n: '5–7',     l: 'Werktage Lieferzeit (DE)' },
+  { n: '30 Tage', l: 'Rückgaberecht' },
+  { n: '2 Jahre', l: 'Herstellergarantie' },
+  { n: 'COC',     l: 'Zertifiziert (alle Wohnwagen)' },
 ];
 
 const VALUES = [
@@ -118,7 +118,7 @@ export default function AboutPage() {
               Durch den Direktimport von geprüften Herstellern können wir Preise anbieten, die kein lokaler Händler erreicht. Gleichzeitig stehen wir für persönlichen Service: Jede Bestellung wird von unserem Team individuell begleitet.
             </p>
             <p style={{ fontSize: 15, color: 'var(--text-muted)', lineHeight: 1.8 }}>
-              Heute zählen wir über 1.000 zufriedene Kunden aus Deutschland, Frankreich, Österreich und der Schweiz — und wachsen weiter.
+              Unser Kundenstamm reicht von Privatpersonen bis zu Unternehmen in Deutschland, Frankreich, Österreich und der Schweiz — mit persönlichem Service von Anfang bis Ende.
             </p>
           </div>
         </div>
@@ -201,11 +201,11 @@ export default function AboutPage() {
           }}>
             {[
               ['Firmenname', 'LA REMORQUE M'],
-              ['Rechtsform', 'Société par Actions Simplifiée (SAS)'],
+              ['Rechtsform', 'Einzelunternehmen (Frankreich)'],
               ['SIREN', '948 418 827'],
               ['Hauptsitz', '21 Rue du Bouchet, 63350 Maringues, Frankreich'],
-              ['E-Mail', 'info@nexustrailer.de'],
-              ['Website', 'nexustrailer.de'],
+              ['E-Mail', 'info@nexustrailer.com'],
+              ['Website', 'nexustrailer.com'],
             ].map(([label, value]) => (
               <div key={label} style={{ background: 'var(--white)', padding: '16px 20px' }}>
                 <div style={{ fontSize: 11, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.07em', color: 'var(--text-muted)', marginBottom: 4 }}>

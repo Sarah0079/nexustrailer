@@ -127,6 +127,7 @@ export default function ContactPage() {
       await sendContact({
         name:    form.name.trim(),
         email:   form.email.trim(),
+        phone:   form.phone.trim() || undefined,
         subject: form.subject,
         message: form.message.trim(),
       });

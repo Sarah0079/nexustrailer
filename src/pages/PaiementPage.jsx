@@ -63,7 +63,7 @@ export default function PaiementPage() {
           <div style={{ background: '#FEF3C7', border: '1.5px solid #F59E0B', borderRadius: 'var(--r-md)', padding: '14px 20px', display: 'flex', gap: 12, alignItems: 'flex-start', marginBottom: 12 }}>
             <i className="bi bi-exclamation-triangle-fill" style={{ color: '#D97706', fontSize: 18, flexShrink: 0, marginTop: 2 }} />
             <p style={{ fontSize: 13, color: '#92400E', lineHeight: 1.7 }}>
-              <strong>Wichtig:</strong> Ihre Bestellnummer (Format ALT-JJJJ-XXXXXX) muss zwingend als Verwendungszweck der Überweisung angegeben werden. Ohne diese Referenz kann Ihre Zahlung nicht zugeordnet werden und die Bearbeitung verzögert sich.
+              <strong>Wichtig:</strong> Ihre Bestellnummer (Format NXT-JJJJ-XXXXXX) muss zwingend als Verwendungszweck der Überweisung angegeben werden. Ohne diese Referenz kann Ihre Zahlung nicht zugeordnet werden und die Bearbeitung verzögert sich.
             </p>
           </div>
           <p>

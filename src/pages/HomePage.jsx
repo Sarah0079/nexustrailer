@@ -1,6 +1,6 @@
 import { useMemo, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { PRODUCTS, CATEGORIES, TESTIMONIALS } from '../data/products';
+import { PRODUCTS, CATEGORIES } from '../data/products';
 import ProductCard from '../components/ProductCard';
 import { useBreakpoint } from '../hooks/useBreakpoint';
 
@@ -11,12 +11,6 @@ const FEATURES = [
   { icon: 'bi-patch-check',   title: 'COC-zertifiziert',      desc: 'Alle Wohnwagen mit EU-Übereinstimmungszertifikat für die direkte Zulassung.' },
 ];
 
-const STATS = [
-  ['1.000+', 'Zufriedene Kunden'],
-  ['200+',   'Produkte auf Lager'],
-  ['4,8★',   'Durchschnittsbewertung'],
-  ['2–3',    'Werktage Lieferzeit'],
-];
 
 const FAQ_PREVIEW = [
   { q: 'Wie lange dauert die Lieferung?',   a: 'Standardlieferung in 5–7 Werktagen nach Zahlungsbestätigung. Express in 1–3 Werktagen auf Anfrage.' },
@@ -168,7 +162,7 @@ export default function HomePage() {
             <div>
               <p style={{ fontSize: 11.5, fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.12em', marginBottom: 14 }}>Über uns</p>
               <h2 style={{ fontSize: 'clamp(22px, 2.8vw, 36px)', fontWeight: 900, color: 'var(--dark)', letterSpacing: '-0.025em', marginBottom: 20, lineHeight: 1.1 }}>
-                Ihr Spezialist für Wohnwagen & Anhänger seit 2015
+                Ihr Spezialist für Wohnwagen & Anhänger
               </h2>
               <p style={{ fontSize: 15, color: 'var(--text-muted)', lineHeight: 1.82, marginBottom: 16 }}>
                 NexusTrailer wurde mit einem klaren Ziel gegründet: Hochwertige Wohnwagen und Anhänger für Privatpersonen und Unternehmen in ganz Europa zugänglich zu machen – zu fairen Preisen, mit transparentem Service.
@@ -181,7 +175,12 @@ export default function HomePage() {
               </Link>
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', overflow: 'hidden', border: '1px solid var(--border)' }}>
-              {STATS.map(([n, l], i) => (
+              {[
+                [PRODUCTS.length + '+', 'Produkte im Katalog'],
+                ['5–7',                 'Werktage Lieferzeit'],
+                ['30 Tage',             'Rückgaberecht'],
+                ['2 Jahre',             'Herstellergarantie'],
+              ].map(([n, l], i) => (
                 <div key={l} style={{
                   padding: '32px 20px', textAlign: 'center',
                   background: i % 2 === 0 ? 'white' : 'var(--bg)',
@@ -193,40 +192,6 @@ export default function HomePage() {
                 </div>
               ))}
             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ── Kundenmeinungen ── */}
-      <section className="section" style={{ background: 'var(--bg)' }}>
-        <div className="container">
-          <div style={{ textAlign: 'center', marginBottom: 48 }}>
-            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 6, marginBottom: 16 }}>
-              <div style={{ display: 'flex', gap: 2 }}>
-                {[...Array(5)].map((_, i) => <i key={i} className="bi bi-star-fill" style={{ color: '#f59e0b', fontSize: 14 }} />)}
-              </div>
-              <span style={{ fontSize: 13, color: 'var(--text-muted)', fontWeight: 500 }}>4,8 / 5 · über 1.000 Bewertungen</span>
-            </div>
-            <h2 style={{ fontSize: 28, fontWeight: 900, color: 'var(--dark)', letterSpacing: '-0.025em' }}>Das sagen unsere Kunden</h2>
-          </div>
-          <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(3, 1fr)', gap: 20 }}>
-            {TESTIMONIALS.map(({ name, role, rating, text }) => (
-              <div key={name} style={{ background: 'white', padding: '28px 26px', border: '1px solid var(--border)', display: 'flex', flexDirection: 'column' }}>
-                <div style={{ display: 'flex', gap: 2, marginBottom: 16 }}>
-                  {[...Array(rating)].map((_, i) => <i key={i} className="bi bi-star-fill" style={{ color: '#f59e0b', fontSize: 12 }} />)}
-                </div>
-                <p style={{ fontSize: 14, color: 'var(--text)', lineHeight: 1.8, flex: 1, fontStyle: 'italic' }}>„{text}"</p>
-                <div style={{ marginTop: 20, paddingTop: 16, borderTop: '1px solid var(--border)', display: 'flex', alignItems: 'center', gap: 10 }}>
-                  <div style={{ width: 34, height: 34, background: 'var(--dark)', border: 'none', borderRadius: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, fontSize: 13, fontWeight: 700, color: 'white' }}>
-                    {name.charAt(0)}
-                  </div>
-                  <div>
-                    <p style={{ fontSize: 13.5, fontWeight: 700, color: 'var(--dark)' }}>{name}</p>
-                    <p style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 1 }}>{role}</p>
-                  </div>
-                </div>
-              </div>
-            ))}
           </div>
         </div>
       </section>
@@ -320,9 +285,6 @@ export default function HomePage() {
       <section style={{ background: 'var(--dark)', padding: '80px 0', position: 'relative', overflow: 'hidden' }}>
         <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse 60% 80% at 80% 50%, rgba(224,38,26,0.10) 0%, transparent 70%)', pointerEvents: 'none' }} />
         <div className="container" style={{ textAlign: 'center', position: 'relative' }}>
-          <p style={{ fontSize: 11.5, fontWeight: 600, color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', letterSpacing: '0.14em', marginBottom: 20 }}>
-            Über 1.000 zufriedene Kunden
-          </p>
           <h2 style={{ fontSize: 'clamp(22px, 3vw, 36px)', fontWeight: 900, color: 'white', letterSpacing: '-0.025em', marginBottom: 16, lineHeight: 1.1 }}>
             Bereit für Ihren neuen Wohnwagen?
           </h2>

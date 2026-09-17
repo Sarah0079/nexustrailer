@@ -129,7 +129,7 @@ img { max-width: 100%; display: block; }
 ::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 3px; }
 
 /* ── Utilities ───────────────────────────── */
-.container { max-width: 1280px; margin: 0 auto; padding: 0 4px; }
+.container { max-width: 1280px; margin: 0 auto; padding: 0 24px; }
 .section { padding: 64px 0; }
 .section-sm { padding: 40px 0; }
 
