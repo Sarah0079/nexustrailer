@@ -49,13 +49,13 @@ const FAQS = [
 function Item({ q, a }) {
   const [open, setOpen] = useState(false);
   return (
-    <div style={{ borderBottom: '1px solid var(--border)' }}>
+    <div style={{ borderTop: '1px solid var(--border)' }}>
       <button onClick={() => setOpen(o => !o)}
         style={{ width: '100%', textAlign: 'left', padding: '18px 0', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 16, background: 'none', border: 'none', cursor: 'pointer' }}>
         <span style={{ fontSize: 15, fontWeight: 600, color: 'var(--dark)', lineHeight: 1.4 }}>{q}</span>
-        <i className={`bi bi-chevron-${open ? 'up' : 'down'}`} style={{ fontSize: 14, color: 'var(--accent)', flexShrink: 0 }} />
+        <span style={{ fontSize: 22, fontWeight: 300, color: 'var(--accent)', flexShrink: 0, lineHeight: 1, userSelect: 'none' }}>{open ? '−' : '+'}</span>
       </button>
-      {open && <p style={{ fontSize: 14, color: 'var(--text-muted)', lineHeight: 1.8, paddingBottom: 18 }}>{a}</p>}
+      {open && <p style={{ fontSize: 14, color: 'var(--text-muted)', lineHeight: 1.8, paddingBottom: 20 }}>{a}</p>}
     </div>
   );
 }
@@ -63,28 +63,30 @@ function Item({ q, a }) {
 export default function FAQPage() {
   return (
     <main>
-      <div style={{ background: 'var(--dark)', padding: '56px 0 48px' }}>
+      <div style={{ background: 'var(--dark)', padding: '56px 0 48px', borderBottom: '3px solid var(--accent)' }}>
         <div className="container">
-          <p style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--accent)', marginBottom: 8 }}>HILFE</p>
+          <p style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.12em', color: 'var(--accent)', marginBottom: 8 }}>HILFE</p>
           <h1 style={{ fontSize: 'clamp(26px, 4vw, 44px)', fontWeight: 900, color: 'white', letterSpacing: '-0.02em' }}>Häufig gestellte Fragen</h1>
-          <p style={{ color: 'rgba(255,255,255,0.5)', marginTop: 12, fontSize: 15 }}>Alles, was Sie vor Ihrer Bestellung wissen müssen.</p>
+          <p style={{ color: 'rgba(255,255,255,0.55)', marginTop: 12, fontSize: 15 }}>Alles, was Sie vor Ihrer Bestellung wissen müssen.</p>
         </div>
       </div>
 
-      <div className="container" style={{ padding: '56px 24px 80px', maxWidth: 800 }}>
+      <div className="container" style={{ padding: '56px 24px 80px', maxWidth: 900 }}>
         {FAQS.map(({ cat, items }) => (
           <div key={cat} style={{ marginBottom: 48 }}>
-            <h2 style={{ fontSize: 13, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--accent)', marginBottom: 4 }}>{cat}</h2>
-            <div>{items.map(({ q, a }) => <Item key={q} q={q} a={a} />)}</div>
+            <p style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.12em', color: 'var(--accent)', marginBottom: 4 }}>{cat}</p>
+            <div style={{ borderBottom: '1px solid var(--border)' }}>
+              {items.map(({ q, a }) => <Item key={q} q={q} a={a} />)}
+            </div>
           </div>
         ))}
 
-        <div style={{ background: 'var(--dark)', borderRadius: 'var(--r-xl)', padding: '32px 40px', display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: 20, marginTop: 16 }}>
+        <div style={{ background: 'var(--dark)', borderTop: '3px solid var(--accent)', padding: '32px 40px', display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: 20, marginTop: 16 }}>
           <div>
             <h3 style={{ fontSize: 18, fontWeight: 800, color: 'white', marginBottom: 6 }}>Keine passende Antwort gefunden?</h3>
-            <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.5)' }}>Unser Team antwortet innerhalb von 24 Stunden.</p>
+            <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.55)' }}>Unser Team antwortet innerhalb von 24 Stunden.</p>
           </div>
-          <Link to="/kontakt" className="btn btn-accent"><i className="bi bi-chat-dots" /> Kontakt aufnehmen</Link>
+          <Link to="/kontakt" className="btn btn-primary"><i className="bi bi-chat-dots" /> Kontakt aufnehmen</Link>
         </div>
       </div>
     </main>

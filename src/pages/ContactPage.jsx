@@ -146,13 +146,13 @@ export default function ContactPage() {
 
   return (
     <main>
-      <div style={{ background: 'var(--dark)', padding: isMobile ? '36px 0 32px' : '56px 0 48px' }}>
+      <div style={{ background: 'var(--dark)', padding: isMobile ? '36px 0 32px' : '56px 0 48px', borderBottom: '3px solid var(--accent)' }}>
         <div className="container">
-          <p style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--accent)', marginBottom: 8 }}>KONTAKT</p>
+          <p style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.12em', color: 'var(--accent)', marginBottom: 8 }}>KONTAKT</p>
           <h1 style={{ fontSize: 'clamp(26px, 4vw, 44px)', fontWeight: 900, color: 'white', letterSpacing: '-0.02em' }}>
             Sprechen Sie mit unserem Team
           </h1>
-          <p style={{ color: 'rgba(255,255,255,0.5)', marginTop: 12, fontSize: 15 }}>
+          <p style={{ color: 'rgba(255,255,255,0.55)', marginTop: 12, fontSize: 15 }}>
             Wir antworten innerhalb von 24 Stunden.
           </p>
         </div>
@@ -165,12 +165,10 @@ export default function ContactPage() {
           <div>
             <h2 style={{ fontSize: 18, fontWeight: 700, marginBottom: 24 }}>Kontaktinformationen</h2>
             {CONTACT_INFO.map(({ icon, label, val }) => (
-              <div key={label} style={{ display: 'flex', gap: 14, padding: '16px 0', borderBottom: '1px solid var(--border)' }}>
-                <div style={{ width: 40, height: 40, borderRadius: 0, background: 'var(--accent-light)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                  <i className={`bi ${icon}`} style={{ fontSize: 18, color: 'var(--accent)' }} />
-                </div>
+              <div key={label} style={{ display: 'flex', gap: 16, padding: '18px 0', borderTop: '1px solid var(--border)', alignItems: 'flex-start' }}>
+                <i className={`bi ${icon}`} style={{ fontSize: 20, color: 'var(--dark)', flexShrink: 0, marginTop: 1 }} />
                 <div>
-                  <p style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', color: 'var(--text-muted)', marginBottom: 4 }}>{label}</p>
+                  <p style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)', marginBottom: 4 }}>{label}</p>
                   <p style={{ fontSize: 14, fontWeight: 600, color: 'var(--dark)', whiteSpace: 'pre-line', lineHeight: 1.6 }}>{val}</p>
                 </div>
               </div>
@@ -178,7 +176,7 @@ export default function ContactPage() {
           </div>
 
           {/* Formular */}
-          <div style={{ background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: 'var(--r-lg)', padding: isMobile ? 20 : 36 }}>
+          <div style={{ background: 'white', border: '1px solid var(--border)', padding: isMobile ? 20 : 36 }}>
             {sent ? (
               <div style={{ textAlign: 'center', padding: '40px 0' }}>
                 <i className="bi bi-check-circle-fill" style={{ fontSize: 56, color: 'var(--green)', display: 'block', marginBottom: 16 }} />

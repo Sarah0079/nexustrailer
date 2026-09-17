@@ -114,9 +114,9 @@ export default function AngebotPage() {
   return (
     <main>
       {/* Header */}
-      <div style={{ background: 'var(--dark)', padding: '56px 0 48px' }}>
+      <div style={{ background: 'var(--dark)', padding: '56px 0 48px', borderBottom: '3px solid var(--accent)' }}>
         <div className="container">
-          <p style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--accent)', marginBottom: 8 }}>PROFIS & UNTERNEHMEN</p>
+          <p style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.12em', color: 'var(--accent)', marginBottom: 8 }}>PROFIS & UNTERNEHMEN</p>
           <h1 style={{ fontSize: 'clamp(28px, 4vw, 48px)', fontWeight: 900, color: 'white', letterSpacing: '-0.02em', marginBottom: 12 }}>
             Angebot anfragen
           </h1>
@@ -131,6 +131,7 @@ export default function AngebotPage() {
 
           {/* Left — Vorteile */}
           <div>
+            <p style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.12em', color: 'var(--accent)', marginBottom: 8 }}>VORTEILE</p>
             <h2 style={{ fontSize: 18, fontWeight: 800, color: 'var(--dark)', marginBottom: 24 }}>Vorteile für Profis</h2>
             {[
               { icon: 'bi-percent', title: 'Mengenrabatte', desc: 'Ab 2 Einheiten erhalten Sie Sonderkonditionen.' },
@@ -139,12 +140,10 @@ export default function AngebotPage() {
               { icon: 'bi-file-earmark-text', title: 'Sammelrechnung', desc: 'Monatsrechnung möglich für regelmäßige Besteller.' },
               { icon: 'bi-tools', title: 'After-Sales Support', desc: 'Technischer Support und Ersatzteile auf Anfrage.' },
             ].map(({ icon, title, desc }) => (
-              <div key={title} style={{ display: 'flex', gap: 14, marginBottom: 20 }}>
-                <div style={{ width: 38, height: 38, background: 'var(--accent-light)', borderRadius: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                  <i className={`bi ${icon}`} style={{ color: 'var(--accent)', fontSize: 16 }} />
-                </div>
+              <div key={title} style={{ display: 'flex', gap: 16, padding: '16px 0', borderTop: '1px solid var(--border)', alignItems: 'flex-start' }}>
+                <i className={`bi ${icon}`} style={{ fontSize: 18, color: 'var(--dark)', flexShrink: 0, marginTop: 2 }} />
                 <div>
-                  <p style={{ fontWeight: 700, fontSize: 14, color: 'var(--dark)', marginBottom: 2 }}>{title}</p>
+                  <p style={{ fontWeight: 700, fontSize: 14, color: 'var(--dark)', marginBottom: 3 }}>{title}</p>
                   <p style={{ fontSize: 13, color: 'var(--text-muted)', lineHeight: 1.55 }}>{desc}</p>
                 </div>
               </div>
@@ -286,7 +285,7 @@ export default function AngebotPage() {
                     <i className="bi bi-exclamation-circle" /> Bitte stimmen Sie der Datenschutzerklärung zu.
                   </p>
                 )}
-                <button type="submit" className="btn btn-accent btn-lg" disabled={loading} style={{ width: '100%', justifyContent: 'center', opacity: loading ? 0.75 : 1 }}>
+                <button type="submit" className="btn btn-primary btn-lg" disabled={loading} style={{ width: '100%', justifyContent: 'center', opacity: loading ? 0.75 : 1 }}>
                   {loading
                     ? <><i className="bi bi-hourglass-split" /> Wird gesendet…</>
                     : <><i className="bi bi-send" /> Angebot anfragen</>

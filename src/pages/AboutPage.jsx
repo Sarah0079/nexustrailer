@@ -6,7 +6,6 @@ const STATS = [
   { n: '5–7',     l: 'Werktage Lieferzeit (DE)' },
   { n: '30 Tage', l: 'Rückgaberecht' },
   { n: '2 Jahre', l: 'Herstellergarantie' },
-  { n: 'COC',     l: 'Zertifiziert (alle Wohnwagen)' },
 ];
 
 const VALUES = [
@@ -79,14 +78,14 @@ export default function AboutPage() {
         <div className="container" style={{ maxWidth: 900 }}>
           <div style={{
             display: 'grid',
-            gridTemplateColumns: isMobile ? '1fr 1fr' : 'repeat(4, 1fr)',
+            gridTemplateColumns: isMobile ? '1fr 1fr' : 'repeat(3, 1fr)',
           }}>
             {STATS.map(({ n, l }, i) => (
               <div key={l} style={{
                 padding: isMobile ? '24px 16px' : '28px 0',
                 textAlign: 'center',
-                borderRight: (!isMobile && i < 3) ? '1px solid var(--border)' : 'none',
-                borderBottom: (isMobile && i < 2) ? '1px solid var(--border)' : 'none',
+                borderRight: (!isMobile && i < 2) ? '1px solid var(--border)' : 'none',
+                borderBottom: (isMobile && i < 1) ? '1px solid var(--border)' : 'none',
               }}>
                 <div style={{ fontSize: isMobile ? 28 : 34, fontWeight: 900, color: 'var(--dark)', letterSpacing: '-0.03em', lineHeight: 1 }}>
                   {n}
@@ -142,40 +141,25 @@ export default function AboutPage() {
         <div style={{
           display: 'grid',
           gridTemplateColumns: isMobile ? '1fr' : isTablet ? '1fr 1fr' : 'repeat(3, 1fr)',
-          gap: 0,
-          border: '1px solid var(--border)',
+          gap: isMobile ? 0 : '0 48px',
         }}>
-          {VALUES.map(({ icon, title, text }, i) => {
-            const cols = isMobile ? 1 : isTablet ? 2 : 3;
-            const row = Math.floor(i / cols);
-            const col = i % cols;
-            const totalRows = Math.ceil(VALUES.length / cols);
-            const isLastRow = row === totalRows - 1;
-            const isLastCol = col === cols - 1;
-
-            return (
-              <div key={title} style={{
-                padding: '28px 28px',
-                borderRight: isLastCol ? 'none' : '1px solid var(--border)',
-                borderBottom: isLastRow ? 'none' : '1px solid var(--border)',
-              }}>
-                <div style={{
-                  width: 36, height: 36,
-                  background: 'var(--accent-light)',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  marginBottom: 16,
-                }}>
-                  <i className={`bi ${icon}`} style={{ fontSize: 17, color: 'var(--accent)' }} />
-                </div>
-                <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--dark)', marginBottom: 8 }}>
+          {VALUES.map(({ icon, title, text }) => (
+            <div key={title} style={{
+              padding: '22px 0',
+              borderTop: '1px solid var(--border)',
+              display: 'flex', gap: 16, alignItems: 'flex-start',
+            }}>
+              <i className={`bi ${icon}`} style={{ fontSize: 20, color: 'var(--dark)', flexShrink: 0, marginTop: 2 }} />
+              <div>
+                <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--dark)', marginBottom: 6 }}>
                   {title}
                 </div>
                 <p style={{ fontSize: 13, color: 'var(--text-muted)', lineHeight: 1.7 }}>
                   {text}
                 </p>
               </div>
-            );
-          })}
+            </div>
+          ))}
         </div>
       </div>
 
