@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { fmtEur } from '../utils/fmt';
 import { useCart } from '../context/CartContext';
 import { createOrder } from '../api/client';
 import { useBreakpoint } from '../hooks/useBreakpoint';
@@ -86,7 +87,7 @@ export default function CheckoutPage() {
   const [dsgvo, setDsgvo] = useState(false);
   const [dsgvoError, setDsgvoError] = useState(false);
 
-  const fmt = (n) => n.toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' €';
+  const fmt = fmtEur;
   const shipping = 0;
   const grand = total + shipping;
   const setField = (k) => (val) => setForm(f => ({ ...f, [k]: val }));

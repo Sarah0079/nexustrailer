@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
+import { fmtEur } from '../utils/fmt';
 import { PRODUCTS } from '../data/products';
 import { useCart } from '../context/CartContext';
 import { useWishlist } from '../context/WishlistContext';
@@ -33,7 +34,7 @@ export default function ProductPage() {
     </div>
   );
 
-  const fmt = (n) => n.toLocaleString('de-DE', { minimumFractionDigits: 2 }) + ' €';
+  const fmt = fmtEur;
   const images = product.images?.length ? product.images : [product.image];
   const related = PRODUCTS.filter(p => p.category === product.category && p.id !== product.id).slice(0, 4);
   const isWished = has(product.id);

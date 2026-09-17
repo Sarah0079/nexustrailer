@@ -58,7 +58,7 @@ function LoginView({ onLogin }) {
           <p style={{ fontSize: 13, color: 'var(--text-muted)', marginTop: 4 }}>NexusTrailer</p>
         </div>
         {error && (
-          <div style={{ background: '#FEF2F2', border: '1px solid #FECACA', borderRadius: 4, padding: '10px 14px', marginBottom: 16, fontSize: 13, color: 'var(--sale)' }}>
+          <div style={{ background: '#FEF2F2', border: '1px solid #FECACA', borderRadius: 0, padding: '10px 14px', marginBottom: 16, fontSize: 13, color: 'var(--sale)' }}>
             <i className="bi bi-exclamation-circle" style={{ marginRight: 6 }} />{error}
           </div>
         )}
@@ -231,7 +231,7 @@ function OrdersTab() {
                 ))}
               </div>
               {detail.customer_note && (
-                <div style={{ marginTop: 10, padding: '8px 10px', background: 'var(--bg)', borderRadius: 4, fontSize: 12, color: 'var(--text-muted)' }}>
+                <div style={{ marginTop: 10, padding: '8px 10px', background: 'var(--bg)', borderRadius: 0, fontSize: 12, color: 'var(--text-muted)' }}>
                   <strong>Hinweis:</strong> {detail.customer_note}
                 </div>
               )}
@@ -281,7 +281,7 @@ function OrdersTab() {
               <div style={{ background: 'white', border: '1px solid var(--border)', borderRadius: 'var(--r-lg)', padding: 18 }}>
                 <p style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '.07em', marginBottom: 10 }}>Zahlungen</p>
                 {detail.payments.map(p => (
-                  <div key={p.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8, padding: '8px 10px', background: 'var(--bg)', borderRadius: 4, marginBottom: 6 }}>
+                  <div key={p.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8, padding: '8px 10px', background: 'var(--bg)', borderRadius: 0, marginBottom: 6 }}>
                     <div style={{ fontSize: 12 }}>
                       <span style={{ fontWeight: 700, color: 'var(--dark)' }}>{fmtEur(p.amount)}</span>
                       <span style={{ color: 'var(--text-muted)', marginLeft: 6 }}>{p.payment_type === 'deposit' ? 'Anzahlung' : 'Vollzahlung'}</span>
@@ -316,7 +316,7 @@ function OrdersTab() {
               ) : (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                   {detail.notifications.map(n => (
-                    <div key={n.id} style={{ display: 'flex', alignItems: 'flex-start', gap: 8, padding: '8px 10px', background: 'var(--bg)', borderRadius: 4, fontSize: 12 }}>
+                    <div key={n.id} style={{ display: 'flex', alignItems: 'flex-start', gap: 8, padding: '8px 10px', background: 'var(--bg)', borderRadius: 0, fontSize: 12 }}>
                       <div style={{ flex: 1 }}>
                         <p style={{ color: 'var(--dark)', fontWeight: 600 }}>{n.message}</p>
                         <p style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 2 }}>{n.type} · {fmtDate(n.created_at)}</p>
@@ -504,7 +504,7 @@ function AngeboteTab() {
                   </div>
                 ))}
               </div>
-              <div style={{ background: 'var(--bg)', borderRadius: 4, padding: '10px 12px', fontSize: 13, color: 'var(--dark)', lineHeight: 1.6, whiteSpace: 'pre-wrap' }}>
+              <div style={{ background: 'var(--bg)', borderRadius: 0, padding: '10px 12px', fontSize: 13, color: 'var(--dark)', lineHeight: 1.6, whiteSpace: 'pre-wrap' }}>
                 {detail.message}
               </div>
             </div>
@@ -582,8 +582,8 @@ function SettingsTab() {
       ) : (
         <form onSubmit={handleSubmit}>
           <div style={{ background: 'white', border: '1px solid var(--border)', borderRadius: 'var(--r-lg)', padding: 28, display: 'flex', flexDirection: 'column', gap: 20 }}>
-            {error   && <div style={{ background: '#FEF2F2', border: '1px solid #FECACA', borderRadius: 4, padding: '10px 14px', fontSize: 13, color: '#991B1B' }}>{error}</div>}
-            {success && <div style={{ background: '#ECFDF5', border: '1px solid #6EE7B7', borderRadius: 4, padding: '10px 14px', fontSize: 13, color: '#065F46' }}><i className="bi bi-check-circle" style={{ marginRight: 6 }} />{success}</div>}
+            {error   && <div style={{ background: '#FEF2F2', border: '1px solid #FECACA', borderRadius: 0, padding: '10px 14px', fontSize: 13, color: '#991B1B' }}>{error}</div>}
+            {success && <div style={{ background: '#ECFDF5', border: '1px solid #6EE7B7', borderRadius: 0, padding: '10px 14px', fontSize: 13, color: '#065F46' }}><i className="bi bi-check-circle" style={{ marginRight: 6 }} />{success}</div>}
 
             {field('beneficiaire', 'Kontoinhaber',  'LA REMORQUE M',   'Name des Unternehmens oder der Person, der das Konto gehört.')}
             {field('iban',         'IBAN',           'FR76 XXXX XXXX XXXX XXXX XXXX XXX', 'IBAN-Code des Bankkontos (mit oder ohne Leerzeichen).')}

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useCart } from '../context/CartContext';
+import { fmtEur } from '../utils/fmt';
 import { useNavigate } from 'react-router-dom';
 import { useBreakpoint } from '../hooks/useBreakpoint';
 
@@ -8,7 +9,7 @@ export default function CartDrawer() {
   const navigate = useNavigate();
   const [paymentType, setPaymentType] = useState('full');
   const isSmall = useBreakpoint(400);
-  const fmt = (n) => n.toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' €';
+  const fmt = fmtEur;
   const shipping = 0;
   const grand = total + shipping;
   const amountDue = paymentType === 'deposit' ? grand * 0.5 : grand;

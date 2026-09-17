@@ -1,5 +1,6 @@
 import { Link, useLocation, Navigate } from 'react-router-dom';
 import { useBreakpoint } from '../hooks/useBreakpoint';
+import { fmtEur } from '../utils/fmt';
 
 export default function OrderConfirmationPage() {
   const location = useLocation();
@@ -11,7 +12,7 @@ export default function OrderConfirmationPage() {
 
   const isMobile = useBreakpoint(600);
   const { orderRef, bank, paymentType, total, amountDueNow: serverAmount } = state;
-  const fmt = (n) => n.toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' €';
+  const fmt = fmtEur;
 
   const bankRows = [
     ['Empfänger',        bank?.beneficiaire || '—', false],

@@ -104,7 +104,6 @@ function CategoryScrollBar({ categories, active, onSelect }) {
           WebkitOverflowScrolling: 'touch',
         }}
       >
-        <style>{`.cat-rail::-webkit-scrollbar{display:none}`}</style>
         {categories.map(c => (
           <button
             key={c.id}

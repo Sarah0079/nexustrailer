@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
+import { fmtEur } from '../utils/fmt';
 import { useWishlist } from '../context/WishlistContext';
 
 export default function ProductCard({ product }) {
@@ -9,7 +10,7 @@ export default function ProductCard({ product }) {
   const navigate = useNavigate();
   const [added, setAdded] = useState(false);
   const [hovered, setHovered] = useState(false);
-  const fmt = (n) => n.toLocaleString('de-DE', { minimumFractionDigits: 2 }) + ' €';
+  const fmt = fmtEur;
   const isWished = has(product.id);
 
   const handleAdd = (e) => {

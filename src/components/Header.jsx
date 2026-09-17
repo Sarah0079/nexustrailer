@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { fmtEur } from '../utils/fmt';
 import { useCart } from '../context/CartContext';
 import { useWishlist } from '../context/WishlistContext';
 import { useBreakpoint } from '../hooks/useBreakpoint';
@@ -55,7 +56,7 @@ export default function Header() {
     navigate(`/product/${slug}`);
   };
 
-  const fmt = (n) => n.toLocaleString('de-DE', { minimumFractionDigits: 2 }) + ' €';
+  const fmt = fmtEur;
 
   return (
     <>
