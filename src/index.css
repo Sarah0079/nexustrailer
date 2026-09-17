@@ -4,15 +4,15 @@
   --dark: #1E1E1E;
   --dark-2: #2C2C2C;
   --dark-3: #404040;
-  --accent: #C12119;
-  --accent-hover: #A51C14;
-  --accent-light: #FCECEA;
+  --accent: #147DB5;
+  --accent-hover: #0F6899;
+  --accent-light: #E8F3FA;
   --text: #141414;
-  --text-muted: #5C5C5C;
+  --text-muted: #687580;
   --text-light: #959595;
   --border: #DCDCDA;
   --border-strong: #C3C3C1;
-  --bg: #F4F3F1;
+  --bg: #F5F7F9;
   --bg-2: #EAEAE7;
   --white: #FFFFFF;
   --green: #1A7840;
@@ -90,7 +90,7 @@ img { max-width: 100%; display: block; }
   font-size: 14px; color: var(--dark); background: white; outline: none;
   transition: border-color 0.15s, box-shadow 0.15s;
 }
-.input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(193,33,25,.1); }
+.input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(20,125,181,.1); }
 .input::placeholder { color: var(--text-light); }
 
 /* ── Badges ──────────────────────────────── */
