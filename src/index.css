@@ -143,6 +143,10 @@ img { max-width: 100%; display: block; }
 .product-rich-description li { font-size: 14px; color: var(--text-muted); line-height: 1.7; margin-bottom: 4px; }
 .product-rich-description strong { color: var(--dark); font-weight: 700; }
 
+/* ── Category tiles ─────────────────────────── */
+.cat-tile { transition: filter 0.35s; }
+.cat-tile:hover { filter: brightness(1.18); }
+
 /* ── Responsive ──────────────────────────── */
 @media (max-width: 639px) {
   .container { padding: 0 12px; }

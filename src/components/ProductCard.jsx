@@ -94,16 +94,15 @@ export default function ProductCard({ product }) {
       {/* Info */}
       <div style={{ padding: '14px 16px 16px' }}>
         <p style={{
-          fontSize: 11, color: 'var(--text-muted)', marginBottom: 4,
-          display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical',
-          overflow: 'hidden', height: '30px',
+          fontSize: 10.5, color: 'var(--text-light)', marginBottom: 5,
+          overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
         }}>{product.subtitle}</p>
         <h3 style={{
-          fontSize: 14, fontWeight: 700, color: 'var(--dark)',
+          fontSize: 14.5, fontWeight: 700, color: 'var(--dark)',
           lineHeight: 1.35, marginBottom: 10,
           overflow: 'hidden', textOverflow: 'ellipsis',
           display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical',
-          height: '38px',
+          height: '40px',
         }}>
           {product.name}
         </h3>
