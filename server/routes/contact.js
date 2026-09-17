@@ -57,13 +57,14 @@ function validateContact(req, res, next) {
 }
 
 router.post('/', contactLimiter, verifyCsrf, validateContact, async (req, res) => {
-  const { name, email, subject, message } = req.body;
+  const { name, email, subject, message, phone } = req.body;
   try {
     await sendContactEmail({
       name:    name.trim(),
       email:   email.trim(),
       subject: subject.trim(),
       message: message.trim(),
+      phone:   phone?.trim() || undefined,
     });
     res.json({ ok: true });
   } catch (err) {

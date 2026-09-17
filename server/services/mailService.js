@@ -127,7 +127,7 @@ export async function sendOrderConfirmation({ orderRef, customer, items, total, 
     <tr><td class="footer" style="background:#F9FAFB;border-top:1px solid #E5E7EB;padding:14px 24px;text-align:center;">
       <p style="font-size:11px;color:#9CA3AF;margin:0;line-height:1.6;">
         NexusTrailer · ${process.env.COMPANY_ADDRESS || '21 Rue du Bouchet, 63350 Maringues'}<br>
-        SIREN ${process.env.COMPANY_SIREN || '948 418 827'} · <a href="https://${process.env.COMPANY_DOMAIN || 'nexustrailer.de'}" style="color:#9CA3AF;">${process.env.COMPANY_DOMAIN || 'nexustrailer.de'}</a>
+        SIREN ${process.env.COMPANY_SIREN || '948 418 827'} · <a href="https://${process.env.COMPANY_DOMAIN || 'nexustrailer.com'}" style="color:#9CA3AF;">${process.env.COMPANY_DOMAIN || 'nexustrailer.com'}</a>
       </p>
     </td></tr>
 
@@ -313,7 +313,7 @@ function escHtml(str) {
   return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 
-export async function sendContactEmail({ name, email, subject, message }) {
+export async function sendContactEmail({ name, email, subject, message, phone }) {
   if (!process.env.SMTP_USER || !process.env.SMTP_PASS) {
     throw new Error('EMAIL_NOT_CONFIGURED');
   }
@@ -322,20 +322,26 @@ export async function sendContactEmail({ name, email, subject, message }) {
   const from = `"NexusTrailer Kontakt" <${process.env.SMTP_FROM || process.env.SMTP_USER}>`;
   const admin = process.env.SMTP_ADMIN || process.env.SMTP_USER;
 
+  const phoneRow = phone?.trim()
+    ? `<p><strong>Telefon:</strong> ${escHtml(phone.trim())}</p>`
+    : '';
+  const phoneText = phone?.trim() ? `\nTelefon: ${phone.trim()}` : '';
+
   await transporter.sendMail({
     from,
     to: admin,
     replyTo: email,
     subject: `[NexusTrailer Kontakt] ${subject}`,
-    text: `Von: ${name} <${email}>\nBetreff: ${subject}\n\n${message}`,
+    text: `Von: ${name} <${email}>${phoneText}\nBetreff: ${subject}\n\n${message}`,
     html: `
       <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;">
         <h2 style="color:#0F172A;">Neue Kontaktanfrage</h2>
-        <p><strong>Name:</strong> ${name}</p>
-        <p><strong>E-Mail:</strong> <a href="mailto:${email}">${email}</a></p>
-        <p><strong>Betreff:</strong> ${subject}</p>
+        <p><strong>Name:</strong> ${escHtml(name)}</p>
+        <p><strong>E-Mail:</strong> <a href="mailto:${escHtml(email)}">${escHtml(email)}</a></p>
+        ${phoneRow}
+        <p><strong>Betreff:</strong> ${escHtml(subject)}</p>
         <hr style="border:none;border-top:1px solid #E5E7EB;margin:16px 0;">
-        <p style="white-space:pre-wrap;">${message}</p>
+        <p style="white-space:pre-wrap;">${escHtml(message)}</p>
       </div>
     `,
   });

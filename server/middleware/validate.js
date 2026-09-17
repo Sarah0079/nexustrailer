@@ -3,7 +3,13 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 const HTML_RE  = /<[^>]*>/;
 
 const ALLOWED_COUNTRIES = new Set([
-  'Deutschland', 'Frankreich', 'Österreich', 'Schweiz', 'Belgien', 'Niederlande', 'Luxemburg',
+  'Deutschland', 'Frankreich', 'Österreich', 'Schweiz',
+  'Belgien', 'Niederlande', 'Luxemburg', 'Spanien',
+  'Italien', 'Portugal', 'Polen', 'Tschechien',
+  'Ungarn', 'Dänemark', 'Schweden', 'Norwegen',
+  'Finnland', 'Irland', 'Griechenland', 'Rumänien',
+  'Bulgarien', 'Kroatien', 'Slowenien', 'Slowakei',
+  'Estland', 'Lettland', 'Litauen', 'Malta', 'Zypern',
 ]);
 
 function isValidEmail(v) {
