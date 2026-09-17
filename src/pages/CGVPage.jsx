@@ -3,9 +3,9 @@
 export default function CGVPage() {
   return (
     <main>
-      <div style={{ background: 'var(--dark)', padding: '56px 0 48px' }}>
+      <div style={{ background: 'var(--dark)', padding: '56px 0 48px', borderBottom: '3px solid var(--accent)' }}>
         <div className="container">
-          <p style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--accent)', marginBottom: 8 }}>RECHTLICHES</p>
+          <p style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.12em', color: 'var(--accent)', marginBottom: 8 }}>RECHTLICHES</p>
           <h1 style={{ fontSize: 'clamp(26px, 4vw, 44px)', fontWeight: 900, color: 'white', letterSpacing: '-0.02em' }}>Allgemeine Geschäftsbedingungen (AGB)</h1>
         </div>
       </div>

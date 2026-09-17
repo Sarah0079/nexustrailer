@@ -10,11 +10,11 @@ const STEPS = [
 export default function RetoursPage() {
   return (
     <main>
-      <div style={{ background: 'var(--dark)', padding: '56px 0 48px' }}>
+      <div style={{ background: 'var(--dark)', padding: '56px 0 48px', borderBottom: '3px solid var(--accent)' }}>
         <div className="container">
-          <p style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--accent)', marginBottom: 8 }}>KUNDENDIENST</p>
+          <p style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.12em', color: 'var(--accent)', marginBottom: 8 }}>KUNDENDIENST</p>
           <h1 style={{ fontSize: 'clamp(26px, 4vw, 44px)', fontWeight: 900, color: 'white', letterSpacing: '-0.02em' }}>Rückgabe & Erstattung</h1>
-          <p style={{ color: 'rgba(255,255,255,0.5)', marginTop: 12, fontSize: 15 }}>30 Tage Rückgaberecht – volle Erstattung garantiert.</p>
+          <p style={{ color: 'rgba(255,255,255,0.55)', marginTop: 12, fontSize: 15 }}>30 Tage Rückgaberecht – volle Erstattung garantiert.</p>
         </div>
       </div>
 
