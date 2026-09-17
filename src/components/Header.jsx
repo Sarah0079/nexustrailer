@@ -154,8 +154,8 @@ export default function Header() {
             {/* Cart */}
             <button onClick={() => setOpen(true)} style={{
               display: 'flex', alignItems: 'center', gap: 7, position: 'relative',
-              background: count > 0 ? 'var(--dark)' : 'var(--bg)',
-              border: `1.5px solid ${count > 0 ? 'var(--dark)' : 'var(--border)'}`,
+              background: count > 0 ? 'var(--accent)' : 'var(--bg)',
+              border: `1.5px solid ${count > 0 ? 'var(--accent)' : 'var(--border)'}`,
               borderRadius: 'var(--r-sm)', padding: isMobile ? 8 : '8px 14px',
               color: count > 0 ? 'white' : 'var(--text)',
               transition: 'all 0.15s', cursor: 'pointer',

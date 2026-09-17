@@ -128,13 +128,13 @@ export default function ProductCard({ product }) {
             title={!isInStock ? 'Nicht verfügbar' : undefined}
             style={{
               width: 38, height: 38, borderRadius: 0, flexShrink: 0,
-              background: added ? 'var(--green)' : !isInStock ? 'var(--border-strong)' : 'var(--dark)',
+              background: added ? 'var(--green)' : !isInStock ? 'var(--border-strong)' : 'var(--accent)',
               border: 'none', cursor: isInStock ? 'pointer' : 'not-allowed',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               color: 'white', fontSize: 16, transition: 'background 0.2s',
             }}
-            onMouseEnter={e => !added && isInStock && (e.currentTarget.style.background = 'var(--dark-2)')}
-            onMouseLeave={e => !added && isInStock && (e.currentTarget.style.background = 'var(--dark)')}
+            onMouseEnter={e => !added && isInStock && (e.currentTarget.style.background = 'var(--accent-hover)')}
+            onMouseLeave={e => !added && isInStock && (e.currentTarget.style.background = 'var(--accent)')}
           >
             <i className={`bi bi-${added ? 'check-lg' : !isInStock ? 'x-circle' : 'cart-plus'}`} />
           </button>

@@ -127,9 +127,9 @@ function CategoryScrollBar({ categories, active, onSelect }) {
             onClick={() => onSelect(c.id)}
             style={{
               padding: '7px 16px', fontSize: 13, fontWeight: 600, flexShrink: 0,
-              background: active === c.id ? 'var(--dark)' : 'white',
+              background: active === c.id ? 'var(--accent)' : 'white',
               color: active === c.id ? 'white' : 'var(--text-muted)',
-              border: `1.5px solid ${active === c.id ? 'var(--dark)' : 'var(--border)'}`,
+              border: `1.5px solid ${active === c.id ? 'var(--accent)' : 'var(--border)'}`,
               cursor: 'pointer', transition: 'all 0.15s',
               whiteSpace: 'nowrap',
             }}
