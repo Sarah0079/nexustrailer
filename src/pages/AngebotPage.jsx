@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useBreakpoint } from '../hooks/useBreakpoint';
 import { sendAngebot } from '../api/client';
 
@@ -56,6 +57,8 @@ export default function AngebotPage() {
   const [sent, setSent]             = useState(false);
   const [loading, setLoading]       = useState(false);
   const [serverError, setServerError] = useState('');
+  const [dsgvo, setDsgvo]           = useState(false);
+  const [dsgvoError, setDsgvoError] = useState(false);
 
   const setField = (k, filter) => e => {
     let val = e.target.value;
@@ -76,6 +79,8 @@ export default function AngebotPage() {
     e.preventDefault();
     setTriedSubmit(true);
     setTouched({ company: true, name: true, email: true, phone: true, productType: true, message: true });
+    if (!dsgvo) { setDsgvoError(true); return; }
+    setDsgvoError(false);
     const errs = validateAngebot(form);
     setErrors(errs);
     if (Object.keys(errs).length > 0) return;
@@ -265,6 +270,22 @@ export default function AngebotPage() {
                   {showErr('message') && <p style={errStyle}><i className="bi bi-exclamation-circle" /> {errors.message}</p>}
                 </div>
 
+                <label style={{ display: 'flex', gap: 10, alignItems: 'flex-start', cursor: 'pointer', marginBottom: 16 }}>
+                  <input
+                    type="checkbox"
+                    checked={dsgvo}
+                    onChange={e => { setDsgvo(e.target.checked); setDsgvoError(false); }}
+                    style={{ marginTop: 2, flexShrink: 0, accentColor: 'var(--dark)', width: 15, height: 15 }}
+                  />
+                  <span style={{ fontSize: 12, color: dsgvoError ? 'var(--sale)' : 'var(--text-muted)', lineHeight: 1.6 }}>
+                    Ich habe die <Link to="/datenschutz" target="_blank" style={{ color: 'var(--dark)', textDecoration: 'underline' }}>Datenschutzerklärung</Link> gelesen und bin mit der Verarbeitung meiner Daten zur Bearbeitung meiner Anfrage einverstanden. *
+                  </span>
+                </label>
+                {dsgvoError && (
+                  <p style={{ fontSize: 11, color: 'var(--sale)', display: 'flex', alignItems: 'center', gap: 4, marginBottom: 12, marginTop: -8 }}>
+                    <i className="bi bi-exclamation-circle" /> Bitte stimmen Sie der Datenschutzerklärung zu.
+                  </p>
+                )}
                 <button type="submit" className="btn btn-accent btn-lg" disabled={loading} style={{ width: '100%', justifyContent: 'center', opacity: loading ? 0.75 : 1 }}>
                   {loading
                     ? <><i className="bi bi-hourglass-split" /> Wird gesendet…</>

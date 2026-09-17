@@ -83,6 +83,8 @@ export default function CheckoutPage() {
   const [triedSubmit, setTriedSubmit] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [serverError, setServerError] = useState('');
+  const [dsgvo, setDsgvo] = useState(false);
+  const [dsgvoError, setDsgvoError] = useState(false);
 
   const fmt = (n) => n.toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' €';
   const shipping = 0;
@@ -93,6 +95,8 @@ export default function CheckoutPage() {
     e.preventDefault();
     setTriedSubmit(true);
     setServerError('');
+    if (!dsgvo) { setDsgvoError(true); return; }
+    setDsgvoError(false);
     const errs = validate(form);
     setErrors(errs);
     if (Object.keys(errs).length > 0) return;
@@ -210,7 +214,15 @@ export default function CheckoutPage() {
                   <div style={{ gridColumn: '1 / -1' }}>
                     <label style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-muted)', display: 'block', marginBottom: 6 }}>Land <span style={{ color: 'var(--sale)' }}>*</span></label>
                     <select className="input" value={form.land} onChange={e => setField('land')(e.target.value)}>
-                      {['Deutschland', 'Frankreich', 'Österreich', 'Schweiz', 'Belgien', 'Niederlande', 'Luxemburg'].map(l => <option key={l}>{l}</option>)}
+                      {[
+                        'Deutschland', 'Frankreich', 'Österreich', 'Schweiz',
+                        'Belgien', 'Niederlande', 'Luxemburg', 'Spanien',
+                        'Italien', 'Portugal', 'Polen', 'Tschechien',
+                        'Ungarn', 'Dänemark', 'Schweden', 'Norwegen',
+                        'Finnland', 'Irland', 'Griechenland', 'Rumänien',
+                        'Bulgarien', 'Kroatien', 'Slowenien', 'Slowakei',
+                        'Estland', 'Lettland', 'Litauen', 'Malta', 'Zypern',
+                      ].map(l => <option key={l}>{l}</option>)}
                     </select>
                   </div>
                 </div>
@@ -239,7 +251,7 @@ export default function CheckoutPage() {
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 14, marginBottom: 18 }}>
                   {items.map(item => (
                     <div key={item.id} style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
-                      <img src={item.image} alt={item.name} style={{ width: 52, height: 52, objectFit: 'cover', borderRadius: 0, flexShrink: 0 }} />
+                      <img src={item.image} alt={item.name} style={{ width: 52, height: 52, objectFit: 'contain', padding: '4px', background: '#F0F0EE', borderRadius: 0, flexShrink: 0 }} />
                       <div style={{ flex: 1, minWidth: 0 }}>
                         <p style={{ fontSize: 13, fontWeight: 700, color: 'var(--dark)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{item.name}</p>
                         <p style={{ fontSize: 12, color: 'var(--text-muted)' }}>× {item.qty}</p>
@@ -277,6 +289,22 @@ export default function CheckoutPage() {
                 </div>
               </div>
 
+              <label style={{ display: 'flex', gap: 10, alignItems: 'flex-start', cursor: 'pointer' }}>
+                <input
+                  type="checkbox"
+                  checked={dsgvo}
+                  onChange={e => { setDsgvo(e.target.checked); setDsgvoError(false); }}
+                  style={{ marginTop: 2, flexShrink: 0, accentColor: 'var(--dark)', width: 15, height: 15 }}
+                />
+                <span style={{ fontSize: 12, color: dsgvoError ? 'var(--sale)' : 'var(--text-muted)', lineHeight: 1.6 }}>
+                  Ich habe die <Link to="/datenschutz" target="_blank" style={{ color: 'var(--dark)', textDecoration: 'underline' }}>Datenschutzerklärung</Link> gelesen und bin mit der Verarbeitung meiner Daten zur Auftragsabwicklung einverstanden. *
+                </span>
+              </label>
+              {dsgvoError && (
+                <p style={{ fontSize: 11, color: 'var(--sale)', display: 'flex', alignItems: 'center', gap: 4, marginTop: -4 }}>
+                  <i className="bi bi-exclamation-circle" /> Bitte stimmen Sie der Datenschutzerklärung zu.
+                </p>
+              )}
               <button
                 type="submit"
                 className="btn btn-primary btn-lg btn-full"

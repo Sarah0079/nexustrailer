@@ -100,7 +100,7 @@ export default function Header() {
                       onMouseEnter={e => e.currentTarget.style.background = 'var(--bg)'}
                       onMouseLeave={e => e.currentTarget.style.background = 'white'}
                     >
-                      <img src={p.image} alt={p.name} style={{ width: 44, height: 36, objectFit: 'cover', borderRadius: 0, flexShrink: 0, background: 'var(--bg-2)' }} />
+                      <img src={p.image} alt={p.name} style={{ width: 44, height: 36, objectFit: 'contain', padding: '3px', borderRadius: 0, flexShrink: 0, background: '#F0F0EE' }} />
                       <div style={{ flex: 1, minWidth: 0 }}>
                         <p style={{ fontSize: 13, fontWeight: 600, color: 'var(--text)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{p.name}</p>
                         <p style={{ fontSize: 12, color: 'var(--accent)', fontWeight: 700 }}>{fmt(p.price)}</p>
