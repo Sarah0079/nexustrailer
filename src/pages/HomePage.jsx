@@ -52,12 +52,7 @@ const FAQ_PREVIEW = [
 export default function HomePage() {
   const isMobile = useBreakpoint(768);
 
-  const heroProduct = useMemo(
-    () => PRODUCTS.find(p => p.category === 'wohnwagen' && p.stock === 'instock') || PRODUCTS[0],
-    []
-  );
-  const featured    = useMemo(() => PRODUCTS.filter(p => p.featured).slice(0, 4), []);
-  const minPrice    = useMemo(() => Math.min(...PRODUCTS.map(p => p.price)), []);
+  const featured = useMemo(() => PRODUCTS.filter(p => p.featured).slice(0, 4), []);
 
   const [openFaq,    setOpenFaq]    = useState(null);
   const [hoveredCat, setHoveredCat] = useState(null);
@@ -108,18 +103,10 @@ export default function HomePage() {
           la moitié droite jusqu'au bord du viewport — sans container.
       ─────────────────────────────────────────────────────────────────────── */}
       <section style={{ background: 'var(--dark)', overflow: 'hidden' }}>
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr',
-          minHeight: isMobile ? 'auto' : 600,
-        }}>
-
-          {/* Left — texte */}
+        <div className="container">
           <div style={{
             display: 'flex', alignItems: 'center',
-            padding: isMobile
-              ? '72px 24px 52px'
-              : `80px max(24px, calc((100vw - 1200px) / 2 + 24px)) 72px max(24px, calc((100vw - 1200px) / 2 + 24px))`,
+            padding: isMobile ? '72px 0 52px' : '96px 0 80px',
           }}>
             <div style={{ maxWidth: 520 }}>
               <p style={{
@@ -164,95 +151,8 @@ export default function HomePage() {
             </div>
           </div>
 
-          {/* Right — image produit (desktop uniquement) */}
-          {!isMobile && (
-            <div style={{ position: 'relative', overflow: 'hidden', background: '#0d1820', minHeight: 600 }}>
-              <img
-                src={heroProduct.image}
-                alt="Wohnwagen"
-                style={{
-                  position: 'absolute', inset: 0,
-                  width: '100%', height: '100%', objectFit: 'cover',
-                  objectPosition: 'center 40%',
-                  opacity: 0.78,
-                }}
-              />
-              {/* fondu vers la gauche pour raccorder au fond sombre */}
-              <div style={{
-                position: 'absolute', inset: 0,
-                background: 'linear-gradient(to right, var(--dark) 0%, rgba(28,43,58,0.35) 35%, transparent 100%)',
-              }} />
-              {/* prix minimum */}
-              <div style={{
-                position: 'absolute', bottom: 36, right: 32,
-                background: 'rgba(14,26,36,0.88)',
-                border: '1px solid rgba(255,255,255,0.10)',
-                padding: '14px 22px',
-              }}>
-                <p style={{
-                  fontSize: 10, color: 'rgba(255,255,255,0.38)',
-                  textTransform: 'uppercase', letterSpacing: '0.12em', marginBottom: 4,
-                }}>Ab</p>
-                <p style={{
-                  fontFamily: 'var(--font-display)',
-                  fontSize: 22, fontWeight: 900, color: 'white', lineHeight: 1,
-                }}>
-                  {minPrice.toLocaleString('de-DE')} €
-                </p>
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* Ligne de catégories */}
-        <div style={{ borderTop: '1px solid rgba(255,255,255,0.08)' }}>
-          <div className="container">
-            <div style={{ display: 'flex', flexWrap: 'wrap', padding: '15px 0', gap: '0' }}>
-              {['Wohnwagen', 'Tiny House', 'Kipper', 'Baumaschinen', 'Food-Trucks'].map((type, i, arr) => (
-                <span key={type} style={{
-                  fontSize: 11, fontWeight: 600,
-                  color: 'rgba(255,255,255,0.26)',
-                  textTransform: 'uppercase', letterSpacing: '0.09em',
-                  paddingRight: 16, marginRight: 16,
-                  borderRight: i < arr.length - 1 ? '1px solid rgba(255,255,255,0.10)' : 'none',
-                }}>{type}</span>
-              ))}
-            </div>
-          </div>
         </div>
       </section>
-
-      {/* ── STATS STRIP ───────────────────────────────────────────────────────
-          Typographie uniquement — grands chiffres + labels petits caps.
-          Remplace les 4 icônes génériques.
-      ─────────────────────────────────────────────────────────────────────── */}
-      <div style={{ background: 'white', borderBottom: '1px solid var(--border)' }}>
-        <div className="container">
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: isMobile ? '1fr 1fr' : 'repeat(4, 1fr)',
-          }}>
-            {STATS.map(([num, label], i) => (
-              <div key={label} style={{
-                padding: isMobile ? '20px 16px' : '26px 32px',
-                borderLeft: i > 0 && !(isMobile && i === 2) ? '1px solid var(--border)' : 'none',
-                borderTop: isMobile && i >= 2 ? '1px solid var(--border)' : 'none',
-              }}>
-                <p style={{
-                  fontFamily: 'var(--font-display)',
-                  fontSize: isMobile ? 22 : 28,
-                  fontWeight: 900, color: 'var(--dark)',
-                  lineHeight: 1, marginBottom: 5, letterSpacing: '-0.01em',
-                }}>{num}</p>
-                <p style={{
-                  fontSize: 11, color: 'var(--text-light)',
-                  textTransform: 'uppercase', letterSpacing: '0.09em',
-                }}>{label}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
 
       {/* ── KATEGORIEN ────────────────────────────────────────────────────────
           Grille éditoriale asymétrique :
