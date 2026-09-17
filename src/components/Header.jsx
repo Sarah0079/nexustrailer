@@ -40,6 +40,11 @@ export default function Header() {
 
   useEffect(() => { setMenuOpen(false); }, [pathname]);
 
+  useEffect(() => {
+    document.body.style.overflow = menuOpen ? 'hidden' : '';
+    return () => { document.body.style.overflow = ''; };
+  }, [menuOpen]);
+
   const handleSearch = (v) => {
     setSearch(v);
     if (v.trim().length < 2) { setSearchResults([]); setSearchOpen(false); return; }
@@ -189,6 +194,7 @@ export default function Header() {
                   placeholder="Produkte suchen..."
                   value={search}
                   onChange={e => handleSearch(e.target.value)}
+                  onBlur={() => setTimeout(() => setSearchOpen(false), 150)}
                   style={{ paddingLeft: 36, fontSize: 13 }}
                 />
               </div>

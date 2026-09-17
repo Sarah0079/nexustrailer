@@ -90,6 +90,23 @@ function CategoryScrollBar({ categories, active, onSelect }) {
     return () => el.removeEventListener('scroll', updateFades);
   }, [updateFades]);
 
+  // Scroll to show the active chip (e.g. after back/forward navigation)
+  useEffect(() => {
+    const rail = railRef.current;
+    if (!rail) return;
+    const btn = rail.querySelector('[data-catid="' + active + '"]');
+    if (!btn) return;
+    const btnL = btn.offsetLeft;
+    const btnR = btnL + btn.offsetWidth;
+    const rl = rail.scrollLeft;
+    const rr = rl + rail.clientWidth;
+    if (btnL < rl + 32) {
+      rail.scrollTo({ left: Math.max(0, btnL - 32), behavior: 'smooth' });
+    } else if (btnR > rr - 32) {
+      rail.scrollTo({ left: btnR - rail.clientWidth + 32, behavior: 'smooth' });
+    }
+  }, [active]);
+
   return (
     <div style={{ position: 'relative' }}>
       {/* Rail */}
@@ -106,6 +123,7 @@ function CategoryScrollBar({ categories, active, onSelect }) {
         {categories.map(c => (
           <button
             key={c.id}
+            data-catid={c.id}
             onClick={() => onSelect(c.id)}
             style={{
               padding: '7px 16px', fontSize: 13, fontWeight: 600, flexShrink: 0,
@@ -207,6 +225,21 @@ export default function ShopPage() {
             <i className="bi bi-truck" style={{ marginLeft: 8 }} />
             Kostenloser Versand
           </p>
+        </div>
+      </div>
+
+      {/* Breadcrumb */}
+      <div style={{ background: 'var(--bg)', borderBottom: '1px solid var(--border)', padding: '12px 0' }}>
+        <div className="container" style={{ display: 'flex', gap: 6, alignItems: 'center', fontSize: 12, color: 'var(--text-muted)', flexWrap: 'wrap' }}>
+          <Link to="/" style={{ color: 'var(--text-muted)' }}>Startseite</Link>
+          <i className="bi bi-chevron-right" style={{ fontSize: 10 }} />
+          <span style={{ color: 'var(--dark)', fontWeight: 500 }}>Shop</span>
+          {category !== 'all' && (
+            <>
+              <i className="bi bi-chevron-right" style={{ fontSize: 10 }} />
+              <span style={{ color: 'var(--dark)', fontWeight: 500 }}>{CATEGORIES.find(c => c.id === category)?.label || category}</span>
+            </>
+          )}
         </div>
       </div>
 

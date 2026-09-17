@@ -12,9 +12,11 @@ export default function ProductCard({ product }) {
   const [hovered, setHovered] = useState(false);
   const fmt = fmtEur;
   const isWished = has(product.id);
+  const isInStock = product.stock === undefined || product.stock === 'instock' || product.stock > 0;
 
   const handleAdd = (e) => {
     e.stopPropagation();
+    if (!isInStock) return;
     add(product, 1);
     setAdded(true);
     setTimeout(() => { setAdded(false); setOpen(true); }, 900);
@@ -28,13 +30,17 @@ export default function ProductCard({ product }) {
   return (
     <div
       onClick={() => navigate(`/product/${product.slug}`)}
+      onKeyDown={e => { if (e.key === 'Enter') navigate(`/product/${product.slug}`); }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
+      tabIndex={0}
+      role="link"
+      aria-label={product.name}
       style={{
         background: 'white', borderRadius: 'var(--r-lg)', overflow: 'hidden',
         cursor: 'pointer', display: 'flex', flexDirection: 'column',
         border: `1px solid ${hovered ? 'var(--border-strong)' : 'var(--border)'}`,
-        transition: 'border-color 0.2s',
+        transition: 'border-color 0.2s', outline: 'none',
       }}
     >
       {/* Image */}
@@ -118,17 +124,19 @@ export default function ProductCard({ product }) {
 
           <button
             onClick={handleAdd}
+            disabled={!isInStock}
+            title={!isInStock ? 'Nicht verfügbar' : undefined}
             style={{
               width: 38, height: 38, borderRadius: 0, flexShrink: 0,
-              background: added ? 'var(--green)' : 'var(--dark)',
-              border: 'none', cursor: 'pointer',
+              background: added ? 'var(--green)' : !isInStock ? 'var(--border-strong)' : 'var(--dark)',
+              border: 'none', cursor: isInStock ? 'pointer' : 'not-allowed',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               color: 'white', fontSize: 16, transition: 'background 0.2s',
             }}
-            onMouseEnter={e => !added && (e.currentTarget.style.background = 'var(--dark-2)')}
-            onMouseLeave={e => !added && (e.currentTarget.style.background = 'var(--dark)')}
+            onMouseEnter={e => !added && isInStock && (e.currentTarget.style.background = 'var(--dark-2)')}
+            onMouseLeave={e => !added && isInStock && (e.currentTarget.style.background = 'var(--dark)')}
           >
-            <i className={`bi bi-${added ? 'check-lg' : 'cart-plus'}`} />
+            <i className={`bi bi-${added ? 'check-lg' : !isInStock ? 'x-circle' : 'cart-plus'}`} />
           </button>
         </div>
       </div>

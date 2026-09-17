@@ -5,8 +5,8 @@ import { sendContact } from '../api/client';
 
 const CONTACT_INFO = [
   { icon: 'bi-geo-alt',   label: 'Adresse',         val: '21 Rue du Bouchet\n63350 Maringues, Frankreich' },
-  { icon: 'bi-envelope',  label: 'E-Mail',           val: 'info@nexustrailer.com' },
-  { icon: 'bi-telephone', label: 'Telefon',          val: '+33 7 56 83 64 79' },
+  { icon: 'bi-envelope',  label: 'E-Mail',           val: 'info@nexustrailer.com', href: 'mailto:info@nexustrailer.com' },
+  { icon: 'bi-telephone', label: 'Telefon',          val: '+33 7 56 83 64 79',     href: 'tel:+33756836479' },
   { icon: 'bi-clock',     label: 'Öffnungszeiten',   val: 'Mo–Fr: 9:00 – 18:00\nSa: 9:00 – 13:00' },
 ];
 
@@ -164,12 +164,19 @@ export default function ContactPage() {
           {/* Info */}
           <div>
             <h2 style={{ fontSize: 18, fontWeight: 700, marginBottom: 24 }}>Kontaktinformationen</h2>
-            {CONTACT_INFO.map(({ icon, label, val }) => (
+            {CONTACT_INFO.map(({ icon, label, val, href }) => (
               <div key={label} style={{ display: 'flex', gap: 16, padding: '18px 0', borderTop: '1px solid var(--border)', alignItems: 'flex-start' }}>
                 <i className={`bi ${icon}`} style={{ fontSize: 20, color: 'var(--dark)', flexShrink: 0, marginTop: 1 }} />
                 <div>
                   <p style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)', marginBottom: 4 }}>{label}</p>
-                  <p style={{ fontSize: 14, fontWeight: 600, color: 'var(--dark)', whiteSpace: 'pre-line', lineHeight: 1.6 }}>{val}</p>
+                  {href ? (
+                    <a href={href} style={{ fontSize: 14, fontWeight: 600, color: 'var(--dark)', whiteSpace: 'pre-line', lineHeight: 1.6, textDecoration: 'none' }}
+                      onMouseEnter={e => e.currentTarget.style.textDecoration = 'underline'}
+                      onMouseLeave={e => e.currentTarget.style.textDecoration = 'none'}
+                    >{val}</a>
+                  ) : (
+                    <p style={{ fontSize: 14, fontWeight: 600, color: 'var(--dark)', whiteSpace: 'pre-line', lineHeight: 1.6 }}>{val}</p>
+                  )}
                 </div>
               </div>
             ))}

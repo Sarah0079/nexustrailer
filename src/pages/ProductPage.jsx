@@ -39,7 +39,10 @@ export default function ProductPage() {
   const related = PRODUCTS.filter(p => p.category === product.category && p.id !== product.id).slice(0, 4);
   const isWished = has(product.id);
 
+  const isInStock = product.stock === undefined || product.stock === 'instock' || product.stock > 0;
+
   const handleAdd = () => {
+    if (!isInStock) return;
     add(product, qty);
     setAdded(true);
     setTimeout(() => { setAdded(false); setOpen(true); }, 800);
@@ -155,15 +158,16 @@ export default function ProductPage() {
                   <i className="bi bi-plus" />
                 </button>
               </div>
-              <button onClick={handleAdd} style={{
+              <button onClick={handleAdd} disabled={!isInStock} style={{
                 flex: 1, height: 44, borderRadius: 0, border: 'none',
-                background: added ? 'var(--green)' : 'var(--dark)',
-                color: 'white', fontWeight: 800, fontSize: 14, cursor: 'pointer',
+                background: added ? 'var(--green)' : !isInStock ? 'var(--border-strong)' : 'var(--dark)',
+                color: 'white', fontWeight: 800, fontSize: 14,
+                cursor: isInStock ? 'pointer' : 'not-allowed',
                 display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
                 transition: 'background 0.2s',
               }}>
-                <i className={`bi ${added ? 'bi-check-lg' : 'bi-cart-plus'}`} />
-                {added ? 'Hinzugefügt!' : 'In den Warenkorb'}
+                <i className={`bi ${added ? 'bi-check-lg' : !isInStock ? 'bi-x-circle' : 'bi-cart-plus'}`} />
+                {added ? 'Hinzugefügt!' : !isInStock ? 'Nicht verfügbar' : 'In den Warenkorb'}
               </button>
             </div>
 

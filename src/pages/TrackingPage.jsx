@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useLocation } from 'react-router-dom';
 import { fetchOrderStatus } from '../api/client';
 
@@ -35,13 +35,7 @@ export default function TrackingPage() {
   const [loading, setLoading] = useState(false);
   const [error,   setError]   = useState('');
 
-  useEffect(() => {
-    const ref = location.state?.orderRef;
-    if (ref) { setInput(ref); doTrack(ref); }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const doTrack = async (override) => {
+  const doTrack = useCallback(async (override) => {
     const val = (override || input).trim().toUpperCase();
     if (!val)                       { setError('Bitte geben Sie eine Bestellnummer ein.'); return; }
     if (!ORDER_REF_REGEX.test(val)) { setError('Ungültiges Format. Beispiel: NXT-2026-A3K7BM'); setResult(null); return; }
@@ -54,7 +48,7 @@ export default function TrackingPage() {
       const data = await fetchOrderStatus(val);
       setResult(data);
     } catch (err) {
-      if (err.message?.includes('introuvable') || err.message?.includes('404')) {
+      if (err.message?.includes('404') || err.message?.includes('nicht gefunden')) {
         setError('Keine Bestellung mit dieser Nummer gefunden.');
       } else {
         setError('Fehler beim Abrufen der Bestellung. Bitte versuchen Sie es erneut.');
@@ -62,7 +56,29 @@ export default function TrackingPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [input]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    const ref = location.state?.orderRef;
+    if (!ref) return;
+    const val = ref.trim().toUpperCase();
+    if (!ORDER_REF_REGEX.test(val)) return;
+    let cancelled = false;
+    setInput(ref);
+    setLoading(true);
+    fetchOrderStatus(val)
+      .then(data => { if (!cancelled) setResult(data); })
+      .catch(err => {
+        if (cancelled) return;
+        if (err.message?.includes('404') || err.message?.includes('nicht gefunden')) {
+          setError('Keine Bestellung mit dieser Nummer gefunden.');
+        } else {
+          setError('Fehler beim Abrufen der Bestellung. Bitte versuchen Sie es erneut.');
+        }
+      })
+      .finally(() => { if (!cancelled) setLoading(false); });
+    return () => { cancelled = true; };
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const step          = result ? (STATUS_TO_STEP[result.status] ?? 0) : 0;
   const notifications = result?.notifications ?? [];

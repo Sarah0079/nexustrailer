@@ -1,11 +1,27 @@
+import { useEffect } from 'react';
 import { Link, useLocation, Navigate } from 'react-router-dom';
 import { useBreakpoint } from '../hooks/useBreakpoint';
 import { fmtEur } from '../utils/fmt';
 
+const SESSION_KEY = 'nexus_order_confirmation';
+
 export default function OrderConfirmationPage() {
   const location = useLocation();
-  const state = location.state;
   const isMobile = useBreakpoint(600);
+
+  // Restore state from sessionStorage on refresh
+  const state = location.state || (() => {
+    try { return JSON.parse(sessionStorage.getItem(SESSION_KEY) || 'null'); }
+    catch { return null; }
+  })();
+
+  // Persist state so page survives refresh
+  useEffect(() => {
+    if (state?.orderRef) {
+      try { sessionStorage.setItem(SESSION_KEY, JSON.stringify(state)); }
+      catch {}
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (!state?.orderRef) {
     return <Navigate to="/" replace />;

@@ -223,7 +223,7 @@ export default function CheckoutPage() {
                         'Finnland', 'Irland', 'Griechenland', 'Rumänien',
                         'Bulgarien', 'Kroatien', 'Slowenien', 'Slowakei',
                         'Estland', 'Lettland', 'Litauen', 'Malta', 'Zypern',
-                      ].map(l => <option key={l}>{l}</option>)}
+                      ].map(l => <option key={l} value={l}>{l}</option>)}
                     </select>
                   </div>
                 </div>

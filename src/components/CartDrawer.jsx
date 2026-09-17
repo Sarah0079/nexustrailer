@@ -140,7 +140,7 @@ export default function CartDrawer() {
                       <p style={{ fontSize: 13, fontWeight: 900, color: active ? 'var(--accent)' : 'var(--dark)', paddingLeft: 20 }}>{opt.sub}</p>
                       {opt.id === 'deposit' && (
                         <p style={{ fontSize: 10, color: 'var(--text-muted)', paddingLeft: 20, marginTop: 1 }}>
-                          Restbetrag {fmt(grand * 0.5)} vor dem Versand
+                          Restbetrag {fmt(grand * 0.5)} vor dem Versand fällig
                         </p>
                       )}
                     </button>

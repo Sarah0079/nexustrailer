@@ -90,14 +90,14 @@ router.post('/', angebotLimiter, verifyCsrf, validate, async (req, res) => {
        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         company?.trim() || null, name.trim(), email.trim(),
-        ph, siret?.trim() || null,
+        phone.trim(), siret?.trim() || null,
         product_type.trim(), quantity?.trim() || null,
         budget?.trim() || null, message.trim(), ip,
       ]
     );
 
     sendAngebotNotification({
-      id: result.insertId, company: company.trim(), name: name.trim(),
+      id: result.insertId, company: company?.trim() || '', name: name.trim(),
       email: email.trim(), phone: phone?.trim(), siret: siret?.trim(),
       product_type: product_type.trim(), quantity: quantity?.trim(),
       budget: budget?.trim(), message: message.trim(),
