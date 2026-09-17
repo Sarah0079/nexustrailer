@@ -7,11 +7,11 @@ export default function WishlistPage() {
 
   return (
     <main>
-      <div style={{ background: 'var(--dark)', padding: '48px 0 40px' }}>
+      <div style={{ background: 'var(--dark)', padding: '48px 0 40px', borderBottom: '3px solid var(--accent)' }}>
         <div className="container">
-          <p style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--accent)', marginBottom: 8 }}>WUNSCHLISTE</p>
-          <h1 style={{ fontSize: 'clamp(26px, 4vw, 44px)', fontWeight: 900, color: 'white', letterSpacing: '-0.02em', display: 'flex', alignItems: 'center', gap: 14 }}>
-            <i className="bi bi-heart" style={{ fontSize: 32 }} /> Meine Wunschliste
+          <p style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.12em', color: 'var(--accent)', marginBottom: 8 }}>WUNSCHLISTE</p>
+          <h1 style={{ fontSize: 'clamp(26px, 4vw, 44px)', fontWeight: 900, color: 'white', letterSpacing: '-0.02em' }}>
+            Meine Wunschliste
           </h1>
         </div>
       </div>

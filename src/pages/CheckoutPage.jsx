@@ -184,7 +184,7 @@ export default function CheckoutPage() {
             <div style={{ display: 'flex', flexDirection: 'column', gap: 24, minWidth: 0 }}>
 
               {/* Zahlungsart-Recap */}
-              <div style={{ background: 'var(--accent-light)', border: '1.5px solid var(--accent)', borderRadius: 'var(--r-lg)', padding: '14px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
+              <div style={{ background: 'var(--bg)', borderLeft: '3px solid var(--accent)', padding: '14px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10, minWidth: 0 }}>
                   <i className={`bi ${paymentType === 'full' ? 'bi-check-circle-fill' : 'bi-wallet2'}`} style={{ color: 'var(--accent)', fontSize: 18, flexShrink: 0 }} />
                   <div style={{ minWidth: 0 }}>

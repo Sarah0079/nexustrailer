@@ -38,7 +38,7 @@ export default function OrderConfirmationPage() {
 
   return (
     <main>
-      <div style={{ background: 'var(--dark)', padding: '40px 0 36px' }}>
+      <div style={{ background: 'var(--dark)', padding: '40px 0 36px', borderBottom: '3px solid var(--accent)' }}>
         <div className="container">
           <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 6 }}>
             <Link to="/" style={{ fontSize: 12, color: 'rgba(255,255,255,0.4)', textDecoration: 'none' }}>Startseite</Link>
@@ -53,10 +53,10 @@ export default function OrderConfirmationPage() {
 
         {/* Erfolgsmeldung */}
         <div style={{
-          background: 'linear-gradient(135deg, #ECFDF5 0%, #D1FAE5 100%)',
-          border: '1.5px solid #6EE7B7',
-          borderRadius: 'var(--r-lg)',
-          padding: isMobile ? '20px 18px' : '28px 32px',
+          background: '#ECFDF5',
+          border: '1px solid #6EE7B7',
+          borderLeft: '4px solid var(--green)',
+          padding: isMobile ? '20px 18px' : '24px 28px',
           display: 'flex', gap: 16, alignItems: 'flex-start',
           marginBottom: 20,
         }}>
@@ -155,9 +155,9 @@ export default function OrderConfirmationPage() {
               <div key={i} style={{ display: 'flex', gap: 16, alignItems: 'flex-start' }}>
                 <div style={{
                   width: 36, height: 36, borderRadius: 0, flexShrink: 0,
-                  background: 'var(--accent-light)', border: '1.5px solid var(--accent)',
+                  background: 'var(--dark)',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  fontSize: 13, fontWeight: 900, color: 'var(--accent)',
+                  fontSize: 13, fontWeight: 900, color: 'white',
                 }}>
                   {i + 1}
                 </div>
