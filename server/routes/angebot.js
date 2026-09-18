@@ -51,9 +51,6 @@ function validate(req, res, next) {
   if (!EMAIL_RE.test(e)) return res.status(400).json({ error: 'E-Mail-Adresse ist ungültig.' });
   if (e.length > 100)    return res.status(400).json({ error: 'E-Mail zu lang.' });
 
-  const ph = phone?.trim();
-  if (!ph)                    return res.status(400).json({ error: 'Telefonnummer ist erforderlich.' });
-  if (!PHONE_RE.test(ph))     return res.status(400).json({ error: 'Telefonnummer ungültig.' });
   if (siret?.trim() && siret.trim().length > 30) {
     return res.status(400).json({ error: 'USt-IdNr. zu lang.' });
   }

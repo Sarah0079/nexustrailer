@@ -18,7 +18,6 @@ const QUANTITIES = ['1 Einheit', '2–5 Einheiten', '6–10 Einheiten', '10+ Ein
 
 const NAME_RE  = /^[a-zA-ZÀ-ÖØ-öø-ÿäöüÄÖÜß\s'\-]{2,}$/;
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
-const PHONE_RE = /^[0-9+\-\s()]{6,30}$/;
 const HTML_RE  = /<[^>]*>/;
 
 function validateAngebot(form) {
@@ -31,9 +30,6 @@ function validateAngebot(form) {
 
   if (!form.email.trim())                            errors.email       = 'E-Mail ist erforderlich';
   else if (!EMAIL_RE.test(form.email.trim()))        errors.email       = 'Ungültige E-Mail-Adresse';
-
-  if (!form.phone.trim())                                      errors.phone = 'Telefon ist erforderlich';
-  else if (!PHONE_RE.test(form.phone.trim()))                  errors.phone = 'Nur Ziffern, +, - und Klammern erlaubt';
 
   if (!form.productType)                             errors.productType = 'Produktkategorie ist erforderlich';
 
@@ -48,7 +44,7 @@ function validateAngebot(form) {
 export default function AngebotPage() {
   const isMobile = useBreakpoint(768);
   const [form, setForm] = useState({
-    company: '', name: '', email: '', phone: '',
+    company: '', name: '', email: '',
     productType: '', quantity: '', budget: '', message: '', siret: '',
   });
   const [errors, setErrors]         = useState({});
@@ -63,7 +59,6 @@ export default function AngebotPage() {
   const setField = (k, filter) => e => {
     let val = e.target.value;
     if (filter === 'name')  val = val.replace(/[0-9]/g, '');
-    if (filter === 'phone') val = val.replace(/[^0-9+\-\s()]/g, '');
     setForm(f => ({ ...f, [k]: val }));
     if (touched[k]) {
       setErrors(prev => ({ ...prev, [k]: validateAngebot({ ...form, [k]: val })[k] }));
@@ -78,7 +73,7 @@ export default function AngebotPage() {
   const handleSubmit = async e => {
     e.preventDefault();
     setTriedSubmit(true);
-    setTouched({ company: true, name: true, email: true, phone: true, productType: true, message: true });
+    setTouched({ company: true, name: true, email: true, productType: true, message: true });
     if (!dsgvo) { setDsgvoError(true); return; }
     setDsgvoError(false);
     const errs = validateAngebot(form);
@@ -92,7 +87,6 @@ export default function AngebotPage() {
         company:      form.company.trim(),
         name:         form.name.trim(),
         email:        form.email.trim(),
-        phone:        form.phone.trim() || undefined,
         siret:        form.siret.trim() || undefined,
         product_type: form.productType,
         quantity:     form.quantity || undefined,
@@ -210,15 +204,6 @@ export default function AngebotPage() {
                       maxLength={100} style={inputStyle('email')} autoComplete="email" />
                     {showErr('email') && <p style={errStyle}><i className="bi bi-exclamation-circle" /> {errors.email}</p>}
                   </div>
-                </div>
-
-                {/* Telefon */}
-                <div style={{ marginBottom: 16 }}>
-                  <label style={labelStyle}>Telefon *</label>
-                  <input className="input" placeholder="+49 000 000 000" value={form.phone}
-                    onChange={setField('phone', 'phone')} onBlur={() => touch('phone')}
-                    maxLength={30} inputMode="tel" autoComplete="tel" style={inputStyle('phone')} />
-                  {showErr('phone') && <p style={errStyle}><i className="bi bi-exclamation-circle" /> {errors.phone}</p>}
                 </div>
 
                 <h3 style={{ fontSize: 16, fontWeight: 800, color: 'var(--dark)', marginBottom: 20, paddingTop: 20, borderTop: '1px solid var(--border)', paddingBottom: 16, borderBottom: '1px solid var(--border)' }}>

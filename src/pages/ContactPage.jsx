@@ -12,12 +12,10 @@ const CONTACT_INFO = [
 const FIELDS_DEF = [
   { key: 'name',    label: 'Name',     ph: 'Ihr Name',          required: true,  max: 80,  blockDigits: true },
   { key: 'email',   label: 'E-Mail',   ph: 'ihre@email.de',     required: true,  max: 100, type: 'email' },
-  { key: 'phone',   label: 'Telefon',  ph: '+49 000 000 000',   required: false, max: 30,  inputMode: 'tel' },
 ];
 
 const NAME_RE    = /^[a-zA-ZÀ-ÖØ-öø-ÿäöüÄÖÜß\s'\-]{2,80}$/;
 const EMAIL_RE   = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
-const PHONE_RE   = /^[0-9+\-\s()]{6,30}$/;
 const HTML_RE    = /<[^>]*>/;
 
 function validateContact(form) {
@@ -37,11 +35,6 @@ function validateContact(form) {
     errors.email = 'E-Mail ist erforderlich';
   } else if (!EMAIL_RE.test(email)) {
     errors.email = 'Ungültige E-Mail-Adresse';
-  }
-
-  const phone = form.phone.trim();
-  if (phone && !PHONE_RE.test(phone)) {
-    errors.phone = 'Nur Ziffern, +, - und Klammern erlaubt';
   }
 
   const msg = form.message.trim();
@@ -98,7 +91,7 @@ function FieldRow({ def, value, error, onChange, touched, onBlur }) {
 
 export default function ContactPage() {
   const isMobile = useBreakpoint(640);
-  const [form, setForm] = useState({ name: '', email: '', phone: '', subject: 'Allgemeine Anfrage', message: '' });
+  const [form, setForm] = useState({ name: '', email: '', subject: 'Allgemeine Anfrage', message: '' });
   const [errors, setErrors] = useState({});
   const [touched, setTouched] = useState({});
   const [sent, setSent] = useState(false);
@@ -119,7 +112,7 @@ export default function ContactPage() {
 
   const handleSubmit = async () => {
     setTriedSubmit(true);
-    setTouched({ name: true, email: true, phone: true, message: true });
+    setTouched({ name: true, email: true, message: true });
     if (!dsgvo) { setDsgvoError(true); return; }
     setDsgvoError(false);
     const errs = validateContact(form);
@@ -131,7 +124,6 @@ export default function ContactPage() {
       await sendContact({
         name:    form.name.trim(),
         email:   form.email.trim(),
-        phone:   form.phone.trim() || undefined,
         subject: form.subject,
         message: form.message.trim(),
       });

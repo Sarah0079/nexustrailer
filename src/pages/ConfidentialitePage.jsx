@@ -23,7 +23,7 @@ export default function ConfidentialitePage() {
         <Section title="Erhobene Daten">
           <p>Wir erheben folgende Daten bei der Nutzung unserer Website:</p>
           <ul style={{ marginTop: 10, paddingLeft: 20, display: 'flex', flexDirection: 'column', gap: 6 }}>
-            <li><strong>Bestelldaten:</strong> Name, Vorname, Lieferadresse, E-Mail, Telefonnummer.</li>
+            <li><strong>Bestelldaten:</strong> Name, Vorname, Lieferadresse, E-Mail.</li>
             <li><strong>Zahlungsdaten:</strong> Überweisungsreferenz (keine Bankdaten werden gespeichert).</li>
             <li><strong>Nutzungsdaten:</strong> IP-Adresse, besuchte Seiten, Sitzungsdauer (via Cookies).</li>
             <li><strong>Kontaktdaten:</strong> Nachrichten, die über das Kontaktformular gesendet werden.</li>

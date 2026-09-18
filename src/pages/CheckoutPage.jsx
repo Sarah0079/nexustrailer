@@ -9,7 +9,6 @@ const FIELDS = [
   { key: 'vorname',  label: 'Vorname',             span: 1, max: 40,  lettersOnly: true,  required: true },
   { key: 'nachname', label: 'Nachname',             span: 1, max: 40,  lettersOnly: true,  required: true },
   { key: 'email',    label: 'E-Mail',               span: 2, max: 100, required: true, type: 'email' },
-  { key: 'telefon',  label: 'Telefon',              span: 2, max: 20,  required: true, type: 'tel', phoneOnly: true },
   { key: 'adresse',  label: 'Straße & Hausnummer',  span: 2, max: 80,  required: true },
   { key: 'plz',      label: 'PLZ',                  span: 1, max: 10,  required: true, digitsOnly: true },
   { key: 'stadt',    label: 'Stadt',                span: 1, max: 50,  lettersOnly: true,  required: true },
@@ -36,7 +35,6 @@ function Field({ field, value, error, onChange }) {
           let val = e.target.value;
           if (field.lettersOnly) val = val.replace(/[^a-zA-ZÀ-ÖØ-öø-ÿ\s'\-]/g, '');
           if (field.digitsOnly)  val = val.replace(/\D/g, '');
-          if (field.phoneOnly)   val = val.replace(/[^0-9+\-\s()]/g, '');
           onChange(val);
         }}
         style={{ borderColor: showError ? 'var(--sale)' : undefined, outline: showError ? '2px solid rgba(193,33,25,0.15)' : undefined }}
@@ -65,7 +63,6 @@ function validate(form) {
     }
   });
   if (form.email && !EMAIL_RE.test(form.email.trim())) errors.email = 'Ungültige E-Mail-Adresse';
-  if (form.telefon && !/^[0-9+\-\s()]{6,20}$/.test(form.telefon.trim())) errors.telefon = 'Ungültige Telefonnummer';
   if (form.plz && !/^\d{4,10}$/.test(form.plz.trim())) errors.plz = 'Ungültige PLZ';
   if (form.adresse && HTML_RE.test(form.adresse)) errors.adresse = 'Ungültige Zeichen';
   if (form.hinweis && HTML_RE.test(form.hinweis)) errors.hinweis = 'HTML-Tags sind nicht erlaubt';
@@ -79,7 +76,7 @@ export default function CheckoutPage() {
   const isMobile = useBreakpoint(768);
   const paymentType = location.state?.paymentType || 'full';
 
-  const [form, setForm] = useState({ vorname: '', nachname: '', email: '', telefon: '', adresse: '', plz: '', stadt: '', land: 'Deutschland', hinweis: '' });
+  const [form, setForm] = useState({ vorname: '', nachname: '', email: '', adresse: '', plz: '', stadt: '', land: 'Deutschland', hinweis: '' });
   const [errors, setErrors] = useState({});
   const [triedSubmit, setTriedSubmit] = useState(false);
   const [submitting, setSubmitting] = useState(false);
