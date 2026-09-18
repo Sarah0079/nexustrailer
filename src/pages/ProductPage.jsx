@@ -464,6 +464,9 @@ export default function ProductPage() {
           )}
         </div>
 
+        {/* ── Kundenbewertungen ── */}
+        <ReviewsSection product={product} />
+
         {/* ── Description riche ── */}
         <div style={{ borderTop: '1px solid var(--border)', paddingTop: 40, marginBottom: 40 }}>
           <h2 style={{ fontSize: 20, fontWeight: 800, color: 'var(--dark)', marginBottom: 20 }}>
@@ -492,9 +495,6 @@ export default function ProductPage() {
             </div>
           </div>
         )}
-
-        {/* ── Kundenbewertungen ── */}
-        <ReviewsSection product={product} />
 
         {/* ── Produits similaires ── */}
         {related.length > 0 && (
