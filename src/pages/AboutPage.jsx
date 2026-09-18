@@ -185,10 +185,12 @@ export default function AboutPage() {
             border: '1px solid var(--border)',
           }}>
             {[
-              ['Firmenname', 'LA REMORQUE M'],
-              ['Rechtsform', 'Einzelunternehmen (Frankreich)'],
-              ['SIREN', '948 418 827'],
-              ['Hauptsitz', '21 Rue du Bouchet, 63350 Maringues, Frankreich'],
+              ['Firmenname', 'NET & CO ACCESS'],
+              ['Handelsname', 'NexusTrailer'],
+              ['Rechtsform', 'SAS (société par actions simplifiée)'],
+              ['SIREN', '941 786 444'],
+              ['SIRET', '941 786 444 00013'],
+              ['Hauptsitz', '8 Rue de la Pointe, ZI A, 59113 Seclin, Frankreich'],
               ['E-Mail', 'info@nexustrailer.com'],
               ['Website', 'nexustrailer.com'],
             ].map(([label, value]) => (

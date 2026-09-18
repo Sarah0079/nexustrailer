@@ -15,8 +15,8 @@ export default function ConfidentialitePage() {
 
         <Section title="Verantwortliche Stelle">
           <p>
-            LA REMORQUE M (NexusTrailer), 21 Rue du Bouchet, 63350 Maringues, Frankreich<br />
-            E-Mail: info@nexustrailer.com – Telefon: +33 7 56 83 64 79
+            NET &amp; CO ACCESS (NexusTrailer), 8 Rue de la Pointe, ZI A, 59113 Seclin, Frankreich<br />
+            E-Mail: info@nexustrailer.com
           </p>
         </Section>
 

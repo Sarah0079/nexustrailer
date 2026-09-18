@@ -4,9 +4,8 @@ import { useBreakpoint } from '../hooks/useBreakpoint';
 import { sendContact } from '../api/client';
 
 const CONTACT_INFO = [
-  { icon: 'bi-geo-alt',   label: 'Adresse',         val: '21 Rue du Bouchet\n63350 Maringues, Frankreich' },
+  { icon: 'bi-geo-alt',   label: 'Adresse',         val: '8 Rue de la Pointe, ZI A\n59113 Seclin, Frankreich' },
   { icon: 'bi-envelope',  label: 'E-Mail',           val: 'info@nexustrailer.com', href: 'mailto:info@nexustrailer.com' },
-  { icon: 'bi-telephone', label: 'Telefon',          val: '+33 7 56 83 64 79',     href: 'tel:+33756836479' },
   { icon: 'bi-clock',     label: 'Öffnungszeiten',   val: 'Mo–Fr: 9:00 – 18:00\nSa: 9:00 – 13:00' },
 ];
 

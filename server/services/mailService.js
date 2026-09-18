@@ -126,8 +126,8 @@ export async function sendOrderConfirmation({ orderRef, customer, items, total, 
     <!-- FOOTER -->
     <tr><td class="footer" style="background:#F9FAFB;border-top:1px solid #E5E7EB;padding:14px 24px;text-align:center;">
       <p style="font-size:11px;color:#9CA3AF;margin:0;line-height:1.6;">
-        NexusTrailer · ${process.env.COMPANY_ADDRESS || '21 Rue du Bouchet, 63350 Maringues'}<br>
-        SIREN ${process.env.COMPANY_SIREN || '948 418 827'} · <a href="https://${process.env.COMPANY_DOMAIN || 'nexustrailer.com'}" style="color:#9CA3AF;">${process.env.COMPANY_DOMAIN || 'nexustrailer.com'}</a>
+        NexusTrailer · ${process.env.COMPANY_ADDRESS || '8 Rue de la Pointe, ZI A, 59113 Seclin'}<br>
+        SIREN ${process.env.COMPANY_SIREN || '941 786 444'} · <a href="https://${process.env.COMPANY_DOMAIN || 'nexustrailer.com'}" style="color:#9CA3AF;">${process.env.COMPANY_DOMAIN || 'nexustrailer.com'}</a>
       </p>
     </td></tr>
 
@@ -294,7 +294,7 @@ export async function sendStatusEmail({ to, vorname, orderRef, status, reason })
     <p style="font-size:12px;color:#8FA0AE;margin:0">Fragen? Schreiben Sie uns: <a href="mailto:${process.env.SMTP_FROM || process.env.SMTP_USER}" style="color:#E0261A">${process.env.SMTP_FROM || process.env.SMTP_USER}</a></p>
   </td></tr>
   <tr><td style="background:#F6F8FA;padding:14px 32px;border-top:1px solid #E2E8ED">
-    <p style="font-size:11px;color:#8FA0AE;margin:0">© NexusTrailer · SIREN ${process.env.COMPANY_SIREN || '948 418 827'}</p>
+    <p style="font-size:11px;color:#8FA0AE;margin:0">© NexusTrailer · NET &amp; CO ACCESS · SIREN ${process.env.COMPANY_SIREN || '941 786 444'}</p>
   </td></tr>
 </table>
 </td></tr></table>

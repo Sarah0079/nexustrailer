@@ -28,15 +28,15 @@ const TRUST = [
 ];
 
 const BUSINESS = [
-  { label: 'Firmenname',      val: 'LA REMORQUE M' },
-  { label: 'Website',         val: 'nexustrailer.com' },
-  { label: 'SIREN',           val: '948418827' },
-  { label: 'SIRET',           val: '94841882700010' },
-  { label: 'E-Mail',          val: 'info@nexustrailer.com', href: 'mailto:info@nexustrailer.com' },
-  { label: 'Telefon',         val: '+33 7 56 83 64 79',     href: 'tel:+33756836479' },
-  { label: 'USt-ID',          val: 'FR16948418827' },
-  { label: 'Handelsregister', val: '948 418 827 R.C.S. Clermont-Ferrand' },
-  { label: 'Adresse',         val: '21 Rue du Bouchet, 63350 Maringues, Frankreich' },
+  { label: 'Firmenname',  val: 'NET & CO ACCESS' },
+  { label: 'Handelsname', val: 'NexusTrailer' },
+  { label: 'Rechtsform',  val: 'SAS' },
+  { label: 'SIREN',       val: '941 786 444' },
+  { label: 'SIRET',       val: '941 786 444 00013' },
+  { label: 'NAF',         val: '29.20Z' },
+  { label: 'E-Mail',      val: 'info@nexustrailer.com', href: 'mailto:info@nexustrailer.com' },
+  { label: 'Website',     val: 'nexustrailer.com' },
+  { label: 'Adresse',     val: '8 Rue de la Pointe, ZI A, 59113 Seclin' },
 ];
 
 const colLinkStyle = {
@@ -123,17 +123,9 @@ export default function Footer() {
                 <i className="bi bi-envelope" style={{ fontSize: 13, color: 'var(--accent)', flexShrink: 0 }} />
                 info@nexustrailer.com
               </a>
-              <a href="tel:+33756836479"
-                style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 13, color: 'rgba(255,255,255,0.65)', textDecoration: 'none' }}
-                onMouseEnter={e => e.currentTarget.style.color = 'white'}
-                onMouseLeave={e => e.currentTarget.style.color = 'rgba(255,255,255,0.65)'}
-              >
-                <i className="bi bi-telephone" style={{ fontSize: 13, color: 'var(--accent)', flexShrink: 0 }} />
-                +33 7 56 83 64 79
-              </a>
               <span style={{ display: 'flex', alignItems: 'flex-start', gap: 10, fontSize: 12, color: 'rgba(255,255,255,0.38)' }}>
                 <i className="bi bi-geo-alt" style={{ fontSize: 13, color: 'rgba(255,255,255,0.25)', flexShrink: 0, marginTop: 1 }} />
-                21 Rue du Bouchet, 63350 Maringues
+                8 Rue de la Pointe, ZI A, 59113 Seclin
               </span>
             </div>
           </div>
@@ -178,7 +170,7 @@ export default function Footer() {
           {/* Mentions légales compactes */}
           <div style={{ borderTop: '1px solid rgba(255,255,255,0.07)', paddingTop: 16 }}>
             <p style={{ fontSize: 10, color: 'rgba(255,255,255,0.20)', lineHeight: 1.8 }}>
-              LA REMORQUE M · SIREN 948 418 827 · SIRET 94841882700010 · USt-ID FR16948418827 · RCS Clermont-Ferrand
+              NET &amp; CO ACCESS · SIREN 941 786 444 · SIRET 941 786 444 00013 · NAF 29.20Z · 8 Rue de la Pointe, ZI A, 59113 Seclin
             </p>
             <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.22)', marginTop: 10 }}>
               © {new Date().getFullYear()} NexusTrailer — Alle Rechte vorbehalten.

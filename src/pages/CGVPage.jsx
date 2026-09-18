@@ -13,7 +13,7 @@ export default function CGVPage() {
       <div className="container" style={{ padding: '56px 24px 80px', maxWidth: 800 }}>
 
         <Section title="Geltungsbereich">
-          <p>Diese Allgemeinen Geschäftsbedingungen gelten für alle Kaufverträge, die über die Website NexusTrailer zwischen LA REMORQUE M (nachfolgend „Verkäufer") und dem Käufer (nachfolgend „Kunde") geschlossen werden.</p>
+          <p>Diese Allgemeinen Geschäftsbedingungen gelten für alle Kaufverträge, die über die Website NexusTrailer zwischen NET &amp; CO ACCESS (nachfolgend „Verkäufer") und dem Käufer (nachfolgend „Kunde") geschlossen werden.</p>
         </Section>
 
         <Section title="Vertragsgegenstand">

@@ -13,20 +13,19 @@ export default function MentionsLegalesPage() {
       <div className="container" style={{ padding: '56px 24px 80px', maxWidth: 800 }}>
 
         <Section title="Anbieter">
-          <p><strong>Unternehmensname:</strong> LA REMORQUE M</p>
+          <p><strong>Unternehmensname:</strong> NET &amp; CO ACCESS</p>
           <p><strong>Handelsname:</strong> NexusTrailer</p>
-          <p><strong>Rechtsform:</strong> Einzelunternehmen (Frankreich)</p>
-          <p><strong>SIREN:</strong> 948 418 827</p>
-          <p><strong>SIRET:</strong> 94841882700010</p>
-          <p><strong>USt-IdNr.:</strong> FR16948418827</p>
-          <p><strong>Handelsregisternummer:</strong> 948 418 827 R.C.S. Clermont-Ferrand</p>
-          <p><strong>Anschrift:</strong> 21 Rue du Bouchet, 63350 Maringues, Frankreich</p>
-          <p><strong>Telefon:</strong> +33 7 56 83 64 79</p>
+          <p><strong>Rechtsform:</strong> SAS (société par actions simplifiée)</p>
+          <p><strong>SIREN:</strong> 941 786 444</p>
+          <p><strong>SIRET:</strong> 941 786 444 00013</p>
+          <p><strong>Code NAF / APE:</strong> 29.20Z (Fabrication de carrosseries et remorques)</p>
+          <p><strong>Anschrift:</strong> 8 Rue de la Pointe, ZI A, 59113 Seclin, Frankreich</p>
+          <p><strong>Geschäftsführer:</strong> LES PYRAMIDES (SAS représentée par Livie Cremades-Marin)</p>
           <p><strong>E-Mail:</strong> info@nexustrailer.com</p>
         </Section>
 
         <Section title="Verantwortlicher für den Inhalt">
-          <p>Verantwortlich für den Inhalt gemäß § 55 Abs. 2 RStV ist der Inhaber von LA REMORQUE M.</p>
+          <p>Verantwortlich für den Inhalt gemäß § 55 Abs. 2 RStV ist der Geschäftsführer von NET &amp; CO ACCESS.</p>
         </Section>
 
         <Section title="Hosting">
@@ -37,10 +36,10 @@ export default function MentionsLegalesPage() {
 
         <Section title="Urheberrecht">
           <p>
-            Alle Inhalte dieser Website (Texte, Bilder, Grafiken, Logos, Icons, Sounds, Software usw.) sind – sofern nicht anders angegeben – Eigentum von LA REMORQUE M / NexusTrailer und urheberrechtlich geschützt.
+            Alle Inhalte dieser Website (Texte, Bilder, Grafiken, Logos, Icons, Sounds, Software usw.) sind – sofern nicht anders angegeben – Eigentum von NET &amp; CO ACCESS / NexusTrailer und urheberrechtlich geschützt.
           </p>
           <p style={{ marginTop: 10 }}>
-            Jegliche Vervielfältigung, Verbreitung, Veröffentlichung oder Bearbeitung ohne vorherige schriftliche Genehmigung von LA REMORQUE M ist untersagt.
+            Jegliche Vervielfältigung, Verbreitung, Veröffentlichung oder Bearbeitung ohne vorherige schriftliche Genehmigung von NET &amp; CO ACCESS ist untersagt.
           </p>
         </Section>
 

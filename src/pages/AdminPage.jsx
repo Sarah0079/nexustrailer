@@ -759,7 +759,7 @@ function SettingsTab() {
             {error   && <div style={{ background: '#FEF2F2', border: '1px solid #FECACA', borderRadius: 0, padding: '10px 14px', fontSize: 13, color: '#991B1B' }}>{error}</div>}
             {success && <div style={{ background: '#ECFDF5', border: '1px solid #6EE7B7', borderRadius: 0, padding: '10px 14px', fontSize: 13, color: '#065F46' }}><i className="bi bi-check-circle" style={{ marginRight: 6 }} />{success}</div>}
 
-            {field('beneficiaire', 'Kontoinhaber',  'LA REMORQUE M',   'Name des Unternehmens oder der Person, der das Konto gehört.')}
+            {field('beneficiaire', 'Kontoinhaber',  'NET & CO ACCESS',   'Name des Unternehmens oder der Person, der das Konto gehört.')}
             {field('iban',         'IBAN',           'FR76 XXXX XXXX XXXX XXXX XXXX XXX', 'IBAN-Code des Bankkontos (mit oder ohne Leerzeichen).')}
             {field('bic',          'BIC / SWIFT',    'XXXXXXXX',        'BIC/SWIFT-Code der Bank (8 oder 11 Zeichen, Großbuchstaben).')}
             {field('banque',       'Bankname',       'Crédit Agricole', '')}

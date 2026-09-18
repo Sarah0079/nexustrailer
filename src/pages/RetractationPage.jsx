@@ -29,8 +29,7 @@ export default function RetractationPage() {
           <p>Um Ihr Widerrufsrecht auszuüben, müssen Sie uns mittels einer eindeutigen Erklärung (z. B. Brief, Telefax oder E-Mail) über Ihren Entschluss informieren:</p>
           <ul style={{ marginTop: 10, paddingLeft: 20, display: 'flex', flexDirection: 'column', gap: 6 }}>
             <li><strong>E-Mail:</strong> info@nexustrailer.com</li>
-            <li><strong>Telefon:</strong> +33 7 56 83 64 79</li>
-            <li><strong>Post:</strong> LA REMORQUE M – 21 Rue du Bouchet, 63350 Maringues, Frankreich</li>
+            <li><strong>Post:</strong> NET &amp; CO ACCESS – 8 Rue de la Pointe, ZI A, 59113 Seclin, Frankreich</li>
           </ul>
           <p style={{ marginTop: 12 }}>
             Sie können dafür das Muster-Widerrufsformular unten verwenden, das jedoch nicht vorgeschrieben ist. Zur Wahrung der Widerrufsfrist reicht es aus, dass Sie die Mitteilung über die Ausübung des Widerrufsrechts vor Ablauf der Widerrufsfrist absenden.
@@ -39,7 +38,7 @@ export default function RetractationPage() {
 
         <Section title="Muster-Widerrufsformular">
           <div style={{ background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: 'var(--r-md)', padding: 24 }}>
-            <p style={{ fontStyle: 'italic', marginBottom: 12 }}>An: LA REMORQUE M – 21 Rue du Bouchet, 63350 Maringues – info@nexustrailer.com</p>
+            <p style={{ fontStyle: 'italic', marginBottom: 12 }}>An: NET &amp; CO ACCESS – 8 Rue de la Pointe, ZI A, 59113 Seclin – info@nexustrailer.com</p>
             <p>Hiermit widerrufe(n) ich/wir (*) den von mir/uns (*) abgeschlossenen Vertrag über den Kauf der folgenden Waren (*):</p>
             <p style={{ marginTop: 8 }}>Bestellt am (*) / erhalten am (*): _______________</p>
             <p>Name des/der Verbraucher(s): _______________</p>

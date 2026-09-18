@@ -1,10 +1,10 @@
 import PDFDocument from 'pdfkit';
 
 const COMPANY = {
-  name:    'NexusTrailer',
-  address: process.env.COMPANY_ADDRESS || '21 Rue du Bouchet, 63350 Maringues',
+  name:    'NexusTrailer / NET & CO ACCESS',
+  address: process.env.COMPANY_ADDRESS || '8 Rue de la Pointe, ZI A, 59113 Seclin',
   city:    process.env.COMPANY_CITY    || 'Frankreich',
-  siren:   `SIREN ${process.env.COMPANY_SIREN || '948 418 827'}`,
+  siren:   `SIREN ${process.env.COMPANY_SIREN || '941 786 444'}`,
   email:   process.env.SMTP_FROM       || 'info@nexustrailer.com',
   web:     process.env.COMPANY_DOMAIN  || 'nexustrailer.com',
 };
