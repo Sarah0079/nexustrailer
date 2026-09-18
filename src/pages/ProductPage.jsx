@@ -427,20 +427,6 @@ export default function ProductPage() {
               {isWished ? 'Auf der Wunschliste' : 'Zur Wunschliste hinzufügen'}
             </button>
 
-            {/* Specs */}
-            {product.specs && (
-              <div>
-                <p style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 10 }}>Technische Daten</p>
-                <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: '6px 10px' }}>
-                  {Object.entries(product.specs).map(([k, v]) => (
-                    <div key={k} style={{ padding: '8px 12px', background: 'var(--bg)', borderRadius: 0 }}>
-                      <p style={{ fontSize: 10, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: 2 }}>{k}</p>
-                      <p style={{ fontSize: 13, fontWeight: 700, color: 'var(--dark)' }}>{v}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
           </div>
 
           {/* ── Col 3 : Trust (desktop only) ── */}
@@ -466,6 +452,21 @@ export default function ProductPage() {
 
         {/* ── Kundenbewertungen ── */}
         <ReviewsSection product={product} />
+
+        {/* ── Technische Daten ── */}
+        {product.specs && (
+          <div style={{ borderTop: '1px solid var(--border)', paddingTop: 32, marginBottom: 40 }}>
+            <h2 style={{ fontSize: 16, fontWeight: 800, color: 'var(--dark)', marginBottom: 16 }}>Technische Daten</h2>
+            <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(auto-fill, minmax(200px, 1fr))', gap: '8px 12px' }}>
+              {Object.entries(product.specs).map(([k, v]) => (
+                <div key={k} style={{ padding: '10px 14px', background: 'var(--bg)', border: '1px solid var(--border)' }}>
+                  <p style={{ fontSize: 10, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 3 }}>{k}</p>
+                  <p style={{ fontSize: 14, fontWeight: 700, color: 'var(--dark)' }}>{v}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* ── Description riche ── */}
         <div style={{ borderTop: '1px solid var(--border)', paddingTop: 40, marginBottom: 40 }}>
