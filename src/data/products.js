@@ -4448,6 +4448,85 @@ export const PRODUCTS = [
     featured: true,
   },
 
+  {
+    id: 76,
+    slug: 'robuster-kippanhaenger-2700kg-260x150',
+    name: 'Robuster Kippanhänger 2700 kg 260 x 150 cm',
+    subtitle: 'Kipperanhänger · 2.700 kg · 2.100 kg Nutzlast · Elektrohydraulik · ALU-Bordwände · 2 Größen',
+    category: 'kipper',
+    price: 2045,
+    originalPrice: null,
+    discount: null,
+    stock: 'instock',
+    badge: 'LAGERRÄUMUNG',
+    image: '/image/Robuster Kippanhänger 2700 kg 260 x 150 cm/Principal.png',
+    images: [
+      '/image/Robuster Kippanhänger 2700 kg 260 x 150 cm/Principal.png',
+      '/image/Robuster Kippanhänger 2700 kg 260 x 150 cm/kipper-2700kg-2-768x512.png',
+      '/image/Robuster Kippanhänger 2700 kg 260 x 150 cm/kipper-2700kg-3-768x512.png',
+      '/image/Robuster Kippanhänger 2700 kg 260 x 150 cm/kipper-2700kg-4-768x512.png',
+    ],
+    specs: {
+      zGG: '2.700 kg',
+      Nutzlast: '2.100 kg (260×150) / 2.020 kg (300×180)',
+      Achsen: '2 × 1.350 kg',
+      Bordwände: 'Aluminium, abnehmbar',
+      Bereifung: '185 R14 C',
+    },
+    description: 'Robuster Kippanhänger 2700 kg — Lagerräumung, 2 Größen (260×150 oder 300×180 cm), feuerverzinktes Fahrgestell, ALU-Bordwände, Elektrohydraulik mit Batterie & Fernbedienung, Holzboden rutschfest. Ab 2.045,38 €.',
+    descriptionHtml: `<p>Der <strong>Robuste Kippanhänger 2700 kg</strong> überzeugt durch seine hohe Ladekapazität und ein besonders robustes Fahrgestell. Dank seiner vielseitigen Ausstattung ist er für zahlreiche Einsatzbereiche bestens geeignet.</p>
+
+<div style="background:#FFFBEB;border-left:3px solid #F59E0B;padding:12px 16px;margin:16px 0;font-size:13px;color:#92400E;">
+  <strong>Lagerräumung — Sonderpreis</strong><br>
+  Dieses Produkt wird im Rahmen einer Lagerräumung zu einem besonders vorteilhaften Preis angeboten. Gleiche Qualität, gleiche Zuverlässigkeit — nur begrenzte Stückzahl verfügbar. Einmal ausverkauft, ist dieses Modell zu diesem Preis nicht mehr erhältlich.
+</div>
+
+<h3><i class="bi bi-rulers"></i> Verfügbare Abmessungen</h3>
+<ul>
+  <li><strong>260 × 150 × 40 cm</strong> — Nutzlast 2.100 kg · Leergewicht 600 kg · <strong>ab 2.045,38 €</strong></li>
+  <li><strong>300 × 180 × 40 cm</strong> — Nutzlast 2.020 kg · Leergewicht 680 kg · <strong>ab 2.534,35 €</strong></li>
+</ul>
+
+<h3><i class="bi bi-gear"></i> Technische Daten</h3>
+<ul>
+  <li>Zulässiges Gesamtgewicht (zGG) : 2.700 kg</li>
+  <li>Achsen : 2 × 1.350 kg</li>
+  <li>Bereifung : 185 R14 C</li>
+  <li>Innenhöhe Bordwand : 40 cm</li>
+</ul>
+
+<h3><i class="bi bi-layers"></i> Konstruktion &amp; Ausstattung</h3>
+<ul>
+  <li>Fahrgestell feuerverzinkt und mechanisch geschweißt</li>
+  <li>Bodenplatte Holz, rutschfest</li>
+  <li>Seitenwände aus Aluminium, abnehmbar</li>
+  <li>Innenräder (Roues internes)</li>
+  <li>Auflaufbremse, Stützrad, LED-Beleuchtung</li>
+</ul>
+
+<h3><i class="bi bi-gift"></i> Im Lieferumfang enthalten</h3>
+<ul>
+  <li>Ersatzrad mit Halterung</li>
+  <li>2 Stahlrampen 250 × 32 cm</li>
+  <li>Gitteraufsatzverlängerungen 80 cm</li>
+  <li>Elektrohydraulische Pumpe mit Batterie &amp; Fernbedienung</li>
+</ul>
+
+<h3><i class="bi bi-patch-check"></i> Garantie &amp; Lieferung</h3>
+<ul>
+  <li>2 Jahre Herstellergarantie</li>
+  <li>COC-Zulassung — sofort in ganz Europa zulassungsfähig</li>
+  <li>Lieferung versandkostenfrei, 5–7 Werktage</li>
+</ul>`,
+    accessories: [
+      'Ersatzrad mit Halterung — im Lieferumfang enthalten.',
+      '2 Stahlrampen 250 × 32 cm — im Lieferumfang enthalten.',
+      'Gitteraufsatzverlängerungen 80 cm — im Lieferumfang enthalten.',
+      'Elektrohydraulische Pumpe mit Batterie & Fernbedienung — im Lieferumfang enthalten.',
+    ],
+    featured: false,
+  },
+
   // ── TRANSPORTANHÄNGER & PRITSCHE ─────────────────────────────────────
   {
     id: 52,
