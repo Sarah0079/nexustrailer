@@ -4527,6 +4527,91 @@ export const PRODUCTS = [
     featured: false,
   },
 
+  {
+    id: 77,
+    slug: 'boeckmann-tandem-dreiseitenkipper-dk-al-2516-27',
+    name: 'Böckmann Tandem Dreiseitenkipper DK-AL 2516/27',
+    subtitle: 'Dreiseitenkipper · Böckmann · 2.700 kg · 2.055 kg Nutzlast · ALU 300 mm · 45° Kippwinkel · 100 km/h',
+    category: 'kipper',
+    price: 5590,
+    originalPrice: null,
+    discount: null,
+    stock: 'instock',
+    badge: null,
+    image: '/image/Böckmann Tandem Dreiseitenkipper DK-AL 251627/Principal.jpg',
+    images: [
+      '/image/Böckmann Tandem Dreiseitenkipper DK-AL 251627/Principal.jpg',
+      '/image/Böckmann Tandem Dreiseitenkipper DK-AL 251627/dk-al_2516_deichsel_rechts_cmyk89096_600x600.jpg',
+      '/image/Böckmann Tandem Dreiseitenkipper DK-AL 251627/dk-al_2516_introseite_cmyk-rz5fe5a_600x600.jpg',
+      '/image/Böckmann Tandem Dreiseitenkipper DK-AL 251627/dk-al_heck-deichsel-rechts_gekippt_cmyk-rzb2be4_600x600.jpg',
+      '/image/Böckmann Tandem Dreiseitenkipper DK-AL 251627/dk-st_stahleckrungen_cmykd1dd7_600x600.jpg',
+    ],
+    specs: {
+      zGG: '2.700 kg',
+      Nutzlast: '2.055 kg',
+      Eigengewicht: '645 kg',
+      Kasteninnenmaß: '2.560 × 1.650 × 300 mm',
+      Ladehöhe: '750 mm',
+      Achsen: '2 (Tandem)',
+      Bereifung: '14 Zoll Stahlfelge',
+      Kippwinkel: '45°',
+    },
+    description: 'Böckmann Tandem Dreiseitenkipper DK-AL 2516/27 — 2.700 kg zGG, 2.055 kg Nutzlast, ALU-Bordwände 300 mm, Siebdruckboden rutschfest, 45° Kippwinkel, 100 km/h zugelassen. Nr. SW10561.',
+    descriptionHtml: `<p>Der <strong>Böckmann Tandem Dreiseitenkipper DK-AL 2516/27</strong> ist ein wahrer Allrounder im Arbeitsalltag. Ganz gleich ob Schüttgut, Baustoffe oder Baumaschinen — die massive Rahmenkonstruktion sorgt für einen zuverlässigen Transport. Mit einem Kippwinkel von 45° zeigt er seine ganze Stärke im Einsatz. Die Alu-Bordwände und zahlreiche Highlights wie das versenkte Zurrbügelsystem und die mechanische Abdichtung bieten ein komfortables und durchdachtes Handling.</p>
+
+<h3><i class="bi bi-rulers"></i> Technische Daten</h3>
+<ul>
+  <li>Zulässiges Gesamtgewicht : 2.700 kg</li>
+  <li>Nutzlast : 2.055 kg — Eigengewicht : 645 kg</li>
+  <li>Kasteninnenmaß : 2.560 × 1.650 × 300 mm</li>
+  <li>Ladehöhe : 750 mm</li>
+  <li>Kippwinkel : 45°</li>
+  <li>Achsen : 2 (Tandem) — Bereifung : 14 Zoll Stahlfelge</li>
+  <li>100 km/h Zulassung möglich — gebremst</li>
+  <li>Produktnummer : SW10561</li>
+</ul>
+
+<h3><i class="bi bi-gear"></i> Serienausstattung</h3>
+<ul>
+  <li>Freitragende Deichsellänge 1.250 mm</li>
+  <li>Aluminium-Bordwände 300 mm mit Langwegverschlüssen — mit Hinterklappe</li>
+  <li>Stirnwand klappbar</li>
+  <li>Eckrungen abnehmbar</li>
+  <li>Stabiler rutschfester Siebdruckboden</li>
+  <li>4 Zurrbügel in Seitenblende (versenkt)</li>
+  <li>Automatik-Stützrad</li>
+  <li>14 Zoll Stahlfelgen</li>
+</ul>
+
+<h3><i class="bi bi-plus-circle"></i> Optionales Zubehör (auf Anfrage)</h3>
+<ul>
+  <li>Radstoßdämpfer (4 Stück)</li>
+  <li>Bereifung 13 Zoll — reduzierte Ladehöhe</li>
+  <li>Schwerlast-Automatik-Stützrad</li>
+  <li>ALU-Bordwände 300 oder 500 mm mit Pendelklappe</li>
+  <li>Kastenaufsatz ALU 350 mm — 4-seitig pendelbar</li>
+  <li>Gitteraufsatz 600 / 1.000 mm — 4-seitig pendelbar</li>
+  <li>Plane und Spriegel 1.300 mm</li>
+  <li>Basic Alu-Verladeschienen — Tragkraft 2.700 kg/Paar</li>
+  <li>Reserveradhalter, Staukasten, Teleskopkurbelstützen u.v.m.</li>
+</ul>
+
+<h3><i class="bi bi-patch-check"></i> Marke &amp; Qualität</h3>
+<ul>
+  <li>Böckmann — Hersteller seit den 60er Jahren, konstruiert aus der Praxis für die Praxis</li>
+  <li>2 Jahre Herstellergarantie</li>
+  <li>Lieferung versandkostenfrei, 5–7 Werktage</li>
+</ul>`,
+    accessories: [
+      'Alu-Verladeschienen Basic – Tragkraft 2.700 kg/Paar (auf Anfrage).',
+      'Gitteraufsatz 600/1.000 mm 4-seitig pendelbar (auf Anfrage).',
+      'Kastenaufsatz ALU 350 mm 4-seitig pendelbar (auf Anfrage).',
+      'Plane und Spriegel 1.300 mm (auf Anfrage).',
+      'Reserveradhalter unter Anhängerboden, ausziehbar (auf Anfrage).',
+    ],
+    featured: false,
+  },
+
   // ── TRANSPORTANHÄNGER & PRITSCHE ─────────────────────────────────────
   {
     id: 52,
