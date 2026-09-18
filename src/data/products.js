@@ -5692,7 +5692,7 @@ export const TRUST_BADGES = [
   { icon: 'bi-arrow-repeat', title: '30 Tage Rückgabe', desc: 'Nicht zufrieden? Volle Rückerstattung garantiert' },
   { icon: 'bi-shield-check', title: '2 Jahre Garantie', desc: 'Herstellergarantie auf alle Produkte' },
   { icon: 'bi-patch-check', title: 'COC-zertifiziert', desc: 'Alle Wohnwagen mit Übereinstimmungszertifikat' },
-  { icon: 'bi-headset', title: 'Persönlicher Support', desc: 'Mo–Fr per Telefon erreichbar' },
+  { icon: 'bi-headset', title: 'Persönlicher Support', desc: 'Mo–Fr per E-Mail erreichbar' },
   { icon: 'bi-tags', title: 'Beste Preise', desc: 'Direktimport – bis zu 55 % unter Neupreis' },
   { icon: 'bi-star', title: 'Geprüfte Qualität', desc: 'Jeder Wohnwagen vor Versand geprüft' },
 ];
